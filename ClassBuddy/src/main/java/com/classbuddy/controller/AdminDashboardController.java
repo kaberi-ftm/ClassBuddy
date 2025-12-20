@@ -64,12 +64,7 @@ public class AdminDashboardController {
         }
     }
 
-    /**
-     * Create a classroom card UI component
-     */
-    /**
-     * Create a classroom card UI component
-     */
+
     /**
      * Create a classroom card UI component
      */

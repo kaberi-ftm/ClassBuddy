@@ -8,9 +8,9 @@ import java.io. InputStream;
 import java.nio.file. Paths;
 
 public class DatabaseUtil {
-    // Store DB in user home directory for easier access
-    private static final String DB_PATH = Paths.get(System.getProperty("user.home"), "ClassBuddy").toString();
-    private static final String DB_URL = "jdbc:sqlite:" + DB_PATH +"/classbuddy.db";
+    // Store DB in project root folder (where pom.xml is)
+    private static final String DB_PATH = Paths.get(System.getProperty("user.dir"), "classbuddy_data").toString();
+    private static final String DB_URL = "jdbc:sqlite:" + DB_PATH + "/classbuddy.db";
     private static boolean initialized = false;
 
     static {
@@ -19,10 +19,10 @@ public class DatabaseUtil {
         try {
             if (!java.nio.file.Files.exists(path)) {
                 java.nio.file.Files. createDirectories(path);
-                System.out.println("✅ Created database directory: " + DB_PATH);
+                System.out.println("✅ Created database directory:  " + DB_PATH);
             }
         } catch (Exception e) {
-            System.err.println("❌ Error creating database directory: " + e. getMessage());
+            System.err.println("❌ Error creating database directory: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -31,13 +31,8 @@ public class DatabaseUtil {
      * Get database connection
      */
     public static Connection getConnection() throws SQLException {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            System.err.println("❌ SQLite JDBC not found:  " + e.getMessage());
-            e.printStackTrace();
-        }
-        return DriverManager. getConnection(DB_URL);
+        // SQLite JDBC driver auto-loads in Java 8+, no need for Class.forName()
+        return DriverManager.getConnection(DB_URL);
     }
 
     /**
@@ -89,7 +84,7 @@ public class DatabaseUtil {
                         } catch (SQLException e) {
                             // Table already exists is not an error
                             if (! e.getMessage().contains("already exists")) {
-                                System.err.println("   ⚠️  Error:  " + e.getMessage());
+                                System.err.println("   ⚠️  Error:   " + e.getMessage());
                                 errorCount++;
                             }
                         }
@@ -98,7 +93,7 @@ public class DatabaseUtil {
             }
 
             System.out.println("\n✅ Database initialized successfully!");
-            System.out. println("   Statements executed: " + successCount);
+            System.out.println("   Statements executed: " + successCount);
             System.out.println("   Errors (if any): " + errorCount);
 
             // Verify tables exist
@@ -118,7 +113,7 @@ public class DatabaseUtil {
     private static void verifyTables(Connection conn) {
         String[] tables = {"users", "classroom", "classroom_rolls", "classroom_students", "routine", "exam", "ct_quiz", "lab_test", "notice"};
 
-        System. out.println("\n📋 Verifying tables.. .");
+        System.out.println("\n📋 Verifying tables...");
         try (Statement stmt = conn.createStatement()) {
             for (String tableName : tables) {
                 try (ResultSet rs = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableName + "'")) {
