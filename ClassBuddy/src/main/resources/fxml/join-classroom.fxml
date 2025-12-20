@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.PasswordField?>
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.classbuddy.controller.JoinClassroomController">
+
+    <stylesheets>
+        <String fx:value="@../css/login.css" />
+    </stylesheets>
+
+    <!-- LEFT SIDE -->
+    <VBox alignment="CENTER" prefHeight="600" prefWidth="450" styleClass="branding-section">
+        <children>
+            <Label styleClass="app-title" text="Join Classroom">
+                <font>
+                    <Font name="System Bold" size="32.0" />
+                </font>
+            </Label>
+            <Label styleClass="app-subtitle" text="Enter your roll and classroom password">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+        </children>
+    </VBox>
+
+    <!-- RIGHT SIDE -->
+    <VBox alignment="TOP_CENTER" layoutX="450" spacing="18" styleClass="form-section">
+        <padding>
+            <Insets bottom="30" left="50" right="50" top="100" />
+        </padding>
+
+        <children>
+            <Label styleClass="form-title" text="Join Classroom">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+
+            <Label fx:id="errorLabel" managed="false" styleClass="error-message" text="" visible="false" wrapText="true" />
+
+            <!-- Roll Number -->
+            <VBox spacing="8">
+                <Label styleClass="field-label" text="Roll Number" />
+                <HBox spacing="10" styleClass="input-container">
+                    <Label styleClass="input-icon" text="🆔" />
+                    <TextField fx:id="rollNumberField" promptText="Enter your roll number (e.g., 1807001)" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                </HBox>
+            </VBox>
+
+            <!-- Classroom Password -->
+            <VBox spacing="8">
+                <Label styleClass="field-label" text="Classroom Password" />
+                <HBox spacing="10" styleClass="input-container">
+                    <Label styleClass="input-icon" text="🔒" />
+                    <PasswordField fx:id="classroomPasswordField" promptText="Enter classroom password" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                </HBox>
+            </VBox>
+
+            <!-- Buttons -->
+            <HBox spacing="10">
+                <Button onAction="#handleJoinClassroom" prefHeight="45" prefWidth="180" styleClass="submit-button" text="Join" />
+                <Button onAction="#goBackToDashboard" prefHeight="45" prefWidth="180" styleClass="btn-secondary" text="Back" />
+            </HBox>
+        </children>
+    </VBox>
+</AnchorPane>

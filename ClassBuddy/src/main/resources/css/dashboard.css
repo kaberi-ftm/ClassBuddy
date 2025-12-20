@@ -1,0 +1,99 @@
+
+.dashboard-header {
+    -fx-background-color: linear-gradient(to right, #2e86de, #1b4f72);
+    -fx-border-color: #1b4f72;
+    -fx-border-width: 0 0 2 0;
+}
+
+.dashboard-title {
+    -fx-text-fill: white;
+    -fx-font-size: 28;
+    -fx-font-weight: bold;
+}
+
+.admin-name-label {
+    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 14;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    -fx-background-color:  #f5f7fa;
+}
+
+.section-title {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+}
+
+/* Buttons */
+.btn-primary {
+    -fx-background-color: #2e86de;
+    -fx-text-fill: white;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #1b4f72;
+}
+
+.btn-secondary {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding:  10 20;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #1e8449;
+}
+
+.btn-tertiary {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.btn-tertiary:hover {
+    -fx-background-color: #7f8c8d;
+}
+
+. btn-logout {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-font-size: 12;
+    -fx-padding:  8 16;
+    -fx-cursor:  hand;
+}
+
+. btn-logout:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Classroom Cards */
+.classrooms-list {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane . viewport {
+    -fx-background-color: transparent;
+}

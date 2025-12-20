@@ -18,7 +18,7 @@ public class User {
         this.passwordHash = passwordHash;
         this.role = role;
         this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime. now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     // Constructor for existing user (from DB)

@@ -8,37 +8,53 @@ import java.sql.*;
 
 public class AuthService {
 
-    /**
+
+     /**
      * Register a new user
      * @return true if registration successful, false if user already exists
      */
     public static boolean registerUser(String username, String email, String password, Role role) {
+        System.out.println("\n🔍 DEBUG: Starting registration for '" + username + "'");
+
         // Check if user already exists
         if (userExists(username, email)) {
+            System.out.println("❌ User already exists: " + username);
             return false;
         }
 
-        String hashedPassword = PasswordHasher. hashPassword(password);
-        String sql = "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)";
+        String hashedPassword = PasswordHasher.hashPassword(password);
+        String sql = "INSERT INTO users (username, email, password_hash, role, created_at, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
 
-        try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseUtil.getConnection()) {
+            System.out.println("✅ Database connection established");
 
-            pstmt.setString(1, username);
-            pstmt.setString(2, email);
-            pstmt.setString(3, hashedPassword);
-            pstmt.setString(4, role.name());
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, username);
+                pstmt.setString(2, email);
+                pstmt.setString(3, hashedPassword);
+                pstmt. setString(4, role.name());
 
-            pstmt.executeUpdate();
-            System.out.println("User registered successfully:  " + username);
-            return true;
+                System.out.println("📝 Executing INSERT query...");
+                int rowsAffected = pstmt. executeUpdate();
+                System.out.println("✅ Rows affected: " + rowsAffected);
+
+                if (rowsAffected > 0) {
+                    System.out.println("✅ User registered successfully:  " + username);
+                    System.out.println("   Email: " + email);
+                    System.out.println("   Role: " + role.getDisplayName());
+                    return true;
+                }
+            }
 
         } catch (SQLException e) {
-            System.err.println("Error registering user: " + e.getMessage());
+            System.err.println("❌ Error registering user: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
-    }
 
+        System.out.println("❌ Registration failed - unknown reason");
+        return false;
+    }
     /**
      * Login user - verify username and password
      * @return User object if login successful, null otherwise
@@ -117,12 +133,12 @@ public class AuthService {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return new User(
-                            rs. getInt("id"),
+                            rs.getInt("id"),
                             rs.getString("username"),
                             rs.getString("email"),
                             rs.getString("password_hash"),
                             Role.fromString(rs.getString("role")),
-                            rs. getTimestamp("created_at").toLocalDateTime(),
+                            rs.getTimestamp("created_at").toLocalDateTime(),
                             rs.getTimestamp("updated_at").toLocalDateTime()
                     );
                 }
@@ -181,5 +197,25 @@ public class AuthService {
         }
 
         return false;
+    }
+    /**
+     * Update user's last login time
+     */
+    public static void updateLastLoginTime(int userId) {
+        String sql = "UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("✅ User login time updated: ID " + userId);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("⚠️ Error updating login time: " + e.getMessage());
+        }
     }
 }

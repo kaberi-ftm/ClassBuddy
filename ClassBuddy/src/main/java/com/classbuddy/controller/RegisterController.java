@@ -34,7 +34,7 @@ public class RegisterController {
         String confirmPassword = confirmPasswordField.getText();
         boolean isAdmin = adminRadio.isSelected();
 
-        // Validation:  Check empty fields
+        // Validation: Check empty fields
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             showError("All fields are required.");
             return;
@@ -47,13 +47,13 @@ public class RegisterController {
         }
 
         // Validation: Email format
-        if (! isValidEmail(email)) {
+        if (!isValidEmail(email)) {
             showError("Please enter a valid email address.");
             return;
         }
 
-        // Validation:  Passwords match
-        if (!password. equals(confirmPassword)) {
+        // Validation: Passwords match
+        if (!password.equals(confirmPassword)) {
             showError("Passwords do not match.");
             return;
         }
@@ -65,8 +65,8 @@ public class RegisterController {
         }
 
         // Validation: Check if username is unique
-        if (! AuthService.isUsernameUnique(username)) {
-            showError("Username already exists.  Please choose another.");
+        if (!AuthService.isUsernameUnique(username)) {
+            showError("Username already exists. Please choose another.");
             return;
         }
 
@@ -77,7 +77,7 @@ public class RegisterController {
         }
 
         // Attempt registration
-        Role role = isAdmin ? Role. ADMIN : Role.STUDENT;
+        Role role = isAdmin ? Role.ADMIN : Role.STUDENT;
         boolean registered = AuthService.registerUser(username, email, password, role);
 
         if (registered) {
@@ -94,7 +94,7 @@ public class RegisterController {
                 }
             }).start();
         } else {
-            showError("Registration failed.  Please try again or contact support.");
+            showError("Registration failed. Please try again or contact support.");
         }
     }
 
