@@ -1,8 +1,6 @@
 package com.classbuddy.controller;
-
 import javafx.fxml. FXML;
 import javafx. fxml.FXMLLoader;
-
 import javafx.scene.Parent;
 import javafx.scene. Scene;
 import javafx.scene. control. Button;
@@ -35,7 +33,7 @@ public class AdminDashboardController {
             System.out.println("Admin logged in: " + currentAdmin.getUsername());
         }
 
-        // Load classrooms
+
         refreshClassrooms();
     }
 
@@ -55,7 +53,7 @@ public class AdminDashboardController {
 
         if (classrooms. isEmpty()) {
             Label emptyLabel = new Label("📚 No classrooms yet. Create one to get started!");
-            emptyLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 14;");
+            emptyLabel.setStyle("-fx-text-fill: blue; -fx-font-size: 14;");
             classroomsContainer.getChildren().add(emptyLabel);
         } else {
             for (Classroom classroom : classrooms) {
@@ -73,7 +71,7 @@ public class AdminDashboardController {
         card.setSpacing(15);
         card.setStyle(
                 "-fx-background-color:  white;" +
-                        "-fx-border-color: #ecf0f1;" +
+                        "-fx-border-color: blue;" +
                         "-fx-border-width: 1;" +
                         "-fx-border-radius: 10;" +
                         "-fx-padding: 15;" +
@@ -81,7 +79,7 @@ public class AdminDashboardController {
         );
         card.setPrefHeight(100);
 
-        // Classroom info (left side)
+
         VBox infoBox = new VBox();
         infoBox.setSpacing(8);
 

@@ -23,7 +23,7 @@
         <String fx:value="@../css/login.css" />
     </stylesheets>
 
-    <!-- LEFT SIDE -->
+
     <VBox alignment="CENTER" prefHeight="600" prefWidth="450" styleClass="branding-section">
         <children>
             <StackPane prefHeight="120" prefWidth="120" styleClass="logo-container">
@@ -38,7 +38,6 @@
         </children>
     </VBox>
 
-    <!-- RIGHT SIDE -->
     <VBox alignment="TOP_CENTER" layoutX="450" spacing="20" styleClass="form-section">
         <padding><Insets bottom="40" left="60" right="60" top="80" /></padding>
 
@@ -58,7 +57,7 @@
                 </HBox>
             </VBox>
 
-            <!-- Email (new) -->
+
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Email" />
                 <HBox spacing="10" styleClass="input-container">
@@ -67,7 +66,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Password -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Password" />
                 <HBox spacing="10" styleClass="input-container">
@@ -76,7 +74,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Confirm Password -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Confirm Password" />
                 <HBox spacing="10" styleClass="input-container">
@@ -85,7 +82,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Role Selection -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="I am a..." />
                 <HBox spacing="20">
@@ -98,10 +94,8 @@
                 </HBox>
             </VBox>
 
-            <!-- Register Button -->
             <Button fx:id="submitButton" onAction="#handleRegister" prefHeight="45" prefWidth="330" styleClass="submit-button" text="Register" />
 
-            <!-- Switch to Login -->
             <Hyperlink onAction="#goToLogin" text="Already have an account?  Login" />
         </children>
     </VBox>

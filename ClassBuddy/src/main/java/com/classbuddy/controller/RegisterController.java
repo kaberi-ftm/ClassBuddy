@@ -52,25 +52,23 @@ public class RegisterController {
             return;
         }
 
-        // Validation: Passwords match
+
         if (!password.equals(confirmPassword)) {
             showError("Passwords do not match.");
             return;
         }
 
-        // Validation: Password length
+
         if (password.length() < 6) {
             showError("Password must be at least 6 characters long.");
             return;
         }
 
-        // Validation: Check if username is unique
         if (!AuthService.isUsernameUnique(username)) {
             showError("Username already exists. Please choose another.");
             return;
         }
 
-        // Validation: Check if email is unique
         if (!AuthService.isEmailUnique(email)) {
             showError("Email already registered. Please use another or login.");
             return;
@@ -98,9 +96,7 @@ public class RegisterController {
         }
     }
 
-    /**
-     * Validates email format using regex
-     */
+
     private boolean isValidEmail(String email) {
         return email. matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     }

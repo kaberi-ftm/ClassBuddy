@@ -1,4 +1,4 @@
--- Create Users Table
+
 CREATE TABLE IF NOT EXISTS users (
                                      id INTEGER PRIMARY KEY AUTOINCREMENT,
                                      username VARCHAR(50) UNIQUE NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
--- Create Classroom Table
+
 CREATE TABLE IF NOT EXISTS classroom (
                                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                                          admin_id INTEGER NOT NULL,
@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS classroom (
     FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
     );
 
--- Allowed Roll Numbers in Classroom (Admin specifies which rolls can join)
 CREATE TABLE IF NOT EXISTS classroom_rolls (
                                                id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                classroom_id INTEGER NOT NULL,
@@ -33,7 +32,7 @@ CREATE TABLE IF NOT EXISTS classroom_rolls (
     FOREIGN KEY (classroom_id) REFERENCES classroom(id) ON DELETE CASCADE
     );
 
--- Students joined to Classroom (tracks which student joined which classroom)
+
 CREATE TABLE IF NOT EXISTS classroom_students (
                                                   id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                   classroom_id INTEGER NOT NULL,
@@ -45,7 +44,7 @@ CREATE TABLE IF NOT EXISTS classroom_students (
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
     );
 
--- Class Routine
+
 CREATE TABLE IF NOT EXISTS routine (
                                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                                        classroom_id INTEGER NOT NULL,
@@ -60,7 +59,7 @@ CREATE TABLE IF NOT EXISTS routine (
     FOREIGN KEY (classroom_id) REFERENCES classroom(id) ON DELETE CASCADE
     );
 
--- Exams
+
 CREATE TABLE IF NOT EXISTS exam (
                                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                                     classroom_id INTEGER NOT NULL,
@@ -73,7 +72,7 @@ CREATE TABLE IF NOT EXISTS exam (
     FOREIGN KEY (classroom_id) REFERENCES classroom(id) ON DELETE CASCADE
     );
 
--- CT/Quiz
+
 CREATE TABLE IF NOT EXISTS ct_quiz (
                                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                                        classroom_id INTEGER NOT NULL,
@@ -85,7 +84,6 @@ CREATE TABLE IF NOT EXISTS ct_quiz (
     FOREIGN KEY (classroom_id) REFERENCES classroom(id) ON DELETE CASCADE
     );
 
--- Lab Tests
 CREATE TABLE IF NOT EXISTS lab_test (
                                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                                         classroom_id INTEGER NOT NULL,
@@ -97,7 +95,6 @@ CREATE TABLE IF NOT EXISTS lab_test (
     FOREIGN KEY (classroom_id) REFERENCES classroom(id) ON DELETE CASCADE
     );
 
--- Notices
 CREATE TABLE IF NOT EXISTS notice (
                                       id INTEGER PRIMARY KEY AUTOINCREMENT,
                                       classroom_id INTEGER NOT NULL,
@@ -111,7 +108,7 @@ CREATE TABLE IF NOT EXISTS notice (
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
     );
 
--- Indexes for Performance
+
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_classroom_admin ON classroom(admin_id);

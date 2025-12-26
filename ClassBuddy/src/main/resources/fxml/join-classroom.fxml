@@ -19,7 +19,6 @@
         <String fx:value="@../css/login.css" />
     </stylesheets>
 
-    <!-- LEFT SIDE -->
     <VBox alignment="CENTER" prefHeight="600" prefWidth="450" styleClass="branding-section">
         <children>
             <Label styleClass="app-title" text="Join Classroom">
@@ -35,7 +34,6 @@
         </children>
     </VBox>
 
-    <!-- RIGHT SIDE -->
     <VBox alignment="TOP_CENTER" layoutX="450" spacing="18" styleClass="form-section">
         <padding>
             <Insets bottom="30" left="50" right="50" top="100" />
@@ -50,7 +48,6 @@
 
             <Label fx:id="errorLabel" managed="false" styleClass="error-message" text="" visible="false" wrapText="true" />
 
-            <!-- Roll Number -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Roll Number" />
                 <HBox spacing="10" styleClass="input-container">
@@ -59,7 +56,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Classroom Password -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Classroom Password" />
                 <HBox spacing="10" styleClass="input-container">
@@ -68,7 +64,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Buttons -->
             <HBox spacing="10">
                 <Button onAction="#handleJoinClassroom" prefHeight="45" prefWidth="180" styleClass="submit-button" text="Join" />
                 <Button onAction="#goBackToDashboard" prefHeight="45" prefWidth="180" styleClass="btn-secondary" text="Back" />

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<AnchorPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.classbuddy.controller.ManageStudentsController">
+
+    <stylesheets>
+        <String fx:value="@../css/dashboard.css" />
+    </stylesheets>
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="70.0" prefWidth="1000.0" spacing="20.0" styleClass="dashboard-header">
+        <padding>
+            <Insets left="20.0" right="20.0" />
+        </padding>
+        <children>
+            <Label fx:id="classroomNameLabel" styleClass="dashboard-title" text="Manage Students">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+            </Label>
+            <javafx.scene.layout.Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#goBack" styleClass="btn-secondary" text="← Back" />
+        </children>
+    </HBox>
+
+    <!-- CONTENT -->
+    <VBox layoutY="70.0" prefHeight="730.0" prefWidth="1000.0" spacing="15.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+        <children>
+            <!-- Add Roll Section -->
+            <Label styleClass="section-title" text="Add Student Roll Number">
+                <font>
+                    <Font name="System Bold" size="16.0" />
+                </font>
+            </Label>
+
+            <HBox spacing="10.0">
+                <TextField fx:id="rollNumberField" prefWidth="150.0" promptText="Roll Number" />
+                <TextField fx:id="studentNameField" prefWidth="200.0" promptText="Student Name (Optional)" HBox.hgrow="ALWAYS" />
+                <Button onAction="#handleAddRoll" prefWidth="100.0" styleClass="btn-primary" text="➕ Add" />
+            </HBox>
+
+            <!-- Message Label -->
+            <Label fx:id="messageLabel" managed="false" visible="false" wrapText="true" />
+
+            <!-- Students List Section -->
+            <Label styleClass="section-title" text="Registered Students">
+                <font>
+                    <Font name="System Bold" size="16.0" />
+                </font>
+            </Label>
+
+            <!-- Students List -->
+            <ScrollPane fitToWidth="true">
+                <VBox fx:id="studentsListContainer" spacing="12.0" />
+            </ScrollPane>
+        </children>
+    </VBox>
+
+</AnchorPane>

@@ -28,7 +28,7 @@ public class LoginController {
         String usernameOrEmail = usernameField.getText().trim();
         String password = passwordField.getText();
 
-        // Validation
+
         if (usernameOrEmail.isEmpty() || password.isEmpty()) {
             showError("Please enter username/email and password.");
             return;
@@ -95,8 +95,8 @@ public class LoginController {
      * Navigate to student dashboard
      */
     private void navigateToStudentDashboard() {
-        System.out.println("TODO: Create student dashboard");
-        showError("Student dashboard coming soon!");
+       //student dashboard banaite hobe :")
+        showError("student dashboard banaite hobe :'')");
     }
 
     @FXML
@@ -117,7 +117,7 @@ public class LoginController {
 
     @FXML
     public void handleForgotPassword() {
-        showError("Password recovery coming soon.");
+        showError("Password recovery pore kortesi.");
     }
 
     private void showError(String message) {
@@ -134,12 +134,11 @@ public class LoginController {
         errorLabel.setManaged(true);
     }
 
-    // Get current logged-in user
     public static User getCurrentUser() {
         return currentUser;
     }
 
-    // Set current user
+
     public static void setCurrentUser(User user) {
         currentUser = user;
     }

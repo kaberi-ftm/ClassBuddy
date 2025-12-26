@@ -4,21 +4,19 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.PasswordField?>
 <AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.classbuddy.controller.CreateClassroomController">
 
     <stylesheets>
         <String fx:value="@../css/login.css" />
     </stylesheets>
 
-    <!-- LEFT SIDE -->
     <VBox alignment="CENTER" prefHeight="600" prefWidth="450" styleClass="branding-section">
         <children>
             <Label styleClass="app-title" text="Create Classroom">
@@ -26,7 +24,7 @@
                     <Font name="System Bold" size="32.0" />
                 </font>
             </Label>
-            <Label styleClass="app-subtitle" text="Set up a new classroom for your students">
+            <Label styleClass="app-subtitle" text="Set up a new classroom">
                 <font>
                     <Font size="14.0" />
                 </font>
@@ -34,7 +32,6 @@
         </children>
     </VBox>
 
-    <!-- RIGHT SIDE -->
     <VBox alignment="TOP_CENTER" layoutX="450" spacing="18" styleClass="form-section">
         <padding>
             <Insets bottom="30" left="50" right="50" top="50" />
@@ -49,7 +46,6 @@
 
             <Label fx:id="errorLabel" managed="false" styleClass="error-message" text="" visible="false" wrapText="true" />
 
-            <!-- Class Name -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Classroom Name" />
                 <HBox spacing="10" styleClass="input-container">
@@ -58,16 +54,14 @@
                 </HBox>
             </VBox>
 
-            <!-- Section -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Section" />
                 <HBox spacing="10" styleClass="input-container">
-                    <Label styleClass="input-icon" text="🏷️" />
+                    <Label styleClass="input-icon" text="A/B" />
                     <TextField fx:id="sectionField" promptText="e.g., 2-1" styleClass="input-field" HBox.hgrow="ALWAYS" />
                 </HBox>
             </VBox>
 
-            <!-- Department -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Department" />
                 <HBox spacing="10" styleClass="input-container">
@@ -76,7 +70,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Password -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Classroom Password" />
                 <HBox spacing="10" styleClass="input-container">
@@ -85,7 +78,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Confirm Password -->
             <VBox spacing="8">
                 <Label styleClass="field-label" text="Confirm Password" />
                 <HBox spacing="10" styleClass="input-container">
@@ -94,7 +86,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Buttons -->
             <HBox spacing="10">
                 <Button onAction="#handleCreateClassroom" prefHeight="45" prefWidth="180" styleClass="submit-button" text="Create" />
                 <Button onAction="#goBackToDashboard" prefHeight="45" prefWidth="180" styleClass="btn-secondary" text="Back" />
