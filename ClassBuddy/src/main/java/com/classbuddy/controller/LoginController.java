@@ -95,8 +95,18 @@ public class LoginController {
      * Navigate to student dashboard
      */
     private void navigateToStudentDashboard() {
-       //student dashboard banaite hobe :")
-        showError("student dashboard banaite hobe :'')");
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/student-dashboard.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root, 1000, 700);
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Error loading student dashboard.");
+        }
     }
 
     @FXML

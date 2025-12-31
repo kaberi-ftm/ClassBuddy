@@ -72,6 +72,28 @@
                     </VBox>
                 </ScrollPane>
             </Tab>
+
+            <!-- CT/Quiz Tab -->
+            <Tab text="📋 CT/Quiz">
+                <ScrollPane fitToWidth="true">
+                    <VBox fx:id="ctQuizContainer" spacing="12.0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Lab Tests Tab -->
+            <Tab text="🔬 Lab Tests">
+                <ScrollPane fitToWidth="true">
+                    <VBox fx:id="labTestContainer" spacing="12.0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
         </tabs>
     </TabPane>
 </AnchorPane>
