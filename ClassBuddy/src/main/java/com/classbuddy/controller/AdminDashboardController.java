@@ -118,7 +118,25 @@ public class AdminDashboardController {
     }
     private void openClassroom(Classroom classroom) {
         System.out.println("Opening classroom: " + classroom.getName());
-        // TODO: Navigate to classroom management screen
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    getClass().getResource("/fxml/admin-classroom-management.fxml")
+            );
+            Parent root = fxmlLoader.load();
+
+            AdminClassroomManagementController controller = fxmlLoader.getController();
+            controller.setClassroom(classroom);
+            controller.setAdmin(currentAdmin);
+
+            Scene scene = new Scene(root, 1200, 800);
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading classroom management: " + e.getMessage());
+        }
     }
 
     private void editClassroom(Classroom classroom) {

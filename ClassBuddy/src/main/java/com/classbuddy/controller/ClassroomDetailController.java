@@ -63,10 +63,24 @@ public class ClassroomDetailController {
      */
     @FXML
     public void initialize() {
-        if (classroom != null) {
+        if (classroom != null && user != null) {
             classroomNameLabel.setText(classroom.getName());
             loadClassroomData();
+            
+            // Add admin controls if user is admin
+            if (user.getRole().name().equals("ADMIN")) {
+                addAdminControls();
+            }
         }
+    }
+
+    /**
+     * Add admin control buttons to the UI
+     */
+    private void addAdminControls() {
+        // This method can be extended to add floating action buttons
+        // or admin-specific toolbar buttons to each tab
+        System.out.println("Admin controls available");
     }
 
     /**

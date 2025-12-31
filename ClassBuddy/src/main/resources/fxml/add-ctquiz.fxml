@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.classbuddy.controller.AddCTQuizController">
+    
+    <VBox spacing="15.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" 
+          AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        
+        <!-- Title -->
+        <Label text="Add CT/Quiz" style="-fx-font-size: 20; -fx-font-weight: bold;">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Label>
+        
+        <Separator />
+        
+        <!-- Name Field -->
+        <VBox spacing="5.0">
+            <Label text="CT/Quiz Name *" style="-fx-font-weight: bold;" />
+            <TextField fx:id="nameField" promptText="e.g., CT-1, Quiz-2" />
+        </VBox>
+        
+        <!-- Syllabus Field -->
+        <VBox spacing="5.0">
+            <Label text="Syllabus (Optional)" style="-fx-font-weight: bold;" />
+            <TextArea fx:id="syllabusArea" promptText="Enter syllabus topics..." 
+                      prefHeight="80.0" wrapText="true" />
+        </VBox>
+        
+        <!-- Deadline Field -->
+        <VBox spacing="5.0">
+            <Label text="Deadline *" style="-fx-font-weight: bold;" />
+            <DatePicker fx:id="deadlinePicker" prefWidth="200.0" />
+        </VBox>
+        
+        <!-- Error Label -->
+        <Label fx:id="errorLabel" visible="false" managed="false" wrapText="true" />
+        
+        <!-- Buttons -->
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10.0" />
+            </padding>
+            <Button text="Cancel" onAction="#handleCancel" 
+                    style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 5; -fx-background-radius: 5;" />
+            <Button text="Add CT/Quiz" onAction="#handleAdd" 
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 5; -fx-background-radius: 5;" />
+        </HBox>
+        
+    </VBox>
+</AnchorPane>

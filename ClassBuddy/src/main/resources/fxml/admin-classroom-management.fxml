@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.lang.String?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.classbuddy.controller.AdminClassroomManagementController">
+
+    <stylesheets>
+        <String fx:value="@../css/dashboard.css" />
+    </stylesheets>
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="70.0" prefWidth="1200.0" 
+          spacing="20.0" styleClass="dashboard-header">
+        <padding>
+            <Insets left="20.0" right="20.0" />
+        </padding>
+        <children>
+            <Label fx:id="classroomNameLabel" styleClass="dashboard-title" text="Admin Classroom Management">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+            <javafx.scene.layout.Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#goBack" styleClass="btn-secondary" text="← Back to Dashboard" />
+        </children>
+    </HBox>
+
+    <!-- TABS FOR MANAGEMENT -->
+    <TabPane fx:id="managementTabs" layoutY="70.0" prefHeight="730.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+            <!-- Routine Management -->
+            <Tab text="📅 Routine Management">
+                <ScrollPane fitToWidth="true">
+                    <VBox fx:id="routineManagementBox" spacing="10.0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Exam Management -->
+            <Tab text="📝 Exam Management">
+                <ScrollPane fitToWidth="true">
+                    <VBox fx:id="examManagementBox" spacing="10.0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- CT/Quiz Management -->
+            <Tab text="📋 CT/Quiz Management">
+                <ScrollPane fitToWidth="true">
+                    <VBox fx:id="ctQuizManagementBox" spacing="10.0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Lab Test Management -->
+            <Tab text="🔬 Lab Test Management">
+                <ScrollPane fitToWidth="true">
+                    <VBox fx:id="labTestManagementBox" spacing="10.0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Notice Management -->
+            <Tab text="📢 Notice Management">
+                <ScrollPane fitToWidth="true">
+                    <VBox fx:id="noticeManagementBox" spacing="10.0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+        </tabs>
+    </TabPane>
+</AnchorPane>

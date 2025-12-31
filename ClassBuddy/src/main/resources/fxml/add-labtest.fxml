@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="450.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.classbuddy.controller.AddLabTestController">
+    
+    <VBox spacing="15.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" 
+          AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        
+        <!-- Title -->
+        <Label text="Add Lab Test" style="-fx-font-size: 20; -fx-font-weight: bold;">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Label>
+        
+        <Separator />
+        
+        <!-- Test Date Field -->
+        <VBox spacing="5.0">
+            <Label text="Test Date *" style="-fx-font-weight: bold;" />
+            <DatePicker fx:id="testDatePicker" prefWidth="200.0" />
+        </VBox>
+        
+        <!-- Experiment Number Field -->
+        <VBox spacing="5.0">
+            <Label text="Experiment Number *" style="-fx-font-weight: bold;" />
+            <TextField fx:id="experimentField" promptText="e.g., 1, 2A, 3B" />
+        </VBox>
+        
+        <!-- Teacher Name Field -->
+        <VBox spacing="5.0">
+            <Label text="Teacher Name *" style="-fx-font-weight: bold;" />
+            <TextField fx:id="teacherField" promptText="Enter teacher name" />
+        </VBox>
+        
+        <!-- Evaluation Criteria Field -->
+        <VBox spacing="5.0">
+            <Label text="Evaluation Criteria (Optional)" style="-fx-font-weight: bold;" />
+            <TextArea fx:id="criteriaArea" promptText="Enter evaluation criteria..." 
+                      prefHeight="80.0" wrapText="true" />
+        </VBox>
+        
+        <!-- Error Label -->
+        <Label fx:id="errorLabel" visible="false" managed="false" wrapText="true" />
+        
+        <!-- Buttons -->
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10.0" />
+            </padding>
+            <Button text="Cancel" onAction="#handleCancel" 
+                    style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 5; -fx-background-radius: 5;" />
+            <Button text="Add Lab Test" onAction="#handleAdd" 
+                    style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 5; -fx-background-radius: 5;" />
+        </HBox>
+        
+    </VBox>
+</AnchorPane>
