@@ -108,8 +108,23 @@ public class AdminClassroomManagementController {
     }
 
     private void handleAddRoutine() {
-        // TODO: Open add routine dialog
-        System.out.println("Add routine dialog");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add-routine.fxml"));
+            Parent root = loader.load();
+
+            AddRoutineController controller = loader.getController();
+            controller.setClassroomId(classroom.getId());
+            controller.setOnSuccess(this::loadRoutineManagement);
+
+            Stage stage = new Stage();
+            stage.setTitle("Add Routine Period");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleDeleteRoutine(Routine routine) {
@@ -163,7 +178,23 @@ public class AdminClassroomManagementController {
     }
 
     private void handleAddExam() {
-        System.out.println("Add exam dialog");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add-exam.fxml"));
+            Parent root = loader.load();
+
+            AddExamController controller = loader.getController();
+            controller.setClassroomId(classroom.getId());
+            controller.setOnSuccess(this::loadExamManagement);
+
+            Stage stage = new Stage();
+            stage.setTitle("Add Exam");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleDeleteExam(Exam exam) {

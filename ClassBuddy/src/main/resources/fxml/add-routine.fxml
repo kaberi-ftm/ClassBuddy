@@ -1,14 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="550.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.classbuddy.controller.AddRoutineController">
+    
+    <VBox spacing="12.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" 
+          AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        
+        <!-- Title -->
+        <Label text="Add Routine Period" style="-fx-font-size: 20; -fx-font-weight: bold;">
+            <font>
+                <Font name="System Bold" size="20.0" />
+            </font>
+        </Label>
+        
+        <Separator />
+        
+        <!-- Day Field -->
+        <VBox spacing="5.0">
+            <Label text="Day *" style="-fx-font-weight: bold;" />
+            <ComboBox fx:id="dayComboBox" prefWidth="200.0" promptText="Select day" />
+        </VBox>
+        
+        <!-- Period Number Field -->
+        <VBox spacing="5.0">
+            <Label text="Period Number *" style="-fx-font-weight: bold;" />
+            <TextField fx:id="periodField" promptText="e.g., 1, 2, 3" />
+        </VBox>
+        
+        <!-- Course Name Field -->
+        <VBox spacing="5.0">
+            <Label text="Course Name *" style="-fx-font-weight: bold;" />
+            <TextField fx:id="courseField" promptText="e.g., Data Structures" />
+        </VBox>
+        
+        <!-- Teacher Name Field -->
+        <VBox spacing="5.0">
+            <Label text="Teacher Name" style="-fx-font-weight: bold;" />
+            <TextField fx:id="teacherField" promptText="Enter teacher name" />
+        </VBox>
+        
+        <!-- Room Field -->
+        <VBox spacing="5.0">
+            <Label text="Room" style="-fx-font-weight: bold;" />
+            <TextField fx:id="roomField" promptText="e.g., 301, Lab-A" />
+        </VBox>
+        
+        <!-- Time Fields -->
+        <HBox spacing="10.0">
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label text="Start Time * (HH:MM)" style="-fx-font-weight: bold;" />
+                <TextField fx:id="startTimeField" promptText="09:00" />
+            </VBox>
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label text="End Time * (HH:MM)" style="-fx-font-weight: bold;" />
+                <TextField fx:id="endTimeField" promptText="10:00" />
+            </VBox>
+        </HBox>
+        
+        <!-- Error Label -->
+        <Label fx:id="errorLabel" visible="false" managed="false" wrapText="true" />
+        
+        <!-- Buttons -->
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10.0" />
+            </padding>
+            <Button text="Cancel" onAction="#handleCancel" 
+                    style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 5; -fx-background-radius: 5;" />
+            <Button text="Add Period" onAction="#handleAdd" 
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 5; -fx-background-radius: 5;" />
+        </HBox>
+        
+    </VBox>
 </AnchorPane>
