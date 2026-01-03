@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox minHeight="700.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.classbuddy.controller.CreateClassroomController">
+
+    <stylesheets>
+        <String fx:value="/css/app-theme.css" />
+    </stylesheets>
+
+    <!-- Sidebar -->
+    <VBox prefWidth="250.0" minWidth="250.0" maxWidth="250.0" styleClass="sidebar" VBox.vgrow="ALWAYS">
+        <VBox styleClass="sidebar-header" alignment="CENTER">
+            <ImageView fitWidth="180.0" preserveRatio="true" styleClass="sidebar-logo-image">
+                <image>
+                    <Image url="/img/classbuddy_logo.png" />
+                </image>
+            </ImageView>
+        </VBox>
+
+        <VBox styleClass="sidebar-menu" spacing="5" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="10" bottom="10" />
+            </padding>
+
+            <Button onAction="#goBackToDashboard" styleClass="sidebar-item" text="Back to Dashboard" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-arrow-left" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+
+            <Button onAction="#goToCreateClassroom" styleClass="sidebar-item, sidebar-item-active" text="Create Classroom" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-plus" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+
+            <Button onAction="#goToJoinClassroom" styleClass="sidebar-item" text="Join Classroom" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-link" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+
+            <Button onAction="#goToCalendar" styleClass="sidebar-item" text="Calendar" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-calendar-alt" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+        </VBox>
+
+        <VBox styleClass="sidebar-footer">
+            <VBox styleClass="sidebar-user-info" spacing="5">
+                <Label fx:id="adminNameLabel" styleClass="sidebar-username" text="Admin" />
+                <Label styleClass="sidebar-role" text="Administrator" />
+                <Button onAction="#goToProfile" styleClass="sidebar-profile-btn" text="View Profile" maxWidth="Infinity">
+                    <VBox.margin>
+                        <Insets top="5" />
+                    </VBox.margin>
+                </Button>
+            </VBox>
+            <Button onAction="#handleLogout" styleClass="btn-danger" text="Logout" maxWidth="Infinity">
+                <VBox.margin>
+                    <Insets top="10" />
+                </VBox.margin>
+            </Button>
+        </VBox>
+    </VBox>
+
+    <!-- Main Content -->
+    <VBox HBox.hgrow="ALWAYS" styleClass="content-area">
+        <VBox styleClass="content-header">
+            <Label styleClass="page-title" text="Create Classroom">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+            </Label>
+            <Label styleClass="page-subtitle" text="Set up a new classroom" />
+        </VBox>
+
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-body" spacing="20">
+                <VBox styleClass="card" spacing="18" maxWidth="520">
+                    <Label styleClass="card-title" text="New classroom" />
+
+                    <Label fx:id="errorLabel" managed="false" styleClass="error-message" text="" visible="false" wrapText="true" />
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Classroom Name" />
+                        <HBox spacing="10" styleClass="input-container">
+                            <FontIcon iconLiteral="fas-book" styleClass="input-icon" />
+                            <TextField fx:id="classNameField" promptText="e.g., CSE 2K20" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Section" />
+                        <HBox spacing="10" styleClass="input-container">
+                            <Label styleClass="input-icon" text="A/B" />
+                            <TextField fx:id="sectionField" promptText="e.g., 2-1" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Department" />
+                        <HBox spacing="10" styleClass="input-container">
+                            <FontIcon iconLiteral="fas-building" styleClass="input-icon" />
+                            <TextField fx:id="departmentField" promptText="e.g., Computer Science" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Classroom Password" />
+                        <HBox spacing="10" styleClass="input-container">
+                            <FontIcon iconLiteral="fas-lock" styleClass="input-icon" />
+                            <PasswordField fx:id="passwordField" promptText="Enter password (min 4 characters)" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Confirm Password" />
+                        <HBox spacing="10" styleClass="input-container">
+                            <FontIcon iconLiteral="fas-lock" styleClass="input-icon" />
+                            <PasswordField fx:id="confirmPasswordField" promptText="Confirm password" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
+
+                    <HBox spacing="12" alignment="CENTER_RIGHT">
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleCreateClassroom" styleClass="btn-primary" text="Create" defaultButton="true" />
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

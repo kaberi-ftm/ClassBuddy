@@ -1,0 +1,5 @@
+/* ClassBuddy theme entrypoint.
+   FXML files should reference ONLY this stylesheet. */
+
+@import "design-system.css";
+@import "modern-theme.css";

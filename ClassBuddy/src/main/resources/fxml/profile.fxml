@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.lang.String?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox minHeight="700.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.classbuddy.controller.ProfileController">
+
+    <stylesheets>
+        <String fx:value="/css/app-theme.css" />
+    </stylesheets>
+
+    <!-- Sidebar -->
+    <VBox prefWidth="250.0" minWidth="250.0" maxWidth="250.0" styleClass="sidebar" VBox.vgrow="ALWAYS">
+        <!-- Logo Header -->
+        <VBox styleClass="sidebar-header" alignment="CENTER">
+            <ImageView fitWidth="180.0" preserveRatio="true" styleClass="sidebar-logo-image">
+                <image>
+                    <Image url="/img/classbuddy_logo.png" />
+                </image>
+            </ImageView>
+        </VBox>
+
+        <!-- Navigation Menu -->
+        <VBox styleClass="sidebar-menu" spacing="5" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="10" bottom="10" />
+            </padding>
+            <Button styleClass="sidebar-item" text="Back to Dashboard" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT" onAction="#handleCancel">
+                <graphic>
+                    <FontIcon iconLiteral="fas-arrow-left" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button styleClass="sidebar-item, sidebar-item-active" text="Profile" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-user" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+        </VBox>
+
+        <!-- User Info Footer -->
+        <VBox styleClass="sidebar-footer">
+            <VBox styleClass="sidebar-user-info" spacing="5">
+                <Label fx:id="usernameLabel" styleClass="sidebar-username" text="Username" />
+                <Label fx:id="roleLabel" styleClass="sidebar-role" text="Role" />
+            </VBox>
+        </VBox>
+    </VBox>
+
+    <!-- Main Content Area -->
+    <VBox HBox.hgrow="ALWAYS" styleClass="content-area">
+        
+        <!-- Content Header -->
+        <VBox styleClass="content-header">
+            <Label styleClass="page-title" text="My Profile">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+            </Label>
+            <Label styleClass="page-subtitle" text="Manage your personal information" />
+        </VBox>
+
+        <!-- Content Body -->
+        <ScrollPane fitToWidth="true" fitToHeight="false" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-body" spacing="25">
+                
+                <!-- Account Information Card -->
+                <VBox styleClass="card" spacing="20">
+                    <Label styleClass="card-title" text="Account Information" />
+                    
+                    <GridPane hgap="20" vgap="15">
+                        <!-- Username -->
+                        <Label text="Username:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label fx:id="usernameLabel" text="Username" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-text-fill: -text-primary; -fx-font-weight: bold;" />
+                        
+                        <!-- Email -->
+                        <Label text="Email:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label fx:id="emailLabel" text="email@example.com" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-text-fill: -text-primary;" />
+                        
+                        <!-- Role -->
+                        <Label text="Role:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Label fx:id="roleLabel" text="Role" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-text-fill: -primary-orange; -fx-font-weight: bold;" />
+                        
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="120" prefWidth="120" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Personal Information Card -->
+                <VBox styleClass="card" spacing="20">
+                    <Label styleClass="card-title" text="Personal Information" />
+                    
+                    <GridPane hgap="20" vgap="15">
+                        <!-- Full Name -->
+                        <Label text="Full Name:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="fullNameField" promptText="Enter your full name" GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="400" />
+                        
+                        <!-- Phone -->
+                        <Label text="Phone:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="phoneField" promptText="Enter phone number" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="400" />
+                        
+                        <!-- Date of Birth -->
+                        <Label text="Date of Birth:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <DatePicker fx:id="dobPicker" promptText="Select date of birth" GridPane.columnIndex="1" GridPane.rowIndex="2" maxWidth="400" />
+                        
+                        <!-- Department -->
+                        <Label text="Department:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <TextField fx:id="departmentField" promptText="Enter department" GridPane.columnIndex="1" GridPane.rowIndex="3" maxWidth="400" />
+                        
+                        <!-- Student ID (visible for students) -->
+                        <Label text="Student ID:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4" fx:id="studentIdLabel" />
+                        <TextField fx:id="studentIdField" promptText="Enter student ID" GridPane.columnIndex="1" GridPane.rowIndex="4" maxWidth="400" />
+                        
+                        <!-- Designation (visible for teachers/admin) -->
+                        <Label text="Designation:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="5" fx:id="designationLabel" />
+                        <TextField fx:id="designationField" promptText="Enter designation" GridPane.columnIndex="1" GridPane.rowIndex="5" maxWidth="400" />
+                        
+                        <!-- Address -->
+                        <Label text="Address:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <TextArea fx:id="addressArea" promptText="Enter your address" GridPane.columnIndex="1" GridPane.rowIndex="6" maxWidth="400" prefRowCount="2" />
+                        
+                        <!-- Bio -->
+                        <Label text="Bio:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                        <TextArea fx:id="bioArea" promptText="Tell us about yourself..." GridPane.columnIndex="1" GridPane.rowIndex="7" maxWidth="400" prefRowCount="3" />
+                        
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="120" prefWidth="120" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Action Buttons -->
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Button fx:id="saveButton" text="Save Changes" styleClass="btn-primary" onAction="#handleSave" />
+                    <Button fx:id="cancelButton" text="Cancel" styleClass="btn-ghost" onAction="#handleCancel" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="statusLabel" visible="false" />
+                </HBox>
+                
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

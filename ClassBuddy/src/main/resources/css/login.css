@@ -1,0 +1,180 @@
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-background-color: #f5f7fa;
+}
+
+/* Left Branding Section */
+. branding-section {
+    -fx-background-color: linear-gradient(to bottom right, #667eea 0%, #764ba2 100%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 20, 0, 5, 0);
+}
+
+.logo-container {
+    -fx-background-color: linear-gradient(to bottom right, #6C63FF 0%, #00D9FF 100%);
+    -fx-background-radius:  80;
+    -fx-effect: dropshadow(gaussian, rgba(108, 99, 255, 0.6), 30, 0, 0, 8);
+}
+
+.app-title {
+    -fx-text-fill: white;
+    -fx-font-size:  48;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+.app-subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+    -fx-font-size: 18;
+    -fx-alignment: center;
+}
+
+/* Right Form Section */
+.form-section {
+    -fx-background-color: white;
+}
+
+.form-title {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 32;
+    -fx-font-weight: bold;
+}
+
+.form-subtitle {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 14;
+}
+
+/* Error/Success Messages */
+.error-message {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 13;
+    -fx-font-weight: 600;
+    -fx-padding: 8 12;
+    -fx-background-color: rgba(231, 76, 60, 0.1);
+    -fx-background-radius: 6;
+    -fx-border-color: #e74c3c;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+}
+
+. success-message {
+    -fx-text-fill: #27ae60;
+    -fx-font-size: 13;
+    -fx-font-weight: 600;
+    -fx-padding: 8 12;
+    -fx-background-color: rgba(39, 174, 96, 0.1);
+    -fx-background-radius: 6;
+    -fx-border-color: #27ae60;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+}
+
+/* Input Fields */
+.field-label {
+    -fx-text-fill: #34495e;
+    -fx-font-weight: 600;
+    -fx-font-size:  14;
+}
+
+.input-container {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 12;
+    -fx-padding: 4 12 4 12;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
+}
+
+.input-icon {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 18;
+}
+
+.input-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 10 8;
+    -fx-font-size: 14;
+    -fx-text-fill: #2c3e50;
+}
+
+.input-field:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Checkbox */
+.check-box {
+    -fx-text-fill: #34495e;
+    -fx-font-size: 13;
+}
+
+.check-box . box {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 2;
+    -fx-border-radius: 4;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #6C63FF;
+    -fx-border-color: #6C63FF;
+}
+
+. check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+/* Submit Button */
+.submit-button {
+    -fx-background-color: linear-gradient(to bottom, #6C63FF 0%, #5848D9 100%);
+    -fx-text-fill: white;
+    -fx-border-radius:  12;
+    -fx-background-radius: 12;
+    -fx-font-weight:  bold;
+    -fx-font-size: 16;
+    -fx-padding: 16 32;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(108, 99, 255, 0.5), 15, 0, 0, 5);
+}
+
+.submit-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #5848D9 0%, #4A38C2 100%);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(108, 99, 255, 0.7), 20, 0, 0, 8);
+}
+
+.submit-button:pressed {
+    -fx-scale-x:  0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Links */
+.hyperlink {
+    -fx-text-fill: #6C63FF;
+    -fx-font-weight: 600;
+    -fx-underline: false;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #5848D9;
+    -fx-underline: true;
+}
+
+.hyperlink:visited {
+    -fx-text-fill: #6C63FF;
+}
+
+/* Register Link */
+.register-link {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 14;
+}
+
+.register-link .hyperlink {
+    -fx-text-fill: #6C63FF;
+    -fx-font-weight: bold;
+}

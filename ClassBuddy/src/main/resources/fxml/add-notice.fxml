@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox minHeight="700.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.classbuddy.controller.AddNoticeController">
+    
+    <stylesheets>
+        <String fx:value="/css/app-theme.css" />
+    </stylesheets>
+    
+    <!-- Sidebar -->
+    <VBox prefWidth="250.0" minWidth="250.0" maxWidth="250.0" styleClass="sidebar" VBox.vgrow="ALWAYS">
+        <VBox styleClass="sidebar-header" alignment="CENTER">
+            <ImageView fitWidth="180.0" preserveRatio="true" styleClass="sidebar-logo-image">
+                <image>
+                    <Image url="/img/classbuddy_logo.png" />
+                </image>
+            </ImageView>
+        </VBox>
+
+        <VBox styleClass="sidebar-menu" spacing="5" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="10" bottom="10" />
+            </padding>
+            <Button onAction="#goBack" styleClass="sidebar-item" text="Back" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT" cancelButton="true">
+                <graphic>
+                    <FontIcon iconLiteral="fas-arrow-left" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button styleClass="sidebar-item, sidebar-item-active" text="Add Notice" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-plus" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+        </VBox>
+
+        <VBox styleClass="sidebar-footer">
+            <VBox styleClass="sidebar-user-info" spacing="5">
+                <Label fx:id="classroomNameLabel" styleClass="sidebar-username" text="Classroom" wrapText="true" />
+                <Label styleClass="sidebar-role" text="Classroom" />
+            </VBox>
+        </VBox>
+    </VBox>
+
+    <!-- Main Content -->
+    <VBox HBox.hgrow="ALWAYS" styleClass="content-area">
+        <VBox styleClass="content-header">
+            <Label styleClass="page-title" text="Add Notice">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+            </Label>
+            <Label styleClass="page-subtitle" text="Post a notice for this classroom" />
+        </VBox>
+
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-body" spacing="20">
+                <VBox styleClass="card" spacing="14" maxWidth="700">
+                    <Label styleClass="card-title" text="Details" />
+
+                    <Label fx:id="errorLabel" styleClass="error-message" visible="false" managed="false" wrapText="true" />
+                    <Label fx:id="successLabel" styleClass="success-message" visible="false" managed="false" wrapText="true" />
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Notice Title *" />
+                        <TextField fx:id="titleField" promptText="Enter notice title" />
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Category *" />
+                        <ComboBox fx:id="categoryComboBox" prefWidth="260.0" promptText="Select category">
+                            <items>
+                                <javafx.collections.FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="General" />
+                                    <String fx:value="Exam" />
+                                    <String fx:value="Assignment" />
+                                    <String fx:value="Event" />
+                                    <String fx:value="Important" />
+                                    <String fx:value="Holiday" />
+                                </javafx.collections.FXCollections>
+                            </items>
+                        </ComboBox>
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Notice Content *" />
+                        <TextArea fx:id="contentArea" promptText="Enter notice details..." prefHeight="220.0" wrapText="true" />
+                    </VBox>
+
+                    <CheckBox fx:id="pinnedCheckBox" text="Pin this notice to top" />
+
+                    <HBox spacing="12" alignment="CENTER_RIGHT">
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button text="Post" onAction="#handleAdd" styleClass="btn-primary" defaultButton="true" />
+                    </HBox>
+                </VBox>
+                <Region VBox.vgrow="ALWAYS" />
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>
