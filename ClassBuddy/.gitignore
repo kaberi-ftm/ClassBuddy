@@ -47,3 +47,5 @@ identifier.sqlite
 app_logs.txt
 runtime_test_logs*.txt
 test_run_final.txt
+
+*.md
