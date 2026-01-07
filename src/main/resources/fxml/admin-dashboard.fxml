@@ -59,6 +59,14 @@
                     <Insets left="25" />
                 </padding>
             </Button>
+            <Button onAction="#goToExportImport" styleClass="sidebar-item" text="Export/Import" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-file-export" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
         </VBox>
 
         <!-- User Info Footer -->

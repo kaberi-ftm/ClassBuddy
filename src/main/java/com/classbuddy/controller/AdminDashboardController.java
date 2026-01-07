@@ -276,6 +276,23 @@ public class AdminDashboardController {
     }
 
     @FXML
+    public void goToExportImport() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/schedule-export-import.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root, 1200, 800);
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading export/import page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     public void handleLogout() {
         System.out.println("Admin logging out...");
         try {

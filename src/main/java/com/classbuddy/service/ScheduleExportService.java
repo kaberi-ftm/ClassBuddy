@@ -1,6 +1,11 @@
 package com.classbuddy.service;
 
-import com.classbuddy.model.*;
+import com.classbuddy.model.CTQuiz;
+import com.classbuddy.model.Exam;
+import com.classbuddy.model.LabTest;
+import com.classbuddy.model.Notice;
+import com.classbuddy.model.Routine;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -75,6 +75,8 @@ public class ClassroomDetailController {
     private Button btnNotices;
     @FXML
     private Button btnAddNotice;
+    @FXML
+    private Button btnMarkAttendance;
     // Additional quick-add buttons on Schedule tab
     @FXML private Button addExamFromScheduleBtn;
     @FXML private Button addNoticeFromScheduleBtn;
@@ -123,6 +125,7 @@ public class ClassroomDetailController {
             if (addNoticeFromScheduleBtn != null) addNoticeFromScheduleBtn.setVisible(isAdmin);
             if (addCTQuizFromScheduleBtn != null) addCTQuizFromScheduleBtn.setVisible(isAdmin);
             if (addLabTestFromScheduleBtn != null) addLabTestFromScheduleBtn.setVisible(isAdmin);
+            if (btnMarkAttendance != null) btnMarkAttendance.setVisible(isAdmin);
 
             loadClassroomData();
             loadIntegratedCalendar();
@@ -465,6 +468,28 @@ public class ClassroomDetailController {
     @FXML
     public void goToAddLabTest() {
         navigateToScreen("/fxml/add-labtest.fxml", "AddLabTestController");
+    }
+
+    @FXML
+    public void goToMarkAttendance() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/attendance-marker.fxml"));
+            Parent root = loader.load();
+
+            AttendanceMarkerController controller = loader.getController();
+            controller.setClassroom(classroom);
+            controller.setDate(java.time.LocalDate.now());
+            controller.loadData();
+
+            Scene scene = new Scene(root, 1200, 800);
+            Stage stage = (Stage) btnAddRoutine.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading attendance marker: " + e.getMessage());
+        }
     }
 
     private void navigateToScreen(String fxmlPath, String controllerType) {

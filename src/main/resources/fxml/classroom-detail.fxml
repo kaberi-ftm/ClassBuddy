@@ -69,6 +69,12 @@
                 </padding>
             </Button>
             
+            <Button fx:id="btnMarkAttendance" onAction="#goToMarkAttendance" styleClass="sidebar-item" text="Mark Attendance" maxWidth="Infinity" alignment="CENTER_LEFT" visible="false">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            
             <!-- Tests and Lab Tests moved under Exams tab -->
         </VBox>
 

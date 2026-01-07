@@ -206,6 +206,24 @@ CREATE TABLE IF NOT EXISTS personal_calendar_events (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 
+-- Attendance tracking table
+CREATE TABLE IF NOT EXISTS attendance (
+                                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                         classroom_id INTEGER NOT NULL,
+                                         student_id INTEGER NOT NULL,
+                                         roll_number VARCHAR(20) NOT NULL,
+    routine_id INTEGER,
+    date DATE NOT NULL,
+    status VARCHAR(10) CHECK(status IN ('PRESENT', 'ABSENT', 'LATE')) DEFAULT 'ABSENT',
+    marked_by_user_id INTEGER NOT NULL,
+    marked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (classroom_id) REFERENCES classroom(id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (routine_id) REFERENCES routine(id) ON DELETE SET NULL,
+    FOREIGN KEY (marked_by_user_id) REFERENCES users(id),
+    UNIQUE(classroom_id, student_id, date, routine_id)
+    );
+
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_classroom_admin ON classroom(admin_id);
@@ -218,3 +236,5 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_user_profiles_roll_number ON user_profiles
 CREATE INDEX IF NOT EXISTS idx_calendar_events_classroom ON calendar_events(classroom_id, event_date);
 CREATE INDEX IF NOT EXISTS idx_calendar_events_type ON calendar_events(event_type, reference_id);
 CREATE INDEX IF NOT EXISTS idx_personal_calendar_user ON personal_calendar_events(user_id, event_date);
+CREATE INDEX IF NOT EXISTS idx_attendance_classroom_date ON attendance(classroom_id, date);
+CREATE INDEX IF NOT EXISTS idx_attendance_student ON attendance(student_id, classroom_id);
