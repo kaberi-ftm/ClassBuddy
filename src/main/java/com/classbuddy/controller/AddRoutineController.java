@@ -12,12 +12,47 @@ import com.classbuddy.service.RoutineService;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddRoutineController {
     @FXML
     private Label classroomNameLabel;
+
+    @FXML
+    private ToggleGroup scheduleModeGroup;
+    @FXML
+    private RadioButton specificDayRadio;
+    @FXML
+    private RadioButton fullWeekRadio;
+    @FXML
+    private RadioButton customDaysRadio;
+
+    @FXML
+    private VBox specificDayBox;
+    @FXML
+    private VBox fullWeekBox;
+    @FXML
+    private VBox customDaysBox;
+
     @FXML
     private ComboBox<String> dayComboBox;
+
+    @FXML
+    private CheckBox mondayCheck;
+    @FXML
+    private CheckBox tuesdayCheck;
+    @FXML
+    private CheckBox wednesdayCheck;
+    @FXML
+    private CheckBox thursdayCheck;
+    @FXML
+    private CheckBox fridayCheck;
+    @FXML
+    private CheckBox saturdayCheck;
+    @FXML
+    private CheckBox sundayCheck;
+
     @FXML
     private TextField periodNumberField;
     @FXML
@@ -54,6 +89,16 @@ public class AddRoutineController {
                 "Friday", "Saturday", "Sunday"
         );
         dayComboBox.setValue("Monday");
+
+        if (specificDayRadio != null) {
+            specificDayRadio.setSelected(true);
+        }
+
+        if (scheduleModeGroup != null) {
+            scheduleModeGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> updateScheduleModeUI());
+        }
+
+        updateScheduleModeUI();
     }
 
     public void loadData() {
@@ -65,7 +110,12 @@ public class AddRoutineController {
     @FXML
     public void handleAddRoutine() {
         try {
-            String day = dayComboBox.getValue();
+            List<String> applicableDays = getApplicableDaysFromUI();
+            if (applicableDays.isEmpty()) {
+                showError("At least one day must be selected");
+                return;
+            }
+
             String periodText = periodNumberField.getText().trim();
             String courseName = courseNameField.getText().trim();
             String teacherName = teacherNameField.getText().trim();
@@ -119,13 +169,17 @@ public class AddRoutineController {
 
             // Add routine
             boolean added = RoutineService.addRoutine(
-                    classroom.getId(), day, periodNumber, courseName,
+                    classroom.getId(), applicableDays, periodNumber, courseName,
                     teacherName, room, timeStart, timeEnd
             );
 
             if (added) {
                 showSuccess("Routine added successfully");
                 clearFields();
+
+                if (specificDayRadio != null) specificDayRadio.setDisable(true);
+                if (fullWeekRadio != null) fullWeekRadio.setDisable(true);
+                if (customDaysRadio != null) customDaysRadio.setDisable(true);
 
                 new Thread(() -> {
                     try {
@@ -185,6 +239,49 @@ public class AddRoutineController {
         roomField.clear();
         timeStartField.clear();
         timeEndField.clear();
+    }
+
+    private void updateScheduleModeUI() {
+        if (specificDayBox == null || fullWeekBox == null || customDaysBox == null) {
+            return;
+        }
+
+        boolean isSpecificDay = specificDayRadio != null && specificDayRadio.isSelected();
+        boolean isFullWeek = fullWeekRadio != null && fullWeekRadio.isSelected();
+        boolean isCustomDays = customDaysRadio != null && customDaysRadio.isSelected();
+
+        specificDayBox.setVisible(isSpecificDay);
+        specificDayBox.setManaged(isSpecificDay);
+
+        fullWeekBox.setVisible(isFullWeek);
+        fullWeekBox.setManaged(isFullWeek);
+
+        customDaysBox.setVisible(isCustomDays);
+        customDaysBox.setManaged(isCustomDays);
+    }
+
+    private List<String> getApplicableDaysFromUI() {
+        if (fullWeekRadio != null && fullWeekRadio.isSelected()) {
+            return List.of("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
+        }
+
+        if (customDaysRadio != null && customDaysRadio.isSelected()) {
+            List<String> selected = new ArrayList<>();
+            if (mondayCheck != null && mondayCheck.isSelected()) selected.add("Monday");
+            if (tuesdayCheck != null && tuesdayCheck.isSelected()) selected.add("Tuesday");
+            if (wednesdayCheck != null && wednesdayCheck.isSelected()) selected.add("Wednesday");
+            if (thursdayCheck != null && thursdayCheck.isSelected()) selected.add("Thursday");
+            if (fridayCheck != null && fridayCheck.isSelected()) selected.add("Friday");
+            if (saturdayCheck != null && saturdayCheck.isSelected()) selected.add("Saturday");
+            if (sundayCheck != null && sundayCheck.isSelected()) selected.add("Sunday");
+            return selected;
+        }
+
+        String selectedDay = dayComboBox == null ? null : dayComboBox.getValue();
+        if (selectedDay == null || selectedDay.trim().isEmpty()) {
+            return List.of();
+        }
+        return List.of(selectedDay);
     }
 
     private void showError(String msg) {
