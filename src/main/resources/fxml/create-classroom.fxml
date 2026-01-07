@@ -151,7 +151,7 @@
                     </VBox>
 
                     <VBox spacing="10" styleClass="card" maxWidth="520">
-                        <Label styleClass="card-title" text="Class ID & QR Preview" />
+                        <Label styleClass="card-title" text="Class ID &amp; QR Preview" />
                         <Label fx:id="classIdPreviewLabel" styleClass="page-subtitle" text="Will be generated from name + section + year" wrapText="true" />
                         <ImageView fx:id="classIdQrPreviewImage" fitWidth="160.0" fitHeight="160.0" preserveRatio="true" visible="false" managed="false" />
                         <Label fx:id="classIdPreviewHint" styleClass="field-help" text="QR code generated after creation; preview updates live." wrapText="true" />
