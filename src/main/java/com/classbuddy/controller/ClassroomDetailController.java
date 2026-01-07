@@ -220,11 +220,6 @@ public class ClassroomDetailController {
     public void refreshNotices() {
         loadNotices();
     }
-    
-    private void updatePageTitle(String title, String subtitle) {
-        if (pageTitle != null) pageTitle.setText(title);
-        if (pageSubtitle != null) pageSubtitle.setText(subtitle);
-    }
 
     private void loadClassroomData() {
         loadRoutine();

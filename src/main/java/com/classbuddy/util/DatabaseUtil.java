@@ -1,10 +1,13 @@
 package com.classbuddy.util;
 
+import java.io.InputStream;
 import java.io.IOException;
-import java.sql.*;
-import java.sql.*;
-import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DatabaseUtil {
 

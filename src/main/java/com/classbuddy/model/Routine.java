@@ -16,6 +16,7 @@ public class Routine {
     private String room;
     private LocalTime timeStart;
     private LocalTime timeEnd;
+    @SuppressWarnings("unused")
     private LocalDateTime createdAt;
 
     // Constructor for NEW routine

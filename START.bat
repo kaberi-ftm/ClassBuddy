@@ -30,7 +30,7 @@ if errorlevel 1 (
     echo ================================================
     echo.
     echo Possible solutions:
-    echo 1. Make sure Java 17+ is installed
+    echo 1. Make sure Java 21+ is installed
     echo 2. Make sure Maven is installed
     echo 3. Check your internet connection for dependencies
     echo.

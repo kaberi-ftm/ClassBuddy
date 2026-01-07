@@ -13,6 +13,8 @@ echo.
 echo [INFO] Compiling without running...
 echo.
 
+:: Requires Java 21+
+
 :: Check if Maven wrapper exists
 if exist "mvnw.cmd" (
     echo [INFO] Using Maven Wrapper...

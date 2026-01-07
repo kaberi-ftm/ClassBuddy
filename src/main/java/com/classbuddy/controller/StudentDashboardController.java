@@ -19,8 +19,6 @@ import com.classbuddy.util.ViewTransitions;
 import java.io.IOException;
 import java.util.List;
 
-import static com.classbuddy.controller.LoginController.currentUser;
-
 /**
  * Student Dashboard - Shows classrooms student has joined
  */

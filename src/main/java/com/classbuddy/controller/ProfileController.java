@@ -12,8 +12,6 @@ import javafx.stage.Stage;
 import com.classbuddy.util.ViewTransitions;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * ProfileController - Manages user profile view and editing
