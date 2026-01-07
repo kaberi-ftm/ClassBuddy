@@ -7,11 +7,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import com.classbuddy.model.User;
 import com.classbuddy.service.ClassroomService;
 import com.classbuddy.util.ViewTransitions;
+import com.classbuddy.util.ClassIdGenerator;
+import com.classbuddy.util.QRCodeGenerator;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class CreateClassroomController {
     @FXML
@@ -30,6 +35,13 @@ public class CreateClassroomController {
     @FXML
     private Label errorLabel;
 
+    @FXML
+    private Label classIdPreviewLabel;
+    @FXML
+    private ImageView classIdQrPreviewImage;
+    @FXML
+    private Label classIdPreviewHint;
+
     private User admin;
 
     @FXML
@@ -41,6 +53,15 @@ public class CreateClassroomController {
         if (adminNameLabel != null && admin != null) {
             adminNameLabel.setText(admin.getUsername());
         }
+
+        // Live preview listeners
+        if (classNameField != null) {
+            classNameField.textProperty().addListener((obs, oldV, newV) -> updateClassIdPreview());
+        }
+        if (sectionField != null) {
+            sectionField.textProperty().addListener((obs, oldV, newV) -> updateClassIdPreview());
+        }
+        updateClassIdPreview();
     }
 
     /**
@@ -152,6 +173,16 @@ public class CreateClassroomController {
             showSuccess("Classroom created successfully.");
             clearFields();
 
+            // Reset preview
+            if (classIdQrPreviewImage != null) {
+                classIdQrPreviewImage.setImage(null);
+                classIdQrPreviewImage.setVisible(false);
+                classIdQrPreviewImage.setManaged(false);
+            }
+            if (classIdPreviewLabel != null) {
+                classIdPreviewLabel.setText("Will be generated from name + section + year");
+            }
+
             // Navigate back to dashboard after 2 seconds
             new Thread(() -> {
                 try {
@@ -229,5 +260,30 @@ public class CreateClassroomController {
         departmentField. clear();
         passwordField.clear();
         confirmPasswordField.clear();
+    }
+
+    private void updateClassIdPreview() {
+        try {
+            String name = classNameField != null ? classNameField.getText() : "";
+            String section = sectionField != null ? sectionField.getText() : "";
+            String classId = ClassIdGenerator.generate(name, section);
+
+            if (classIdPreviewLabel != null) {
+                classIdPreviewLabel.setText("Class ID: " + classId);
+            }
+
+            // Optional lightweight QR preview; overwrite a single preview file
+            if (classIdQrPreviewImage != null && classId != null && !classId.isBlank()) {
+                String fileSafe = classId.replaceAll("[^A-Z0-9-]", "");
+                String previewPath = QRCodeGenerator.generateToDataDir(classId, "preview-" + fileSafe);
+                Image image = new Image(Path.of(previewPath).toUri().toString(), 160, 160, true, true);
+                classIdQrPreviewImage.setImage(image);
+                classIdQrPreviewImage.setVisible(true);
+                classIdQrPreviewImage.setManaged(true);
+                if (classIdPreviewHint != null) classIdPreviewHint.setText("Preview generated; final QR saved on creation.");
+            }
+        } catch (Exception ignored) {
+            // Keep UI resilient; no-op on preview failure
+        }
     }
 }

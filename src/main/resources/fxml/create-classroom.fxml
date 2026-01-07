@@ -7,6 +7,7 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -147,6 +148,13 @@
                             <FontIcon iconLiteral="fas-lock" styleClass="input-icon" />
                             <PasswordField fx:id="confirmPasswordField" promptText="Confirm password" styleClass="input-field" HBox.hgrow="ALWAYS" />
                         </HBox>
+                    </VBox>
+
+                    <VBox spacing="10" styleClass="card" maxWidth="520">
+                        <Label styleClass="card-title" text="Class ID & QR Preview" />
+                        <Label fx:id="classIdPreviewLabel" styleClass="page-subtitle" text="Will be generated from name + section + year" wrapText="true" />
+                        <ImageView fx:id="classIdQrPreviewImage" fitWidth="160.0" fitHeight="160.0" preserveRatio="true" visible="false" managed="false" />
+                        <Label fx:id="classIdPreviewHint" styleClass="field-help" text="QR code generated after creation; preview updates live." wrapText="true" />
                     </VBox>
 
                     <HBox spacing="12" alignment="CENTER_RIGHT">

@@ -109,34 +109,56 @@
 
                     <Label fx:id="errorLabel" managed="false" styleClass="error-message" text="" visible="false" wrapText="true" />
 
-                    <VBox spacing="8">
-                        <Label styleClass="field-label" text="Class ID" />
-                        <HBox spacing="10" styleClass="input-container">
-                            <FontIcon iconLiteral="fas-qrcode" styleClass="input-icon" />
-                            <TextField fx:id="classIdField" promptText="e.g., CSE101-A-2026" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                    <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" spacing="18">
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label fx:id="progressLabel" text="Step 1 of 3" styleClass="field-label" />
+                            <Region HBox.hgrow="ALWAYS" />
                         </HBox>
-                    </VBox>
 
-                    <VBox spacing="8">
-                        <Label styleClass="field-label" text="Roll Number" />
-                        <HBox spacing="10" styleClass="input-container">
-                            <FontIcon iconLiteral="fas-id-card" styleClass="input-icon" />
-                            <TextField fx:id="rollNumberField" promptText="Enter your roll number (e.g., 1807001)" styleClass="input-field" HBox.hgrow="ALWAYS" />
-                        </HBox>
-                    </VBox>
+                        <VBox fx:id="step1Box" spacing="12" visible="true" managed="true">
+                            <VBox spacing="8">
+                                <Label styleClass="field-label" text="Class ID" />
+                                <HBox spacing="10" styleClass="input-container">
+                                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fas-qrcode" styleClass="input-icon" />
+                                    <TextField fx:id="classIdField" promptText="e.g., CSE101-A-2026" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                                </HBox>
+                            </VBox>
+                            <HBox spacing="12" alignment="CENTER_LEFT">
+                                <Button text="Scan QR Code" onAction="#handleScanQr" />
+                            </HBox>
+                            <Label fx:id="classroomPreviewLabel" text="" wrapText="true" />
+                        </VBox>
 
-                    <VBox spacing="8">
-                        <Label styleClass="field-label" text="Classroom Password" />
-                        <HBox spacing="10" styleClass="input-container">
-                            <FontIcon iconLiteral="fas-lock" styleClass="input-icon" />
-                            <PasswordField fx:id="classroomPasswordField" promptText="Enter classroom password" styleClass="input-field" HBox.hgrow="ALWAYS" />
-                        </HBox>
-                    </VBox>
+                        <VBox fx:id="step2Box" spacing="12" visible="false" managed="false">
+                            <VBox spacing="8">
+                                <Label styleClass="field-label" text="Classroom Password" />
+                                <HBox spacing="10" styleClass="input-container">
+                                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fas-lock" styleClass="input-icon" />
+                                    <PasswordField fx:id="classroomPasswordField" promptText="Enter classroom password" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                                </HBox>
+                            </VBox>
+                            <HBox spacing="12" alignment="CENTER_RIGHT">
+                                <Button text="Back" onAction="#backToStep1" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button text="Next" onAction="#nextFromStep2" styleClass="btn-primary" />
+                            </HBox>
+                        </VBox>
 
-                    <HBox spacing="12" alignment="CENTER_RIGHT">
-                        <Region HBox.hgrow="ALWAYS" />
-                        <Button onAction="#handleJoinClassroom" styleClass="btn-primary" text="Join" defaultButton="true" />
-                    </HBox>
+                        <VBox fx:id="step3Box" spacing="12" visible="false" managed="false">
+                            <VBox spacing="8">
+                                <Label styleClass="field-label" text="Roll Number" />
+                                <HBox spacing="10" styleClass="input-container">
+                                    <org.kordamp.ikonli.javafx.FontIcon iconLiteral="fas-id-card" styleClass="input-icon" />
+                                    <TextField fx:id="rollNumberField" promptText="Enter your roll number (e.g., 1807001)" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                                </HBox>
+                            </VBox>
+                            <HBox spacing="12" alignment="CENTER_RIGHT">
+                                <Button text="Back" onAction="#backToStep2" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button text="Join" onAction="#joinFromStep3" styleClass="btn-primary" defaultButton="true" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
                 </VBox>
             </VBox>
         </ScrollPane>
