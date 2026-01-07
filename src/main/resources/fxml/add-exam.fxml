@@ -44,9 +44,41 @@
                     <Insets left="25" />
                 </padding>
             </Button>
+            <Button onAction="#goToAddRoutine" styleClass="sidebar-item" text="Add Routine" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-calendar-plus" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
             <Button styleClass="sidebar-item, sidebar-item-active" text="Add Exam" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
                 <graphic>
                     <FontIcon iconLiteral="fas-plus" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button onAction="#goToAddCTQuiz" styleClass="sidebar-item" text="Add Test (CT/Quiz)" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-clipboard-list" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button onAction="#goToAddLabTest" styleClass="sidebar-item" text="Add Lab Test" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-flask" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button onAction="#goToAddNotice" styleClass="sidebar-item" text="Add Notice" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-bullhorn" styleClass="sidebar-item-icon" />
                 </graphic>
                 <padding>
                     <Insets left="25" />

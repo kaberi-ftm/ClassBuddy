@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import com.classbuddy.util.ViewTransitions;
+import com.classbuddy.util.ContextMenuFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -37,11 +38,17 @@ public class StudentCalendarController {
     @FXML private VBox eventDetailsPane;
     @FXML private Label selectedDateLabel;
     @FXML private VBox eventsList;
+    @FXML private Label classroomContextLabel;
+    @FXML private Label enrollmentWarningLabel;
+    @FXML private Label semesterRangeLabel;
 
     private User currentStudent;
     private YearMonth currentYearMonth;
     private LocalDate selectedDate;
     private List<Classroom> studentClassrooms;
+    private boolean filterBySemester = true;
+    private LocalDate semesterStart;
+    private LocalDate semesterEnd;
 
     @FXML
     public void initialize() {
@@ -52,10 +59,71 @@ public class StudentCalendarController {
             studentClassrooms = ClassroomService.getStudentClassrooms(currentStudent.getId());
         }
 
+        computeSemesterRange();
+        updateSemesterHeader();
+        updateContextHeader();
+
         currentYearMonth = YearMonth.now();
         selectedDate = LocalDate.now();
         updateCalendar();
         showEventsForDate(selectedDate);
+    }
+
+    public void setSelectedClassroom(Classroom classroom) {
+        if (classroom != null) {
+            boolean isActive = false;
+            if (currentStudent != null) {
+                List<Classroom> active = ClassroomService.getStudentClassrooms(currentStudent.getId());
+                for (Classroom c : active) {
+                    if (c.getId() == classroom.getId()) { isActive = true; break; }
+                }
+            }
+
+            if (!isActive) {
+                if (enrollmentWarningLabel != null) {
+                    enrollmentWarningLabel.setText("You are no longer enrolled in this class");
+                    enrollmentWarningLabel.setVisible(true);
+                    enrollmentWarningLabel.setManaged(true);
+                }
+                this.studentClassrooms = java.util.List.of();
+            } else {
+                this.studentClassrooms = java.util.List.of(classroom);
+                if (enrollmentWarningLabel != null) {
+                    enrollmentWarningLabel.setVisible(false);
+                    enrollmentWarningLabel.setManaged(false);
+                }
+            }
+        }
+
+        updateContextHeader(classroom);
+        if (calendarGrid != null) {
+            currentYearMonth = YearMonth.now();
+            selectedDate = LocalDate.now();
+            updateCalendar();
+            showEventsForDate(selectedDate);
+        }
+    }
+
+    private void updateContextHeader() {
+        updateContextHeader(null);
+    }
+
+    private void updateContextHeader(Classroom selected) {
+        if (classroomContextLabel == null) return;
+        if (studentClassrooms == null || studentClassrooms.isEmpty()) {
+            if (selected != null) {
+                classroomContextLabel.setText("Class: " + selected.getName() + " (" + selected.getSection() + ", " + selected.getDepartment() + ")");
+            } else {
+                classroomContextLabel.setText("All Active Classes");
+            }
+            return;
+        }
+        if (studentClassrooms.size() == 1) {
+            Classroom c = studentClassrooms.get(0);
+            classroomContextLabel.setText("Class: " + c.getName() + " (" + c.getSection() + ", " + c.getDepartment() + ")");
+        } else {
+            classroomContextLabel.setText("All Active Classes");
+        }
     }
 
     @FXML
@@ -114,13 +182,25 @@ public class StudentCalendarController {
 
     @FXML
     private void handlePrevMonth() {
-        currentYearMonth = currentYearMonth.minusMonths(1);
+        YearMonth prev = currentYearMonth.minusMonths(1);
+        if (filterBySemester && semesterStart != null) {
+            YearMonth startYm = YearMonth.from(semesterStart);
+            currentYearMonth = prev.isBefore(startYm) ? startYm : prev;
+        } else {
+            currentYearMonth = prev;
+        }
         updateCalendar();
     }
 
     @FXML
     private void handleNextMonth() {
-        currentYearMonth = currentYearMonth.plusMonths(1);
+        YearMonth next = currentYearMonth.plusMonths(1);
+        if (filterBySemester && semesterEnd != null) {
+            YearMonth endYm = YearMonth.from(semesterEnd);
+            currentYearMonth = next.isAfter(endYm) ? endYm : next;
+        } else {
+            currentYearMonth = next;
+        }
         updateCalendar();
     }
 
@@ -128,6 +208,14 @@ public class StudentCalendarController {
     private void handleToday() {
         currentYearMonth = YearMonth.now();
         selectedDate = LocalDate.now();
+        updateCalendar();
+        showEventsForDate(selectedDate);
+    }
+
+    @FXML
+    private void toggleSemesterFilter() {
+        filterBySemester = !filterBySemester;
+        updateSemesterHeader();
         updateCalendar();
         showEventsForDate(selectedDate);
     }
@@ -196,6 +284,8 @@ public class StudentCalendarController {
         dayNumber.getStyleClass().add("calendar-day-number");
         cell.getChildren().add(dayNumber);
 
+        boolean outOfRange = filterBySemester && !isWithinSemester(date);
+
         List<CalendarEvent> dayEvents = getEventsForDate(date);
         List<Routine> dayRoutines = getRoutinesForDate(date);
 
@@ -223,6 +313,13 @@ public class StudentCalendarController {
             cell.getChildren().add(moreLabel);
         }
 
+        if (outOfRange) {
+            cell.setOpacity(0.55);
+        }
+
+        // Attach right-click context menu for quick add actions
+        ContextMenuFactory.attachStudentMenu(cell, date, studentClassrooms);
+
         return cell;
     }
 
@@ -243,6 +340,19 @@ public class StudentCalendarController {
     private void showEventsForDate(LocalDate date) {
         selectedDateLabel.setText(date.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")));
         eventsList.getChildren().clear();
+
+        if (filterBySemester && !isWithinSemester(date)) {
+            if (enrollmentWarningLabel != null) {
+                enrollmentWarningLabel.setText("Outside semester range");
+                enrollmentWarningLabel.setVisible(true);
+                enrollmentWarningLabel.setManaged(true);
+            }
+            return;
+        } else if (enrollmentWarningLabel != null &&
+                "Outside semester range".equals(enrollmentWarningLabel.getText())) {
+            enrollmentWarningLabel.setVisible(false);
+            enrollmentWarningLabel.setManaged(false);
+        }
 
         List<CalendarEvent> events = getEventsForDate(date);
         List<Routine> routines = getRoutinesForDate(date);
@@ -332,6 +442,10 @@ public class StudentCalendarController {
     private List<CalendarEvent> getEventsForDate(LocalDate date) {
         List<CalendarEvent> allEvents = new ArrayList<>();
 
+        if (filterBySemester && !isWithinSemester(date)) {
+            return allEvents;
+        }
+
         if (studentClassrooms != null) {
             for (Classroom classroom : studentClassrooms) {
                 List<CalendarEvent> classroomEvents = CalendarService.getEventsByDate(classroom.getId(), date);
@@ -353,6 +467,10 @@ public class StudentCalendarController {
         List<Routine> allRoutines = new ArrayList<>();
         String dayName = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
 
+        if (filterBySemester && !isWithinSemester(date)) {
+            return allRoutines;
+        }
+
         if (studentClassrooms != null) {
             for (Classroom classroom : studentClassrooms) {
                 List<Routine> classroomRoutines = RoutineService.getWeeklyRoutine(classroom.getId());
@@ -365,6 +483,35 @@ public class StudentCalendarController {
         }
 
         return allRoutines;
+    }
+
+    private void computeSemesterRange() {
+        int month = LocalDate.now().getMonthValue();
+        int year = LocalDate.now().getYear();
+        if (month <= 6) {
+            semesterStart = LocalDate.of(year, 1, 1);
+            semesterEnd = LocalDate.of(year, 6, 30);
+        } else {
+            semesterStart = LocalDate.of(year, 7, 1);
+            semesterEnd = LocalDate.of(year, 12, 31);
+        }
+    }
+
+    private boolean isWithinSemester(LocalDate date) {
+        if (!filterBySemester || semesterStart == null || semesterEnd == null) return true;
+        return !(date.isBefore(semesterStart) || date.isAfter(semesterEnd));
+    }
+
+    private void updateSemesterHeader() {
+        if (semesterRangeLabel == null) return;
+        if (!filterBySemester) {
+            semesterRangeLabel.setText("All dates");
+            return;
+        }
+        if (semesterStart != null && semesterEnd != null) {
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
+            semesterRangeLabel.setText("Semester: " + fmt.format(semesterStart) + " – " + fmt.format(semesterEnd));
+        }
     }
 
     private void navigateToView(String fxmlPath) {

@@ -172,6 +172,58 @@ public class AddNoticeController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    public void goToAddRoutine() {
+        navigateToAddScreen("/fxml/add-routine.fxml");
+    }
+
+    @FXML
+    public void goToAddExam() {
+        navigateToAddScreen("/fxml/add-exam.fxml");
+    }
+
+    @FXML
+    public void goToAddCTQuiz() {
+        navigateToAddScreen("/fxml/add-ctquiz.fxml");
+    }
+
+    @FXML
+    public void goToAddLabTest() {
+        navigateToAddScreen("/fxml/add-labtest.fxml");
+    }
+
+    private void navigateToAddScreen(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            Object controller = loader.getController();
+            if (controller instanceof AddRoutineController) {
+                AddRoutineController ctrl = (AddRoutineController) controller;
+                ctrl.setClassroom(classroom);
+                ctrl.loadData();
+            } else if (controller instanceof AddExamController) {
+                AddExamController ctrl = (AddExamController) controller;
+                ctrl.setClassroom(classroom);
+                ctrl.loadData();
+            } else if (controller instanceof AddCTQuizController) {
+                AddCTQuizController ctrl = (AddCTQuizController) controller;
+                ctrl.setClassroom(classroom);
+            } else if (controller instanceof AddLabTestController) {
+                AddLabTestController ctrl = (AddLabTestController) controller;
+                ctrl.setClassroom(classroom);
+            }
+
+            Scene scene = new Scene(root, 1200, 800);
+            Stage stage = (Stage) titleField.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     private void showError(String message) {
         errorLabel.setText(message);

@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import com.classbuddy.util.ViewTransitions;
+import com.classbuddy.util.ContextMenuFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -227,6 +228,9 @@ public class AdminCalendarController {
             moreLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 9;");
             cell.getChildren().add(moreLabel);
         }
+
+        // Attach right-click context menu for quick add actions
+        ContextMenuFactory.attachAdminMenu(cell, date, adminClassrooms);
 
         return cell;
     }

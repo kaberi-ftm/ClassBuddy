@@ -12,8 +12,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -290,132 +291,37 @@ public class IntegratedCalendarController {
     }
 
     private void renderWeekView() {
-        VBox weekContainer = new VBox(10);
-        weekContainer.setStyle("-fx-padding: 15;");
-        
-        // Header row with days
-        HBox headerRow = new HBox(5);
-        headerRow.setStyle("-fx-padding: 0 0 10 0;");
-        
-        Label timeLabel = new Label("Time");
-        timeLabel.setMinWidth(80);
-        timeLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: -text-primary;");
-        headerRow.getChildren().add(timeLabel);
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE M/d");
-        for (int i = 0; i < 7; i++) {
-            LocalDate day = currentWeekStart.plusDays(i);
-            Label dayLabel = new Label(day.format(formatter));
-            dayLabel.setMinWidth(120);
-            dayLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: -text-primary; -fx-alignment: center;");
-            if (day.equals(LocalDate.now())) {
-                dayLabel.setStyle(dayLabel.getStyle() + "; -fx-text-fill: -primary-orange;");
-            }
-            HBox.setHgrow(dayLabel, Priority.ALWAYS);
-            headerRow.getChildren().add(dayLabel);
+        // Build a 7-day time grid (08:00–18:00, 30-minute steps)
+        GridPane grid = buildTimeGrid(currentWeekStart, 8, 18, 30);
+
+        // Map routines/exams/events into timed blocks and place them
+        List<TimedBlock> blocks = getTimedBlocksForWeek(currentWeekStart);
+        for (TimedBlock b : blocks) {
+            addTimedBlock(grid, b);
         }
-        
-        weekContainer.getChildren().add(headerRow);
-        
-        // Time slots (8 AM to 6 PM)
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background-color: transparent;");
-        
-        VBox timeSlots = new VBox(2);
-        for (int hour = 8; hour <= 18; hour++) {
-            HBox timeSlot = createWeekTimeSlot(hour);
-            timeSlots.getChildren().add(timeSlot);
-        }
-        
-        scrollPane.setContent(timeSlots);
-        VBox.setVgrow(scrollPane, Priority.ALWAYS);
-        weekContainer.getChildren().add(scrollPane);
-        
-        calendarContent.getChildren().add(weekContainer);
-        VBox.setVgrow(weekContainer, Priority.ALWAYS);
+
+        calendarContent.getChildren().add(grid);
+        VBox.setVgrow(grid, Priority.ALWAYS);
     }
 
-    private HBox createWeekTimeSlot(int hour) {
-        HBox slot = new HBox(5);
-        slot.setMinHeight(60);
-        slot.setStyle("-fx-border-color: -border-color; -fx-border-width: 0 0 1 0;");
-        
-        Label timeLabel = new Label(String.format("%02d:00", hour));
-        timeLabel.setMinWidth(80);
-        timeLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 12;");
-        slot.getChildren().add(timeLabel);
-        
-        for (int day = 0; day < 7; day++) {
-            LocalDate date = currentWeekStart.plusDays(day);
-            VBox daySlot = new VBox(3);
-            daySlot.setMinWidth(120);
-            daySlot.setStyle("-fx-border-color: -border-color; -fx-border-width: 0 0 0 1; -fx-padding: 5;");
-            HBox.setHgrow(daySlot, Priority.ALWAYS);
-            
-            // Find events for this time slot
-            List<Object> events = getEventsForDateTime(date, hour);
-            for (Object event : events) {
-                Label eventLabel = createEventLabel(event);
-                daySlot.getChildren().add(eventLabel);
-            }
-            
-            slot.getChildren().add(daySlot);
-        }
-        
-        return slot;
-    }
+    
 
     private void renderDayView() {
-        VBox dayContainer = new VBox(10);
-        dayContainer.setStyle("-fx-padding: 15;");
-        
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background-color: transparent;");
-        
-        VBox timeSlots = new VBox(2);
-        for (int hour = 6; hour <= 22; hour++) {
-            HBox timeSlot = createDayTimeSlot(hour);
-            timeSlots.getChildren().add(timeSlot);
+        // Build a 1-day time grid centered on currentDay (06:00–22:00, 30-minute steps)
+        LocalDate start = currentDay;
+        GridPane grid = buildTimeGrid(start, 6, 22, 30);
+
+        // Collect only currentDay blocks
+        List<TimedBlock> blocks = getTimedBlocksForDay(currentDay);
+        for (TimedBlock b : blocks) {
+            addTimedBlock(grid, b);
         }
-        
-        scrollPane.setContent(timeSlots);
-        VBox.setVgrow(scrollPane, Priority.ALWAYS);
-        dayContainer.getChildren().add(scrollPane);
-        
-        calendarContent.getChildren().add(dayContainer);
-        VBox.setVgrow(dayContainer, Priority.ALWAYS);
+
+        calendarContent.getChildren().add(grid);
+        VBox.setVgrow(grid, Priority.ALWAYS);
     }
 
-    private HBox createDayTimeSlot(int hour) {
-        HBox slot = new HBox(15);
-        slot.setMinHeight(80);
-        slot.setStyle("-fx-border-color: -border-color; -fx-border-width: 0 0 1 0; -fx-padding: 10;");
-        
-        Label timeLabel = new Label(String.format("%02d:00", hour));
-        timeLabel.setMinWidth(80);
-        timeLabel.setStyle("-fx-text-fill: -text-primary; -fx-font-size: 14; -fx-font-weight: bold;");
-        slot.getChildren().add(timeLabel);
-        
-        VBox eventsBox = new VBox(5);
-        HBox.setHgrow(eventsBox, Priority.ALWAYS);
-        
-        List<Object> events = getEventsForDateTime(currentDay, hour);
-        if (events.isEmpty()) {
-            Label emptyLabel = new Label("No events");
-            emptyLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 12; -fx-font-style: italic;");
-            eventsBox.getChildren().add(emptyLabel);
-        } else {
-            for (Object event : events) {
-                VBox eventCard = createEventCard(event);
-                eventsBox.getChildren().add(eventCard);
-            }
-        }
-        
-        slot.getChildren().add(eventsBox);
-        return slot;
-    }
+    
 
     private List<Object> getEventsForDate(LocalDate date) {
         List<Object> allEvents = new ArrayList<>();
@@ -445,26 +351,7 @@ public class IntegratedCalendarController {
         return allEvents;
     }
 
-    private List<Object> getEventsForDateTime(LocalDate date, int hour) {
-        List<Object> events = getEventsForDate(date);
-        return events.stream()
-            .filter(event -> {
-                LocalTime eventTime = getEventTime(event);
-                return eventTime != null && eventTime.getHour() == hour;
-            })
-            .collect(Collectors.toList());
-    }
-
-    private LocalTime getEventTime(Object event) {
-        if (event instanceof Routine) {
-            return ((Routine) event).getTimeStart();
-        } else if (event instanceof Exam) {
-            return ((Exam) event).getExamTime();
-        } else if (event instanceof CalendarEvent) {
-            return ((CalendarEvent) event).getStartTime();
-        }
-        return null;
-    }
+    
 
     private HBox createEventIndicator(Object event) {
         HBox indicator = new HBox();
@@ -481,33 +368,9 @@ public class IntegratedCalendarController {
         return indicator;
     }
 
-    private Label createEventLabel(Object event) {
-        Label label = new Label(getEventTitle(event));
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setWrapText(true);
-        label.setStyle("-fx-background-color: " + getEventColor(event) + "22; " +
-                      "-fx-border-color: " + getEventColor(event) + "; " +
-                      "-fx-border-width: 0 0 0 3; -fx-padding: 5 8; " +
-                      "-fx-text-fill: -text-primary; -fx-font-size: 11; " +
-                      "-fx-background-radius: 4;");
-        return label;
-    }
+    
 
-    private VBox createEventCard(Object event) {
-        VBox card = new VBox(5);
-        card.getStyleClass().add("card");
-        card.setStyle(card.getStyle() + "; -fx-border-color: " + getEventColor(event) + ";");
-        
-        Label titleLabel = new Label(getEventTitle(event));
-        titleLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: -text-primary;");
-        
-        Label detailsLabel = new Label(getEventDetails(event));
-        detailsLabel.setStyle("-fx-text-fill: -text-secondary; -fx-font-size: 12;");
-        detailsLabel.setWrapText(true);
-        
-        card.getChildren().addAll(titleLabel, detailsLabel);
-        return card;
-    }
+    
 
     private String getEventTitle(Object event) {
         if (event instanceof Routine) {
@@ -543,6 +406,169 @@ public class IntegratedCalendarController {
         if (event instanceof Exam) return "#ef4444"; // Red
         if (event instanceof CalendarEvent) return "#06B6D4"; // Cyan
         return "#6B7A90"; // Neutral
+    }
+
+    // ==== Time-grid helpers and block mapping ====
+
+    private static class TimedBlock {
+        LocalDate date;
+        LocalTime start;
+        LocalTime end;
+        String title;
+        String details;
+        String cssClass; // e.g., calendar-block-routine / -exam / -event
+
+        int dayIndexFrom(LocalDate weekStart) { return (int) Duration.between(weekStart.atStartOfDay(), date.atStartOfDay()).toDays(); }
+    }
+
+    private GridPane buildTimeGrid(LocalDate weekStartOrDay, int startHour, int endHour, int stepMinutes) {
+        // Grid columns: 0 = time labels, 1..7 = days (use only 1 for day view)
+        GridPane grid = new GridPane();
+        grid.getStyleClass().add("calendar-time-grid");
+        grid.setHgap(1);
+        grid.setVgap(1);
+        grid.setStyle("-fx-padding: 10;");
+
+        // Header row
+        Label timeHeader = new Label("Time");
+        timeHeader.getStyleClass().add("calendar-time-header");
+        timeHeader.setMinWidth(80);
+        grid.add(timeHeader, 0, 0);
+
+        DateTimeFormatter headerFmt = DateTimeFormatter.ofPattern("EEE M/d");
+        int days = currentView == CalendarView.DAY ? 1 : 7;
+        for (int d = 0; d < days; d++) {
+            LocalDate day = (currentView == CalendarView.DAY ? weekStartOrDay : weekStartOrDay.plusDays(d));
+            Label dayLabel = new Label(day.format(headerFmt));
+            dayLabel.getStyleClass().add("calendar-time-header");
+            if (day.equals(LocalDate.now())) dayLabel.getStyleClass().add("calendar-time-header-today");
+            GridPane.setHgrow(dayLabel, Priority.ALWAYS);
+            grid.add(dayLabel, d + 1, 0);
+        }
+
+        // Rows for time slots (30-min increments)
+        int rows = ((endHour - startHour) * 60) / stepMinutes;
+        for (int r = 0; r < rows; r++) {
+            int minuteOfDay = startHour * 60 + r * stepMinutes;
+            LocalTime t = LocalTime.of(minuteOfDay / 60, minuteOfDay % 60);
+
+            // Time label at the left only on hour boundaries
+            Label tl = new Label(t.getMinute() == 0 ? t.toString() : "");
+            tl.getStyleClass().add("calendar-hour-label");
+            tl.setMinWidth(80);
+            grid.add(tl, 0, r + 1);
+
+            for (int d = 0; d < days; d++) {
+                Region cell = new Region();
+                cell.getStyleClass().add("calendar-time-cell");
+                GridPane.setHgrow(cell, Priority.ALWAYS);
+                grid.add(cell, d + 1, r + 1);
+            }
+        }
+
+        return grid;
+    }
+
+    private void addTimedBlock(GridPane grid, TimedBlock b) {
+        // Determine base and day index
+        LocalDate base = (currentView == CalendarView.DAY) ? currentDay : currentWeekStart;
+        int dayIndex = (currentView == CalendarView.DAY) ? 0 : b.dayIndexFrom(base);
+        if (dayIndex < 0 || dayIndex > 6) return; // out of displayed range
+
+        // Grid math
+        int startHour = (currentView == CalendarView.DAY) ? 6 : 8;
+        int step = 30; // minutes
+        int startRow = Math.max(0, ((b.start.getHour() * 60 + b.start.getMinute()) - startHour * 60) / step);
+        int durationMin = (int) Math.max(30, Duration.between(b.start, b.end).toMinutes());
+        int rowSpan = Math.max(1, (int) Math.ceil(durationMin / (double) step));
+
+        // Create the visual block
+        VBox block = new VBox(2);
+        block.getStyleClass().addAll("calendar-block", b.cssClass);
+        Label title = new Label(b.title);
+        title.getStyleClass().add("calendar-block-title");
+        Label subtitle = new Label(b.details);
+        subtitle.getStyleClass().add("calendar-block-subtitle");
+        subtitle.setWrapText(true);
+        block.getChildren().addAll(title, subtitle);
+
+        // Place in grid (row offset +1 due to header row)
+        grid.add(block, dayIndex + 1, startRow + 1, 1, rowSpan);
+    }
+
+    private List<TimedBlock> getTimedBlocksForWeek(LocalDate weekStart) {
+        List<TimedBlock> blocks = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate day = weekStart.plusDays(i);
+            blocks.addAll(getTimedBlocksForDay(day));
+        }
+        return blocks;
+    }
+
+    private List<TimedBlock> getTimedBlocksForDay(LocalDate day) {
+        List<TimedBlock> list = new ArrayList<>();
+
+        // Routines (recurring by weekday)
+        String dayName = day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        if (classroomRoutines != null) {
+            for (Routine r : classroomRoutines) {
+                if (r.getDay().equalsIgnoreCase(dayName) && r.getTimeStart() != null && r.getTimeEnd() != null) {
+                    TimedBlock b = new TimedBlock();
+                    b.date = day;
+                    b.start = r.getTimeStart();
+                    b.end = r.getTimeEnd();
+                    b.title = r.getCourseName();
+                    b.details = joinNonEmpty(
+                        r.getTeacherName(),
+                        (r.getRoom() != null && !r.getRoom().isEmpty() ? "Room " + r.getRoom() : null)
+                    );
+                    b.cssClass = "calendar-block-routine";
+                    list.add(b);
+                }
+            }
+        }
+
+        // Exams (assume 60 min when end not specified)
+        if (classroomExams != null) {
+            for (Exam e : classroomExams) {
+                if (day.equals(e.getExamDate()) && e.getExamTime() != null) {
+                    TimedBlock b = new TimedBlock();
+                    b.date = day;
+                    b.start = e.getExamTime();
+                    b.end = e.getExamTime().plusMinutes(60);
+                    b.title = e.getCourseName() + " (" + e.getExamType() + ")";
+                    b.details = (e.getRoom() != null ? "Room " + e.getRoom() : "");
+                    b.cssClass = "calendar-block-exam";
+                    list.add(b);
+                }
+            }
+        }
+
+        // Calendar events (use end if provided; else 60 min)
+        if (calendarEvents != null) {
+            for (CalendarEvent ce : calendarEvents) {
+                if (day.equals(ce.getEventDate()) && ce.getStartTime() != null) {
+                    TimedBlock b = new TimedBlock();
+                    b.date = day;
+                    b.start = ce.getStartTime();
+                    b.end = (ce.getEndTime() != null) ? ce.getEndTime() : ce.getStartTime().plusMinutes(60);
+                    b.title = ce.getTitle();
+                    b.details = joinNonEmpty(ce.getLocation(), ce.getDescription());
+                    b.cssClass = "calendar-block-event";
+                    list.add(b);
+                }
+            }
+        }
+
+        return list;
+    }
+
+    private String joinNonEmpty(String... parts) {
+        return Arrays.stream(parts)
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.joining(" · "));
     }
 
     private void updateEventDetails() {

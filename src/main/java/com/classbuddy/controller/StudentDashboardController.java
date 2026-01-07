@@ -159,11 +159,15 @@ public class StudentDashboardController {
         viewBtn.getStyleClass().add("btn-primary");
         viewBtn.setOnAction(e -> viewClassroom(classroom));
 
+        Button calendarBtn = new Button("Calendar");
+        calendarBtn.getStyleClass().add("btn-secondary");
+        calendarBtn.setOnAction(e -> viewCalendarForClassroom(classroom));
+
         Button leaveBtn = new Button("Leave");
         leaveBtn.getStyleClass().add("btn-danger");
         leaveBtn.setOnAction(e -> leaveClassroom(classroom));
 
-        buttonsBox.getChildren().addAll(viewBtn, leaveBtn);
+        buttonsBox.getChildren().addAll(viewBtn, calendarBtn, leaveBtn);
         card.getChildren().addAll(infoBox, buttonsBox);
 
         return card;
@@ -194,6 +198,28 @@ public class StudentDashboardController {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error loading classroom details");
+        }
+    }
+
+    private void viewCalendarForClassroom(Classroom classroom) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/student-calendar.fxml")
+            );
+            Parent root = loader.load();
+
+            StudentCalendarController controller = loader.getController();
+            controller.setSelectedClassroom(classroom);
+
+            Scene scene = new Scene(root, 1200, 800);
+            Stage stage = (Stage) studentNameLabel.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+
+        } catch (IOException e) {
+            System.err.println("Failed to load classroom calendar: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

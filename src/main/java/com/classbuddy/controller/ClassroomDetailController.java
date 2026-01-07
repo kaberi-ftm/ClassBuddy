@@ -11,10 +11,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import com.classbuddy.model.Classroom;
 import com.classbuddy.model.Exam;
+import com.classbuddy.model.CTQuiz;
+import com.classbuddy.model.LabTest;
 import com.classbuddy.model.Notice;
 import com.classbuddy.model.Routine;
 import com.classbuddy.model.User;
 import com.classbuddy.service.ExamService;
+import com.classbuddy.service.CTQuizService;
+import com.classbuddy.service.LabTestService;
 import com.classbuddy.service.NoticeService;
 import com.classbuddy.service.RoutineService;
 import java.io.IOException;
@@ -41,10 +45,7 @@ public class ClassroomDetailController {
     @FXML
     private VBox noticesContainer;
 
-    @FXML
-    private VBox ctQuizContainer;
-    @FXML
-    private VBox labTestContainer;
+    // CT/Quiz and Lab Tests are now shown under the Exams tab
     @FXML
     private Button addRoutineBtn;
     @FXML
@@ -55,14 +56,7 @@ public class ClassroomDetailController {
     private Button addCTQuizBtn;
     @FXML
     private Button addLabTestBtn;
-    @FXML
-    private Tab ctQuizTab;
-    @FXML
-    private Tab labTestTab;
-    @FXML
-    private Button ctQuizBtn;
-    @FXML
-    private Button labTestBtn;
+    // Removed CT/Quiz and Lab Tests tabs and sidebar buttons in FXML
     
     // New sidebar buttons
     @FXML
@@ -81,14 +75,11 @@ public class ClassroomDetailController {
     private Button btnNotices;
     @FXML
     private Button btnAddNotice;
-    @FXML
-    private Button btnCTQuiz;
-    @FXML
-    private Button btnAddCTQuiz;
-    @FXML
-    private Button btnLabTests;
-    @FXML
-    private Button btnAddLabTest;
+    // Additional quick-add buttons on Schedule tab
+    @FXML private Button addExamFromScheduleBtn;
+    @FXML private Button addNoticeFromScheduleBtn;
+    @FXML private Button addCTQuizFromScheduleBtn;
+    @FXML private Button addLabTestFromScheduleBtn;
 
     private Classroom classroom;
     private User user;
@@ -128,6 +119,10 @@ public class ClassroomDetailController {
             if (addNoticeBtn != null) addNoticeBtn.setVisible(isAdmin);
             if (addCTQuizBtn != null) addCTQuizBtn.setVisible(isAdmin);
             if (addLabTestBtn != null) addLabTestBtn.setVisible(isAdmin);
+            if (addExamFromScheduleBtn != null) addExamFromScheduleBtn.setVisible(isAdmin);
+            if (addNoticeFromScheduleBtn != null) addNoticeFromScheduleBtn.setVisible(isAdmin);
+            if (addCTQuizFromScheduleBtn != null) addCTQuizFromScheduleBtn.setVisible(isAdmin);
+            if (addLabTestFromScheduleBtn != null) addLabTestFromScheduleBtn.setVisible(isAdmin);
 
             loadClassroomData();
             loadIntegratedCalendar();
@@ -146,7 +141,7 @@ public class ClassroomDetailController {
     
     private void updateSidebarActiveState(int tabIndex) {
         // Remove active class from all buttons
-        Button[] buttons = {btnSchedule, btnCalendar, btnExams, btnNotices, btnCTQuiz, btnLabTests};
+        Button[] buttons = {btnSchedule, btnCalendar, btnExams, btnNotices};
         for (Button btn : buttons) {
             if (btn != null) {
                 btn.getStyleClass().remove("sidebar-item-active");
@@ -160,8 +155,6 @@ public class ClassroomDetailController {
             case 1: activeBtn = btnCalendar; break;
             case 2: activeBtn = btnExams; break;
             case 3: activeBtn = btnNotices; break;
-            case 4: activeBtn = btnCTQuiz; break;
-            case 5: activeBtn = btnLabTests; break;
         }
         
         if (activeBtn != null && !activeBtn.getStyleClass().contains("sidebar-item-active")) {
@@ -195,15 +188,7 @@ public class ClassroomDetailController {
         if (classroomTabs != null) classroomTabs.getSelectionModel().select(3);
     }
     
-    @FXML
-    public void showCTQuizTab() {
-        if (classroomTabs != null) classroomTabs.getSelectionModel().select(4);
-    }
-    
-    @FXML
-    public void showLabTestTab() {
-        if (classroomTabs != null) classroomTabs.getSelectionModel().select(5);
-    }
+    // CT/Quiz and Lab Tests tabs removed; content merged under Exams tab
     
     @FXML
     public void refreshRoutine() {
@@ -293,8 +278,12 @@ public class ClassroomDetailController {
     private void loadExams() {
         examsContainer.getChildren().clear();
 
-        List<Exam> exams = ExamService.getClassroomExams(classroom.getId());
+        // Exams
+        Label examsHeader = new Label("Exams");
+        examsHeader.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 10 0 5 0;");
+        examsContainer.getChildren().add(examsHeader);
 
+        List<Exam> exams = ExamService.getClassroomExams(classroom.getId());
         if (exams.isEmpty()) {
             Label emptyLabel = new Label("No exams scheduled");
             emptyLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
@@ -303,6 +292,38 @@ public class ClassroomDetailController {
             for (Exam exam : exams) {
                 HBox examBox = createExamBox(exam);
                 examsContainer.getChildren().add(examBox);
+            }
+        }
+
+        // Tests (CT/Quiz)
+        Label testsHeader = new Label("Tests");
+        testsHeader.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15 0 5 0;");
+        examsContainer.getChildren().add(testsHeader);
+        List<CTQuiz> tests = CTQuizService.getClassroomCTQuizzes(classroom.getId());
+        if (tests.isEmpty()) {
+            Label emptyTests = new Label("No tests added");
+            emptyTests.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
+            examsContainer.getChildren().add(emptyTests);
+        } else {
+            for (CTQuiz test : tests) {
+                HBox testBox = createCTQuizBox(test);
+                examsContainer.getChildren().add(testBox);
+            }
+        }
+
+        // Lab Tests
+        Label labHeader = new Label("Lab Tests");
+        labHeader.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15 0 5 0;");
+        examsContainer.getChildren().add(labHeader);
+        List<LabTest> labs = LabTestService.getClassroomLabTests(classroom.getId());
+        if (labs.isEmpty()) {
+            Label emptyLabs = new Label("No lab tests added");
+            emptyLabs.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
+            examsContainer.getChildren().add(emptyLabs);
+        } else {
+            for (LabTest lab : labs) {
+                HBox labBox = createLabTestBox(lab);
+                examsContainer.getChildren().add(labBox);
             }
         }
     }
@@ -329,6 +350,48 @@ public class ClassroomDetailController {
         HBox.setHgrow(examLabel, javafx.scene.layout.Priority.ALWAYS);
 
         box.getChildren().add(examLabel);
+        return box;
+    }
+
+    private HBox createCTQuizBox(CTQuiz test) {
+        HBox box = new HBox(15);
+        box.setStyle(
+                "-fx-background-color: -card-bg;" +
+                        "-fx-border-color: -border-color;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-padding: 12;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-background-radius: 12;"
+        );
+
+        String title = (test.getName() != null && !test.getName().isEmpty()) ? test.getName() : "Test";
+        String deadline = (test.getDeadline() != null) ? (" | Due: " + test.getDeadline()) : "";
+        Label label = new Label(title + deadline);
+        label.setStyle("-fx-font-size: 13;");
+        label.setWrapText(true);
+        HBox.setHgrow(label, javafx.scene.layout.Priority.ALWAYS);
+        box.getChildren().add(label);
+        return box;
+    }
+
+    private HBox createLabTestBox(LabTest lab) {
+        HBox box = new HBox(15);
+        box.setStyle(
+                "-fx-background-color: -card-bg;" +
+                        "-fx-border-color: -border-color;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-padding: 12;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-background-radius: 12;"
+        );
+
+        String title = "Experiment " + lab.getExperimentNumber();
+        String date = (lab.getTestDate() != null) ? (" | Date: " + lab.getTestDate()) : "";
+        Label label = new Label(title + date);
+        label.setStyle("-fx-font-size: 13;");
+        label.setWrapText(true);
+        HBox.setHgrow(label, javafx.scene.layout.Priority.ALWAYS);
+        box.getChildren().add(label);
         return box;
     }
 

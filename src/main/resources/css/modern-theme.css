@@ -399,6 +399,83 @@
     -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.25), 14, 0, 0, 0);
 }
 
+/* ========================= */
+/* Calendar: Time Grid Styles */
+/* ========================= */
+
+.calendar-time-grid {
+    -fx-background-color: -card-bg;
+    -fx-padding: 10;
+}
+
+.calendar-time-header {
+    -fx-text-fill: -text-primary;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 6 4;
+}
+
+.calendar-time-header-today {
+    -fx-text-fill: -primary-orange;
+}
+
+.calendar-hour-label {
+    -fx-text-fill: -text-light;
+    -fx-font-size: 11;
+    -fx-padding: 2 4 0 4;
+}
+
+.calendar-time-cell {
+    -fx-min-height: 24; /* ~30min row visual */
+    -fx-background-color: transparent;
+    -fx-border-color: -border-color;
+    -fx-border-width: 0 0 1 1; /* horizontal grid lines */
+}
+
+.calendar-block {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-padding: 6 8;
+    -fx-effect: dropshadow(gaussian, -shadow-sm, 8, 0, 0, 1);
+}
+
+.calendar-block-title {
+    -fx-text-fill: -text-primary;
+    -fx-font-size: 12;
+    -fx-font-weight: 700;
+}
+
+.calendar-block-subtitle {
+    -fx-text-fill: -text-secondary;
+    -fx-font-size: 10;
+}
+
+/* Variants mapped to theme tokens */
+.calendar-block-routine {
+    -fx-background-color: #EEF2FF;
+    -fx-border-color: -primary-orange;
+    -fx-border-width: 0 0 0 3;
+}
+
+.calendar-block-exam {
+    -fx-background-color: #FEE2E2;
+    -fx-border-color: -error;
+    -fx-border-width: 0 0 0 3;
+}
+
+.calendar-block-event {
+    -fx-background-color: #ECFEFF;
+    -fx-border-color: -info;
+    -fx-border-width: 0 0 0 3;
+}
+
+.calendar-block-lab {
+    -fx-background-color: #F5F3FF;
+    -fx-border-color: -primary-purple;
+    -fx-border-width: 0 0 0 3;
+}
+
 .btn-icon {
     -fx-min-width: 40;
     -fx-min-height: 40;

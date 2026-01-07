@@ -10,6 +10,16 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+import javafx.scene.layout.VBox;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.awt.image.BufferedImage;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
 import com.classbuddy.model. Classroom;
 import com.classbuddy.model.User;
 import com.classbuddy.service.ClassroomService;
@@ -36,7 +46,16 @@ public class JoinClassroomController {
     @FXML
     private Label errorLabel;
 
+    // Wizard UI
+    @FXML private VBox step1Box;
+    @FXML private VBox step2Box;
+    @FXML private VBox step3Box;
+    @FXML private Label progressLabel;
+    @FXML private Label classroomPreviewLabel;
+
     private User currentUser;
+    private int currentStep = 1;
+    private Classroom selectedClassroom;
 
     @FXML
     public void initialize() {
@@ -54,6 +73,8 @@ public class JoinClassroomController {
             createClassroomNavBtn.setVisible(isAdmin);
             createClassroomNavBtn.setManaged(isAdmin);
         }
+
+        updateStepUI();
     }
 
     /**
@@ -209,6 +230,166 @@ public class JoinClassroomController {
         }
     }
 
+    // Step wizard: UI management
+    private void updateStepUI() {
+        boolean s1 = currentStep == 1;
+        boolean s2 = currentStep == 2;
+        boolean s3 = currentStep == 3;
+
+        if (step1Box != null) { step1Box.setVisible(s1); step1Box.setManaged(s1); }
+        if (step2Box != null) { step2Box.setVisible(s2); step2Box.setManaged(s2); }
+        if (step3Box != null) { step3Box.setVisible(s3); step3Box.setManaged(s3); }
+        if (progressLabel != null) { progressLabel.setText("Step " + currentStep + " of 3"); }
+
+        if (errorLabel != null) { errorLabel.setVisible(false); errorLabel.setManaged(false); errorLabel.setText(""); }
+    }
+
+    @FXML
+    private void handleScanQr() {
+        try {
+            Stage stage = (Stage) (classIdField != null ? classIdField.getScene().getWindow() : null);
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Select QR Image");
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
+            File file = chooser.showOpenDialog(stage);
+            if (file == null) { return; }
+
+            BufferedImage image = ImageIO.read(file);
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(image)));
+            Result result = new MultiFormatReader().decode(bitmap);
+            String qrText = result.getText();
+
+            if (qrText != null && !qrText.trim().isEmpty()) {
+                classIdField.setText(qrText.trim());
+                validateClassIdAndProceed();
+            } else {
+                showError("QR code did not contain a valid Class ID.");
+            }
+        } catch (Exception ex) {
+            showError("Failed to read QR code image.");
+        }
+    }
+
+    @FXML
+    private void nextFromStep2() {
+        if (selectedClassroom == null) {
+            showError("No classroom selected. Go back and validate Class ID.");
+            return;
+        }
+        String password = classroomPasswordField.getText();
+        if (password == null || password.trim().isEmpty()) {
+            showError("Please enter the classroom password.");
+            return;
+        }
+
+        boolean ok = ClassroomService.verifyClassroomPassword(selectedClassroom.getId(), password);
+        if (!ok) {
+            showError("Invalid classroom password.");
+            return;
+        }
+
+        currentStep = 3;
+        updateStepUI();
+    }
+
+    @FXML
+    private void backToStep1() {
+        currentStep = 1;
+        updateStepUI();
+    }
+
+    @FXML
+    private void backToStep2() {
+        currentStep = 2;
+        updateStepUI();
+    }
+
+    @FXML
+    private void joinFromStep3() {
+        if (selectedClassroom == null) {
+            showError("No classroom selected. Go back and validate Class ID.");
+            return;
+        }
+
+        String rollNumber = rollNumberField.getText() != null ? rollNumberField.getText().trim() : "";
+        if (rollNumber.isEmpty()) {
+            showError("Please enter your roll number.");
+            return;
+        }
+
+        User u = currentUser != null ? currentUser : LoginController.getCurrentUser();
+        if (u == null) {
+            showError("User session not found. Please login again.");
+            return;
+        }
+
+        UserProfile profile = ProfileService.getProfile(u.getId());
+        if (profile == null || profile.getRollNumber() == null || profile.getRollNumber().trim().isEmpty()) {
+            showError("Set your roll number in Profile first.");
+            return;
+        }
+
+        if (!profile.getRollNumber().trim().equalsIgnoreCase(rollNumber)) {
+            showError("Roll number doesn't match your profile.");
+            return;
+        }
+
+        if (!ClassroomService.isRollAllowedInClassroom(selectedClassroom.getId(), rollNumber)) {
+            showError("Your roll number is not registered for this classroom.");
+            return;
+        }
+
+        if (ClassroomService.isStudentInClassroom(selectedClassroom.getId(), u.getId())) {
+            showError("You already joined this classroom.");
+            return;
+        }
+
+        boolean added = ClassroomService.addStudentToClassroom(selectedClassroom.getId(), u.getId(), rollNumber);
+        if (added) {
+            showSuccess("Joined classroom: " + selectedClassroom.getName());
+            clearFields();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                    javafx.application.Platform.runLater(this::goBackToDashboard);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        } else {
+            showError("Error joining classroom. Please try again.");
+        }
+    }
+
+    private boolean validateClassIdAndProceed() {
+        String classId = classIdField.getText() != null ? classIdField.getText().trim() : "";
+        if (classId.isEmpty()) {
+            showError("Please enter a valid Class ID.");
+            return false;
+        }
+
+        Classroom classroom = ClassroomService.getClassroomByClassId(classId);
+        if (classroom == null) {
+            showError("Classroom not found. Check the Class ID.");
+            return false;
+        }
+
+        selectedClassroom = classroom;
+        if (classroomPreviewLabel != null) {
+            String preview = String.format("%s | Section: %s | Dept: %s | Class ID: %s",
+                    classroom.getName(), classroom.getSection(), classroom.getDepartment(), classId);
+            classroomPreviewLabel.setText(preview);
+        }
+
+        currentStep = 2;
+        updateStepUI();
+        return true;
+    }
+
+    @FXML
+    private void nextFromStep1() {
+        validateClassIdAndProceed();
+    }
     
 
     @FXML

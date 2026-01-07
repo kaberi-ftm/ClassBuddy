@@ -92,6 +92,12 @@
                 </font>
             </Label>
             <Label styleClass="page-subtitle" text="View your schedule and upcoming events" />
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label fx:id="classroomContextLabel" text="All Active Classes" style="-fx-text-fill: -text-secondary; -fx-font-size: 13;" />
+                <Label fx:id="enrollmentWarningLabel" text="" visible="false" managed="false" style="-fx-text-fill: -error; -fx-font-weight: bold; -fx-font-size: 12;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#goToDashboard" text="Back to Dashboard" styleClass="btn-ghost" />
+            </HBox>
         </VBox>
 
         <!-- Content Body -->
@@ -108,6 +114,9 @@
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button onAction="#handleNextMonth" text="►" styleClass="btn-ghost" />
                     <Button onAction="#handleToday" text="Today" styleClass="btn-primary" style="-fx-min-width: 80;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="semesterRangeLabel" text="" style="-fx-text-fill: -text-secondary; -fx-font-size: 12;" />
+                    <Button onAction="#toggleSemesterFilter" text="Semester Filter" styleClass="btn-ghost" />
                 </HBox>
 
                 <!-- Calendar Grid -->

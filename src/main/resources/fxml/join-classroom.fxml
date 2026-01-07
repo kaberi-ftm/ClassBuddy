@@ -125,6 +125,8 @@
                             </VBox>
                             <HBox spacing="12" alignment="CENTER_LEFT">
                                 <Button text="Scan QR Code" onAction="#handleScanQr" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button text="Next" onAction="#nextFromStep1" styleClass="btn-primary" />
                             </HBox>
                             <Label fx:id="classroomPreviewLabel" text="" wrapText="true" />
                         </VBox>

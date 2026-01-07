@@ -58,6 +58,38 @@
                     <Insets left="25" />
                 </padding>
             </Button>
+            <Button onAction="#goToAddExam" styleClass="sidebar-item" text="Add Exam" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-clipboard-list" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button onAction="#goToAddCTQuiz" styleClass="sidebar-item" text="Add Test" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-tasks" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button onAction="#goToAddLabTest" styleClass="sidebar-item" text="Add Lab Test" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-flask" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button onAction="#goToAddNotice" styleClass="sidebar-item" text="Add Notice" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-bullhorn" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
         </VBox>
 
         <VBox styleClass="sidebar-footer">

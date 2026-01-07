@@ -233,6 +233,58 @@ public class AddRoutineController {
         }
     }
 
+    @FXML
+    public void goToAddExam() {
+        navigateToAddScreen("/fxml/add-exam.fxml");
+    }
+
+    @FXML
+    public void goToAddCTQuiz() {
+        navigateToAddScreen("/fxml/add-ctquiz.fxml");
+    }
+
+    @FXML
+    public void goToAddLabTest() {
+        navigateToAddScreen("/fxml/add-labtest.fxml");
+    }
+
+    @FXML
+    public void goToAddNotice() {
+        navigateToAddScreen("/fxml/add-notice.fxml");
+    }
+
+    private void navigateToAddScreen(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            Object controller = loader.getController();
+            if (controller instanceof AddExamController) {
+                AddExamController ctrl = (AddExamController) controller;
+                ctrl.setClassroom(classroom);
+                ctrl.loadData();
+            } else if (controller instanceof AddCTQuizController) {
+                AddCTQuizController ctrl = (AddCTQuizController) controller;
+                ctrl.setClassroom(classroom);
+            } else if (controller instanceof AddLabTestController) {
+                AddLabTestController ctrl = (AddLabTestController) controller;
+                ctrl.setClassroom(classroom);
+            } else if (controller instanceof AddNoticeController) {
+                AddNoticeController ctrl = (AddNoticeController) controller;
+                ctrl.setClassroom(classroom);
+                ctrl.loadData();
+            }
+
+            Scene scene = new Scene(root, 1200, 800);
+            Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void clearFields() {
         periodNumberField.clear();
         courseNameField.clear();

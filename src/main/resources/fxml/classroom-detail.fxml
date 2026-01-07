@@ -69,17 +69,7 @@
                 </padding>
             </Button>
             
-            <Button fx:id="btnCTQuiz" onAction="#showCTQuizTab" styleClass="sidebar-item" text="Tests" maxWidth="Infinity" alignment="CENTER_LEFT">
-                <padding>
-                    <Insets left="25" />
-                </padding>
-            </Button>
-            
-            <Button fx:id="btnLabTests" onAction="#showLabTestTab" styleClass="sidebar-item" text="Lab Tests" maxWidth="Infinity" alignment="CENTER_LEFT">
-                <padding>
-                    <Insets left="25" />
-                </padding>
-            </Button>
+            <!-- Tests and Lab Tests moved under Exams tab -->
         </VBox>
 
         <VBox styleClass="sidebar-footer">
@@ -120,8 +110,10 @@
 
                 <Tab text="Exams">
                     <VBox styleClass="content-body" spacing="20" VBox.vgrow="ALWAYS">
-                        <HBox spacing="15" alignment="CENTER_LEFT">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
                             <Button fx:id="addExamBtn" onAction="#goToAddExam" styleClass="btn-primary" text="Add Exam" visible="false" />
+                            <Button fx:id="addCTQuizBtn" onAction="#goToAddCTQuiz" styleClass="btn-secondary" text="Add Test" visible="false" />
+                            <Button fx:id="addLabTestBtn" onAction="#goToAddLabTest" styleClass="btn-secondary" text="Add Lab Test" visible="false" />
                             <Region HBox.hgrow="ALWAYS" />
                             <Button onAction="#refreshExams" styleClass="btn-secondary" text="Refresh" />
                         </HBox>
@@ -146,33 +138,7 @@
                     </VBox>
                 </Tab>
 
-                <Tab fx:id="ctQuizTab" text="CT/Quiz">
-                    <VBox styleClass="content-body" spacing="20" VBox.vgrow="ALWAYS">
-                        <HBox spacing="15" alignment="CENTER_LEFT">
-                            <Button fx:id="addCTQuizBtn" onAction="#goToAddCTQuiz" styleClass="btn-primary" text="Add Test" visible="false" />
-                            <Region HBox.hgrow="ALWAYS" />
-                            <Button styleClass="btn-secondary" text="Refresh" />
-                        </HBox>
-                        
-                        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                            <VBox fx:id="ctQuizContainer" spacing="15" style="-fx-background-color: transparent;" />
-                        </ScrollPane>
-                    </VBox>
-                </Tab>
-
-                <Tab fx:id="labTestTab" text="Lab Tests">
-                    <VBox styleClass="content-body" spacing="20" VBox.vgrow="ALWAYS">
-                        <HBox spacing="15" alignment="CENTER_LEFT">
-                            <Button fx:id="addLabTestBtn" onAction="#goToAddLabTest" styleClass="btn-primary" text="Add Lab Test" visible="false" />
-                            <Region HBox.hgrow="ALWAYS" />
-                            <Button styleClass="btn-secondary" text="Refresh" />
-                        </HBox>
-                        
-                        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                            <VBox fx:id="labTestContainer" spacing="15" style="-fx-background-color: transparent;" />
-                        </ScrollPane>
-                    </VBox>
-                </Tab>
+                <!-- CT/Quiz and Lab Tests tabs removed; merged into Exams tab -->
             </tabs>
         </TabPane>
     </VBox>
