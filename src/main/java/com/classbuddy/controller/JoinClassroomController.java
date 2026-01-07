@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import com.classbuddy.model. Classroom;
 import com.classbuddy.model.User;
 import com.classbuddy.service.ClassroomService;
+import com.classbuddy.service.ProfileService;
+import com.classbuddy.model.UserProfile;
 import com.classbuddy.util.ViewTransitions;
 import java.io.IOException;
 
@@ -23,6 +25,9 @@ public class JoinClassroomController {
     private Label userRoleLabel;
     @FXML
     private Button createClassroomNavBtn;
+
+    @FXML
+    private TextField classIdField;
 
     @FXML
     private TextField rollNumberField;
@@ -134,19 +139,41 @@ public class JoinClassroomController {
 
     @FXML
     public void handleJoinClassroom() {
+        String classId = classIdField.getText() != null ? classIdField.getText().trim() : "";
         String rollNumber = rollNumberField.getText().trim();
         String password = classroomPasswordField.getText();
 
-        if (rollNumber.isEmpty() || password.isEmpty()) {
-            showError("Please enter roll number and classroom password.");
+        if (classId.isEmpty() || rollNumber.isEmpty() || password.isEmpty()) {
+            showError("Please enter Class ID, roll number and classroom password.");
             return;
         }
 
-        // Find classroom by password
-        Classroom classroom = findClassroomByPassword(password);
+        Classroom classroom = ClassroomService.getClassroomByClassId(classId);
 
         if (classroom == null) {
-            showError("Classroom not found. Invalid password.");
+            showError("Classroom not found. Check the Class ID.");
+            return;
+        }
+
+        if (!com.classbuddy.util.PasswordHasher.verifyPassword(password, classroom.getPasswordHash())) {
+            showError("Invalid classroom password.");
+            return;
+        }
+
+        User u = currentUser != null ? currentUser : LoginController.getCurrentUser();
+        if (u == null) {
+            showError("User session not found. Please login again.");
+            return;
+        }
+
+        UserProfile profile = ProfileService.getProfile(u.getId());
+        if (profile == null || profile.getRollNumber() == null || profile.getRollNumber().trim().isEmpty()) {
+            showError("Set your roll number in Profile first.");
+            return;
+        }
+
+        if (!profile.getRollNumber().trim().equalsIgnoreCase(rollNumber)) {
+            showError("Roll number doesn't match your profile.");
             return;
         }
 
@@ -157,7 +184,6 @@ public class JoinClassroomController {
         }
 
         // Check if admin already joined
-        User u = currentUser != null ? currentUser : LoginController.getCurrentUser();
         if (u != null && ClassroomService.isStudentInClassroom(classroom.getId(), u.getId())) {
             showError("You already joined this classroom.");
             return;
@@ -183,36 +209,7 @@ public class JoinClassroomController {
         }
     }
 
-    /**
-     * Find classroom by password (brute force - check all classrooms)
-     */
-    private Classroom findClassroomByPassword(String password) {
-        try (java.sql.Connection conn = com.classbuddy.util.DatabaseUtil.getConnection()) {
-            String sql = "SELECT * FROM classroom";
-            try (java.sql.Statement stmt = conn.createStatement();
-                 java.sql.ResultSet rs = stmt.executeQuery(sql)) {
-
-                while (rs.next()) {
-                    String hashedPassword = rs.getString("password_hash");
-                    if (com.classbuddy.util. PasswordHasher.verifyPassword(password, hashedPassword)) {
-                        return new Classroom(
-                                rs.getInt("id"),
-                                rs.getInt("admin_id"),
-                                rs. getString("name"),
-                                rs.getString("section"),
-                                rs.getString("department"),
-                                hashedPassword,
-                                rs.getTimestamp("created_at").toLocalDateTime()
-                        );
-                    }
-                }
-            }
-        } catch (java.sql.SQLException e) {
-            System.err.println("Error finding classroom:  " + e.getMessage());
-        }
-
-        return null;
-    }
+    
 
     @FXML
     public void goBackToDashboard() {

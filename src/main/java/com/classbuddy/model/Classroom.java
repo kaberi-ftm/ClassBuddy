@@ -8,6 +8,8 @@ public class Classroom {
     private String name;
     private String section;
     private String department;
+    private String classId;
+    private String qrCodePath;
     private String passwordHash;
     private LocalDateTime createdAt;
 
@@ -38,6 +40,20 @@ public class Classroom {
         this.createdAt = createdAt;
     }
 
+    public Classroom(int id, int adminId, String name, String section,
+                     String department, String classId, String qrCodePath,
+                     String passwordHash, LocalDateTime createdAt) {
+        this.id = id;
+        this.adminId = adminId;
+        this.name = name;
+        this.section = section;
+        this.department = department;
+        this.classId = classId;
+        this.qrCodePath = qrCodePath;
+        this.passwordHash = passwordHash;
+        this.createdAt = createdAt;
+    }
+
     // Getters
     public int getId() {
         return id;
@@ -57,6 +73,14 @@ public class Classroom {
 
     public String getDepartment() {
         return department;
+    }
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public String getQrCodePath() {
+        return qrCodePath;
     }
 
     public String getPasswordHash() {
@@ -82,6 +106,14 @@ public class Classroom {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
+    }
+
+    public void setQrCodePath(String qrCodePath) {
+        this.qrCodePath = qrCodePath;
     }
 
     @Override

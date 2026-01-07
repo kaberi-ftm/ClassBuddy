@@ -99,7 +99,7 @@
                     <Font name="System Bold" size="28.0" />
                 </font>
             </Label>
-            <Label styleClass="page-subtitle" text="Enter your roll number and classroom password" />
+            <Label styleClass="page-subtitle" text="Enter Class ID, password, and your roll number" />
         </VBox>
 
         <ScrollPane fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
@@ -108,6 +108,14 @@
                     <Label styleClass="card-title" text="Join a classroom" />
 
                     <Label fx:id="errorLabel" managed="false" styleClass="error-message" text="" visible="false" wrapText="true" />
+
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Class ID" />
+                        <HBox spacing="10" styleClass="input-container">
+                            <FontIcon iconLiteral="fas-qrcode" styleClass="input-icon" />
+                            <TextField fx:id="classIdField" promptText="e.g., CSE101-A-2026" styleClass="input-field" HBox.hgrow="ALWAYS" />
+                        </HBox>
+                    </VBox>
 
                     <VBox spacing="8">
                         <Label styleClass="field-label" text="Roll Number" />

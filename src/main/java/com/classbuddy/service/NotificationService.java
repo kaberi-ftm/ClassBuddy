@@ -217,7 +217,8 @@ public class NotificationService {
                 "FROM routine r " +
                 "JOIN classroom_students cs ON r.classroom_id = cs.classroom_id " +
                 "JOIN notification_settings ns ON cs.student_id = ns.user_id " +
-                "WHERE ns.enable_routine_notifications = 1";
+                "WHERE ns.enable_routine_notifications = 1 " +
+                "AND (cs.enrollment_status IS NULL OR cs.enrollment_status = 'ACTIVE')";
 
         try (Connection conn = DatabaseUtil.getConnection();
              Statement stmt = conn.createStatement();
@@ -269,6 +270,7 @@ public class NotificationService {
                 "JOIN classroom_students cs ON e.classroom_id = cs.classroom_id " +
                 "JOIN notification_settings ns ON cs. student_id = ns.user_id " +
                 "WHERE ns.enable_exam_notifications = 1 " +
+                "AND (cs.enrollment_status IS NULL OR cs.enrollment_status = 'ACTIVE') " +
                 "AND e.exam_date >= DATE('now')";
 
         try (Connection conn = DatabaseUtil.getConnection();
@@ -314,7 +316,8 @@ public class NotificationService {
     public static void notifyNewNotice(int classroomId, int noticeId, String noticeTitle) {
         String sql = "SELECT cs.student_id FROM classroom_students cs " +
                 "JOIN notification_settings ns ON cs.student_id = ns.user_id " +
-                "WHERE cs.classroom_id = ? AND ns.enable_notice_notifications = 1";
+                "WHERE cs.classroom_id = ? AND ns.enable_notice_notifications = 1 " +
+                "AND (cs.enrollment_status IS NULL OR cs.enrollment_status = 'ACTIVE')";
 
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

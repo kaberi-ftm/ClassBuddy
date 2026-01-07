@@ -33,6 +33,7 @@ public class ProfileService {
                         rs.getString("avatar_url"),
                         rs.getString("department"),
                         rs.getString("student_id"),
+                    rs.getString("roll_number"),
                         rs.getString("designation"),
                         rs.getTimestamp("date_of_birth") != null ? 
                             rs.getTimestamp("date_of_birth").toLocalDateTime() : null,
@@ -52,8 +53,8 @@ public class ProfileService {
      */
     public static boolean saveProfile(UserProfile profile) {
         String sql = "INSERT INTO user_profiles (user_id, full_name, phone_number, address, bio, " +
-                    "avatar_url, department, student_id, designation, date_of_birth, updated_at) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "avatar_url, department, student_id, roll_number, designation, date_of_birth, updated_at) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                     "ON CONFLICT(user_id) DO UPDATE SET " +
                     "full_name = excluded.full_name, " +
                     "phone_number = excluded.phone_number, " +
@@ -62,6 +63,7 @@ public class ProfileService {
                     "avatar_url = excluded.avatar_url, " +
                     "department = excluded.department, " +
                     "student_id = excluded.student_id, " +
+                    "roll_number = excluded.roll_number, " +
                     "designation = excluded.designation, " +
                     "date_of_birth = excluded.date_of_birth, " +
                     "updated_at = excluded.updated_at";
@@ -77,10 +79,11 @@ public class ProfileService {
             pstmt.setString(6, profile.getAvatarUrl());
             pstmt.setString(7, profile.getDepartment());
             pstmt.setString(8, profile.getStudentId());
-            pstmt.setString(9, profile.getDesignation());
-            pstmt.setTimestamp(10, profile.getDateOfBirth() != null ? 
+            pstmt.setString(9, profile.getRollNumber());
+            pstmt.setString(10, profile.getDesignation());
+            pstmt.setTimestamp(11, profile.getDateOfBirth() != null ? 
                 Timestamp.valueOf(profile.getDateOfBirth()) : null);
-            pstmt.setTimestamp(11, Timestamp.valueOf(LocalDateTime.now()));
+            pstmt.setTimestamp(12, Timestamp.valueOf(LocalDateTime.now()));
 
             int rowsAffected = pstmt.executeUpdate();
             return rowsAffected > 0;
@@ -108,5 +111,29 @@ public class ProfileService {
             System.err.println("Error deleting profile: " + e.getMessage());
             return false;
         }
+    }
+
+    public static boolean isRollNumberAvailable(String rollNumber, int excludeUserId) {
+        if (rollNumber == null || rollNumber.trim().isEmpty()) return true;
+
+        String sql = "SELECT COUNT(*) FROM user_profiles WHERE roll_number = ? AND user_id <> ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, rollNumber.trim());
+            pstmt.setInt(2, excludeUserId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) == 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error checking roll number: " + e.getMessage());
+        }
+
+        return false;
     }
 }

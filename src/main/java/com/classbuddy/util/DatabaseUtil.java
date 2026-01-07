@@ -50,8 +50,14 @@ public class DatabaseUtil {
                 }
             }
 
+            MigrationRunner.run(conn);
+
         } catch (Exception e) {
             throw new RuntimeException("Database init failed", e);
         }
+    }
+
+    public static String getDataDir() {
+        return DB_DIR;
     }
 }

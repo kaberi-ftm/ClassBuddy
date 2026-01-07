@@ -3,6 +3,8 @@ package com.classbuddy.service;
 import com.classbuddy.model.Classroom;
 import com. classbuddy.util.DatabaseUtil;
 import com.classbuddy.util.  PasswordHasher;
+import com.classbuddy.util.ClassIdGenerator;
+import com.classbuddy.util.QRCodeGenerator;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +17,22 @@ public class ClassroomService {
     public static boolean createClassroom(int adminId, String name, String section,
                                           String department, String password) {
         String hashedPassword = PasswordHasher.hashPassword(password);
-        String sql = "INSERT INTO classroom (admin_id, name, section, department, password_hash) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String classId = ClassIdGenerator.generate(name, section);
+        if (!isClassIdAvailable(classId)) {
+            System.out.println("Class ID already exists: " + classId);
+            return false;
+        }
+
+        String qrPath;
+        try {
+            qrPath = QRCodeGenerator.generateToDataDir(classId, classId);
+        } catch (Exception e) {
+            System.err.println("QR generation failed: " + e.getMessage());
+            qrPath = null;
+        }
+
+        String sql = "INSERT INTO classroom (admin_id, name, section, department, class_id, qr_code_path, password_hash) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn. prepareStatement(sql)) {
@@ -25,7 +41,9 @@ public class ClassroomService {
             pstmt.setString(2, name);
             pstmt.setString(3, section);
             pstmt.setString(4, department);
-            pstmt.setString(5, hashedPassword);
+            pstmt.setString(5, classId);
+            pstmt.setString(6, qrPath);
+            pstmt.setString(7, hashedPassword);
 
             pstmt.executeUpdate();
             System.out.println("Classroom created:  " + name);
@@ -57,6 +75,8 @@ public class ClassroomService {
                             rs.getString("name"),
                             rs.getString("section"),
                             rs.getString("department"),
+                            rs.getString("class_id"),
+                            rs.getString("qr_code_path"),
                             rs.getString("password_hash"),
                             rs.getTimestamp("created_at").toLocalDateTime()
                     );
@@ -78,7 +98,8 @@ public class ClassroomService {
         List<Classroom> classrooms = new ArrayList<>();
         String sql = "SELECT c.* FROM classroom c " +
                 "INNER JOIN classroom_students cs ON c.id = cs.classroom_id " +
-                "WHERE cs.student_id = ? ORDER BY c.created_at DESC";
+                "WHERE cs.student_id = ? AND (cs.enrollment_status IS NULL OR cs.enrollment_status = 'ACTIVE') " +
+                "ORDER BY c.created_at DESC";
 
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -93,6 +114,8 @@ public class ClassroomService {
                             rs.getString("name"),
                             rs.getString("section"),
                             rs.getString("department"),
+                            rs.getString("class_id"),
+                            rs.getString("qr_code_path"),
                             rs.getString("password_hash"),
                             rs.getTimestamp("created_at").toLocalDateTime()
                     );
@@ -126,6 +149,8 @@ public class ClassroomService {
                             rs.getString("name"),
                             rs.getString("section"),
                             rs.getString("department"),
+                            rs.getString("class_id"),
+                            rs.getString("qr_code_path"),
                             rs.getString("password_hash"),
                             rs.getTimestamp("created_at").toLocalDateTime()
                     );
@@ -159,6 +184,8 @@ public class ClassroomService {
                                 rs.getString("name"),
                                 rs.getString("section"),
                                 rs.getString("department"),
+                                rs.getString("class_id"),
+                                rs.getString("qr_code_path"),
                                 hashedPassword,
                                 rs.getTimestamp("created_at").toLocalDateTime()
                         );
@@ -171,6 +198,78 @@ public class ClassroomService {
         }
 
         return null;
+    }
+
+    public static Classroom getClassroomByClassId(String classId) {
+        String sql = "SELECT * FROM classroom WHERE class_id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, classId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Classroom(
+                            rs.getInt("id"),
+                            rs.getInt("admin_id"),
+                            rs.getString("name"),
+                            rs.getString("section"),
+                            rs.getString("department"),
+                            rs.getString("class_id"),
+                            rs.getString("qr_code_path"),
+                            rs.getString("password_hash"),
+                            rs.getTimestamp("created_at").toLocalDateTime()
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error fetching classroom by class_id: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static boolean isClassIdAvailable(String classId) {
+        if (classId == null || classId.trim().isEmpty()) return false;
+
+        String sql = "SELECT COUNT(*) FROM classroom WHERE class_id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, classId.trim());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) == 0;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error checking class id: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    public static boolean updateEnrollmentStatus(int classroomId, int userId, String status) {
+        String sql = "UPDATE classroom_students SET enrollment_status = ? WHERE classroom_id = ? AND student_id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, status);
+            pstmt.setInt(2, classroomId);
+            pstmt.setInt(3, userId);
+
+            int rows = pstmt.executeUpdate();
+            return rows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error updating enrollment status: " + e.getMessage());
+            return false;
+        }
     }
 
     /**

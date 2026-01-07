@@ -123,18 +123,22 @@
                         <!-- Student ID (visible for students) -->
                         <Label text="Student ID:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4" fx:id="studentIdLabel" />
                         <TextField fx:id="studentIdField" promptText="Enter student ID" GridPane.columnIndex="1" GridPane.rowIndex="4" maxWidth="400" />
+
+                        <!-- Roll Number (visible for students) -->
+                        <Label text="Roll Number:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="5" fx:id="rollNumberLabel" />
+                        <TextField fx:id="rollNumberField" promptText="Enter roll number" GridPane.columnIndex="1" GridPane.rowIndex="5" maxWidth="400" />
                         
                         <!-- Designation (visible for teachers/admin) -->
-                        <Label text="Designation:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="5" fx:id="designationLabel" />
-                        <TextField fx:id="designationField" promptText="Enter designation" GridPane.columnIndex="1" GridPane.rowIndex="5" maxWidth="400" />
+                        <Label text="Designation:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="6" fx:id="designationLabel" />
+                        <TextField fx:id="designationField" promptText="Enter designation" GridPane.columnIndex="1" GridPane.rowIndex="6" maxWidth="400" />
                         
                         <!-- Address -->
-                        <Label text="Address:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-                        <TextArea fx:id="addressArea" promptText="Enter your address" GridPane.columnIndex="1" GridPane.rowIndex="6" maxWidth="400" prefRowCount="2" />
+                        <Label text="Address:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                        <TextArea fx:id="addressArea" promptText="Enter your address" GridPane.columnIndex="1" GridPane.rowIndex="7" maxWidth="400" prefRowCount="2" />
                         
                         <!-- Bio -->
-                        <Label text="Bio:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-                        <TextArea fx:id="bioArea" promptText="Tell us about yourself..." GridPane.columnIndex="1" GridPane.rowIndex="7" maxWidth="400" prefRowCount="3" />
+                        <Label text="Bio:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                        <TextArea fx:id="bioArea" promptText="Tell us about yourself..." GridPane.columnIndex="1" GridPane.rowIndex="8" maxWidth="400" prefRowCount="3" />
                         
                         <columnConstraints>
                             <ColumnConstraints minWidth="120" prefWidth="120" />

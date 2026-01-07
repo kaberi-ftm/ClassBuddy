@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS classroom (
                                          name VARCHAR(100) NOT NULL,
     section VARCHAR(50),
     department VARCHAR(50),
+    class_id VARCHAR(50) UNIQUE,
+    qr_code_path VARCHAR(255),
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
@@ -38,6 +40,8 @@ CREATE TABLE IF NOT EXISTS classroom_students (
                                                   classroom_id INTEGER NOT NULL,
                                                   student_id INTEGER NOT NULL,
                                                   roll_number VARCHAR(20) NOT NULL,
+    enrollment_status TEXT DEFAULT 'ACTIVE',
+    enrolled_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(classroom_id, student_id),
     FOREIGN KEY (classroom_id) REFERENCES classroom(id) ON DELETE CASCADE,
@@ -49,6 +53,7 @@ CREATE TABLE IF NOT EXISTS routine (
                                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                                        classroom_id INTEGER NOT NULL,
                                        day VARCHAR(15) NOT NULL,
+    applicable_days TEXT,
     period_number INTEGER NOT NULL,
     course_name VARCHAR(100) NOT NULL,
     teacher_name VARCHAR(100),
@@ -159,6 +164,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     avatar_url TEXT,
     department VARCHAR(100),
     student_id VARCHAR(50),
+    roll_number VARCHAR(20) UNIQUE,
     designation VARCHAR(100),
     date_of_birth TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -208,6 +214,7 @@ CREATE INDEX IF NOT EXISTS idx_classroom_students ON classroom_students(classroo
 CREATE INDEX IF NOT EXISTS idx_routine_classroom ON routine(classroom_id);
 CREATE INDEX IF NOT EXISTS idx_exam_classroom ON exam(classroom_id);
 CREATE INDEX IF NOT EXISTS idx_user_profiles ON user_profiles(user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_profiles_roll_number ON user_profiles(roll_number);
 CREATE INDEX IF NOT EXISTS idx_calendar_events_classroom ON calendar_events(classroom_id, event_date);
 CREATE INDEX IF NOT EXISTS idx_calendar_events_type ON calendar_events(event_type, reference_id);
 CREATE INDEX IF NOT EXISTS idx_personal_calendar_user ON personal_calendar_events(user_id, event_date);

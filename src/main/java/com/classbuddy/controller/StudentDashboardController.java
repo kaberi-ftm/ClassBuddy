@@ -140,6 +140,10 @@ public class StudentDashboardController {
         Label codeLabel = new Label("ID: " + classroom.getId());
         codeLabel.getStyleClass().add("classroom-code");
 
+        if (classroom.getClassId() != null && !classroom.getClassId().trim().isEmpty()) {
+            codeLabel.setText("Class ID: " + classroom.getClassId());
+        }
+
         Label detailsLabel = new Label(
                 "Section " + classroom.getSection() + " · " + classroom.getDepartment()
         );
@@ -197,25 +201,17 @@ public class StudentDashboardController {
      * Leave classroom
      */
     private void leaveClassroom(Classroom classroom) {
-        // Remove student from classroom
-        String sql = "DELETE FROM classroom_students WHERE classroom_id = ?  " +
-                "AND student_id = ?";
+        boolean ok = ClassroomService.updateEnrollmentStatus(
+                classroom.getId(),
+                currentStudent.getId(),
+                "DROPPED"
+        );
 
-        try (java.sql.Connection conn = com.classbuddy.util.DatabaseUtil.getConnection();
-             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, classroom. getId());
-            pstmt. setInt(2, currentStudent. getId());
-
-            int rowsAffected = pstmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Left classroom: " + classroom.getName());
-                loadStudentClassrooms();  // Reload list
-            }
-
-        } catch (java.sql.SQLException e) {
-            System.err.println("Error leaving classroom: " + e.getMessage());
+        if (ok) {
+            System.out.println("Left classroom: " + classroom.getName());
+            loadStudentClassrooms();
+        } else {
+            System.err.println("Error leaving classroom");
         }
     }
 

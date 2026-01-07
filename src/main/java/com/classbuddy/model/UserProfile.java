@@ -14,6 +14,7 @@ public class UserProfile {
     private String avatarUrl;
     private String department;
     private String studentId;  // For students
+    private String rollNumber;  // For students
     private String designation;  // For teachers
     private LocalDateTime dateOfBirth;
     private LocalDateTime updatedAt;
@@ -27,7 +28,7 @@ public class UserProfile {
     // Constructor for existing profile (from DB)
     public UserProfile(int userId, String fullName, String phoneNumber, String address,
                       String bio, String avatarUrl, String department, String studentId,
-                      String designation, LocalDateTime dateOfBirth, LocalDateTime updatedAt) {
+                      String rollNumber, String designation, LocalDateTime dateOfBirth, LocalDateTime updatedAt) {
         this.userId = userId;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
@@ -36,6 +37,7 @@ public class UserProfile {
         this.avatarUrl = avatarUrl;
         this.department = department;
         this.studentId = studentId;
+        this.rollNumber = rollNumber;
         this.designation = designation;
         this.dateOfBirth = dateOfBirth;
         this.updatedAt = updatedAt;
@@ -72,6 +74,10 @@ public class UserProfile {
 
     public String getStudentId() {
         return studentId;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
     }
 
     public String getDesignation() {
@@ -123,6 +129,11 @@ public class UserProfile {
 
     public void setStudentId(String studentId) {
         this.studentId = studentId;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
         this.updatedAt = LocalDateTime.now();
     }
 

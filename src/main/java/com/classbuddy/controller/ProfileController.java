@@ -38,6 +38,12 @@ public class ProfileController {
     
     @FXML
     private TextField studentIdField;
+
+    @FXML
+    private TextField rollNumberField;
+
+    @FXML
+    private Label rollNumberLabel;
     
     @FXML
     private TextField designationField;
@@ -102,6 +108,7 @@ public class ProfileController {
             phoneField.setText(currentProfile.getPhoneNumber());
             departmentField.setText(currentProfile.getDepartment());
             studentIdField.setText(currentProfile.getStudentId());
+            rollNumberField.setText(currentProfile.getRollNumber());
             designationField.setText(currentProfile.getDesignation());
             addressArea.setText(currentProfile.getAddress());
             bioArea.setText(currentProfile.getBio());
@@ -125,6 +132,12 @@ public class ProfileController {
         boolean isStudent = currentUser.getRole().toString().equalsIgnoreCase("STUDENT");
         studentIdField.setVisible(isStudent);
         studentIdField.setManaged(isStudent);
+        rollNumberField.setVisible(isStudent);
+        rollNumberField.setManaged(isStudent);
+        if (rollNumberLabel != null) {
+            rollNumberLabel.setVisible(isStudent);
+            rollNumberLabel.setManaged(isStudent);
+        }
         designationField.setVisible(!isStudent);
         designationField.setManaged(!isStudent);
     }
@@ -140,11 +153,26 @@ public class ProfileController {
             return;
         }
 
+        boolean isStudent = currentUser.getRole().toString().equalsIgnoreCase("STUDENT");
+        if (isStudent) {
+            String roll = rollNumberField.getText() != null ? rollNumberField.getText().trim() : "";
+            if (roll.isEmpty()) {
+                showStatus("Please enter your roll number", false);
+                return;
+            }
+
+            if (!ProfileService.isRollNumberAvailable(roll, currentUser.getId())) {
+                showStatus("That roll number is already in use", false);
+                return;
+            }
+        }
+
         // Update profile object
         currentProfile.setFullName(fullNameField.getText().trim());
         currentProfile.setPhoneNumber(phoneField.getText().trim());
         currentProfile.setDepartment(departmentField.getText().trim());
         currentProfile.setStudentId(studentIdField.getText().trim());
+        currentProfile.setRollNumber(rollNumberField.getText().trim());
         currentProfile.setDesignation(designationField.getText().trim());
         currentProfile.setAddress(addressArea.getText().trim());
         currentProfile.setBio(bioArea.getText().trim());
