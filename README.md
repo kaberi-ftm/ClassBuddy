@@ -47,7 +47,3 @@ If you want a clean DB for testing, close the app and delete the `classbuddy_dat
 ## Entry point
 - JavaFX main class: `com.classbuddy.App`
 - First screen: `src/main/resources/fxml/login.fxml`
-
-## Notes for development
-- Controllers typically need data injected after FXML load (see the pattern described in [copilot-instructions.md](copilot-instructions.md)).
-- If you hit an NPE in `initialize()`, it usually means required data (user/classroom) wasn’t set yet.
