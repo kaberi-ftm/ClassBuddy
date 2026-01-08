@@ -7,6 +7,7 @@ import com.classbuddy.model.User;
 import com.classbuddy.service.CalendarService;
 import com.classbuddy.service.ClassroomService;
 import com.classbuddy.service.RoutineService;
+import com.classbuddy.util.DateFormats;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -23,7 +24,6 @@ import com.classbuddy.util.ContextMenuFactory;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +88,7 @@ public class AdminCalendarController {
             ProfileController controller = loader.getController();
             controller.setUser(currentAdmin, "/fxml/admin-calendar.fxml");
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -105,7 +105,7 @@ public class AdminCalendarController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Parent root = loader.load();
             
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -195,7 +195,7 @@ public class AdminCalendarController {
         }
 
         if (date.equals(selectedDate)) {
-            cell.setStyle(cell.getStyle() + "; -fx-border-color: -primary-purple; -fx-border-width: 2;");
+            cell.getStyleClass().add("calendar-day-selected");
         }
 
         Label dayNumber = new Label(String.valueOf(date.getDayOfMonth()));
@@ -225,7 +225,7 @@ public class AdminCalendarController {
         int totalItems = dayEvents.size() + dayRoutines.size();
         if (totalItems > maxDisplay) {
             Label moreLabel = new Label("+" + (totalItems - maxDisplay) + " more");
-            moreLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 9;");
+            moreLabel.getStyleClass().add("calendar-more-label");
             cell.getChildren().add(moreLabel);
         }
 
@@ -237,20 +237,19 @@ public class AdminCalendarController {
 
     private HBox createEventIndicator(String title, String color) {
         HBox box = new HBox(3);
-        box.getStyleClass().add("calendar-event");
+        box.getStyleClass().addAll("calendar-event", "calendar-event-indicator");
         box.setMaxWidth(Double.MAX_VALUE);
-        box.setStyle("-fx-border-color: " + color + "; -fx-background-color: " + color + "22;");
+        box.setStyle("-event-color: " + color + ";");
 
         Label label = new Label(title.length() > 12 ? title.substring(0, 10) + ".." : title);
-        label.getStyleClass().add("calendar-event-text");
-        label.setStyle("-fx-font-size: 9;");
+        label.getStyleClass().addAll("calendar-event-text", "calendar-event-label");
         box.getChildren().add(label);
 
         return box;
     }
 
     private void showEventsForDate(LocalDate date) {
-        selectedDateLabel.setText(date.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")));
+        selectedDateLabel.setText(DateFormats.dateLong(date));
         eventsList.getChildren().clear();
 
         List<CalendarEvent> events = getEventsForDate(date);
@@ -276,18 +275,18 @@ public class AdminCalendarController {
 
     private VBox createEventCard(CalendarEvent event) {
         VBox card = new VBox(8);
-        card.getStyleClass().add("exam-card");
-        card.setStyle(card.getStyle() + "; -fx-border-color: " + event.getColor() + ";");
+        card.getStyleClass().addAll("exam-card", "event-card");
+        card.setStyle("-event-color: " + event.getColor() + ";");
 
         Label titleLabel = new Label(event.getTitle());
         titleLabel.getStyleClass().add("exam-title");
 
         Label typeLabel = new Label(event.getEventType().toString());
-        typeLabel.getStyleClass().add("badge");
-        typeLabel.setStyle("-fx-background-color: " + event.getColor() + "22; -fx-text-fill: " + event.getColor() + ";");
+        typeLabel.getStyleClass().addAll("badge", "badge-tone");
+        typeLabel.setStyle("-event-color: " + event.getColor() + ";");
 
         if (event.getStartTime() != null) {
-            Label timeLabel = new Label("🕐 " + event.getStartTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
+            Label timeLabel = new Label("🕐 " + DateFormats.time(event.getStartTime()));
             timeLabel.getStyleClass().add("exam-date");
             card.getChildren().addAll(titleLabel, typeLabel, timeLabel);
         } else {
@@ -295,14 +294,14 @@ public class AdminCalendarController {
         }
 
         if (event.getLocation() != null && !event.getLocation().isEmpty()) {
-            Label locationLabel = new Label("📍 " + event.getLocation());
-            locationLabel.setStyle("-fx-text-fill: -text-secondary;");
+                Label locationLabel = new Label("📍 " + event.getLocation());
+            locationLabel.getStyleClass().add("text-muted");
             card.getChildren().add(locationLabel);
         }
 
         if (event.getDescription() != null && !event.getDescription().isEmpty()) {
             Label descLabel = new Label(event.getDescription());
-            descLabel.setStyle("-fx-text-fill: -text-secondary; -fx-font-size: 12;");
+            descLabel.getStyleClass().addAll("text-muted", "body-small");
             descLabel.setWrapText(true);
             card.getChildren().add(descLabel);
         }
@@ -317,8 +316,8 @@ public class AdminCalendarController {
         Label courseLabel = new Label(routine.getCourseName());
         courseLabel.getStyleClass().add("routine-course-label");
 
-        Label timeLabel = new Label("🕐 " + routine.getTimeStart().format(DateTimeFormatter.ofPattern("hh:mm a")) +
-                " - " + routine.getTimeEnd().format(DateTimeFormatter.ofPattern("hh:mm a")));
+        Label timeLabel = new Label("🕐 " + DateFormats.time(routine.getTimeStart()) +
+            " - " + DateFormats.time(routine.getTimeEnd()));
         timeLabel.getStyleClass().add("routine-time-label");
 
         card.getChildren().addAll(courseLabel, timeLabel);
@@ -381,7 +380,7 @@ public class AdminCalendarController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

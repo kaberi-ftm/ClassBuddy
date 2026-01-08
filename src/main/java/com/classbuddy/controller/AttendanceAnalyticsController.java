@@ -4,6 +4,7 @@ import com.classbuddy.model.Classroom;
 import com.classbuddy.service.AttendanceService;
 import com.classbuddy.service.AttendanceExportService;
 import com.classbuddy.util.ViewTransitions;
+import com.classbuddy.util.NavigationUtil;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -143,13 +144,16 @@ public class AttendanceAnalyticsController {
     @FXML
     public void goBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/classroom-detail.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) statsTable.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-            ViewTransitions.fadeIn(root);
+            ClassroomDetailController controller = NavigationUtil.navigateWithController(
+                    "/fxml/classroom-detail.fxml",
+                    stage,
+                    1366,
+                    800
+            );
+            controller.setClassroom(classroom);
+            controller.loadData();
+            ViewTransitions.fadeIn(stage.getScene().getRoot());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -169,12 +173,14 @@ public class AttendanceAnalyticsController {
             AttendanceExportService.ExportResult result = AttendanceExportService.exportClassroomAttendanceCSV(classroom.getId(), file.toPath());
             if (exportStatusLabel != null) {
                 exportStatusLabel.setText("Exported " + result.getTotalRows() + " rows to " + result.getFilePath());
-                exportStatusLabel.setStyle("-fx-text-fill: green;");
+                exportStatusLabel.getStyleClass().removeAll("status-info", "status-muted", "status-success", "status-error");
+                exportStatusLabel.getStyleClass().add("status-success");
             }
         } catch (Exception ex) {
             if (exportStatusLabel != null) {
                 exportStatusLabel.setText("Export failed: " + ex.getMessage());
-                exportStatusLabel.setStyle("-fx-text-fill: red;");
+                exportStatusLabel.getStyleClass().removeAll("status-info", "status-muted", "status-success", "status-error");
+                exportStatusLabel.getStyleClass().add("status-error");
             }
             ex.printStackTrace();
         }

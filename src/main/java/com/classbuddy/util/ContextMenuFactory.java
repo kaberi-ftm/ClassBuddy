@@ -190,7 +190,7 @@ public class ContextMenuFactory {
             ctrl.setExam(exam);
             ctrl.loadData();
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) dayCell.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -210,7 +210,7 @@ public class ContextMenuFactory {
             ctrl.setNotice(notice);
             ctrl.loadData();
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) dayCell.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -261,7 +261,7 @@ public class ContextMenuFactory {
                 ctrl.loadData();
             }
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) dayCell.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

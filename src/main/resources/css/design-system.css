@@ -8,105 +8,102 @@
     /* BRAND COLORS - Primary Palette            */
     /* ========================================= */
     
-    /* Brand (sleek: Indigo + Cyan) */
-    -brand-primary: #6366F1;
-    -brand-primary-hover: #4F46E5;
-    -brand-primary-light: #818CF8;
-    -brand-primary-lighter: #A5B4FC;
-    -brand-primary-lightest: #E0E7FF;
+    /* Monochrome base + single accent (neo-brutalist) */
+    -brand-primary: #2D5BFF;          /* accent blue */
+    -brand-primary-hover: #2349CC;
+    -brand-primary-light: #AFC3FF;
+    -brand-primary-lighter: #E2E8FF;
+    -brand-primary-lightest: #F2F5FF;
     
-    -brand-secondary: #06B6D4;
-    -brand-secondary-hover: #0891B2;
-    -brand-secondary-light: #22D3EE;
+    -brand-secondary: #0B0B0B;        /* hard outline black */
+    -brand-secondary-hover: #161616;
+    -brand-secondary-light: #222222;
     
-    /* Tertiary */
-    -brand-tertiary: #22C55E;
+    /* Tertiary reserved for success pop */
+    -brand-tertiary: #16A34A;
     
     /* ========================================= */
     /* NEUTRAL PALETTE - Grays                   */
     /* ========================================= */
     
-    -gray-50: #F9FAFB;
-    -gray-100: #F3F4F6;
-    -gray-200: #E5E7EB;
-    -gray-300: #D1D5DB;
-    -gray-400: #9CA3AF;
-    -gray-500: #6B7280;
-    -gray-600: #4B5563;
-    -gray-700: #374151;
-    -gray-800: #1F2937;
-    -gray-900: #111827;
+    -gray-50: #F8F8F3;
+    -gray-100: #EFEFE7;
+    -gray-200: #E2E2D9;
+    -gray-300: #CACAC1;
+    -gray-400: #A9A9A0;
+    -gray-500: #7C7C74;
+    -gray-600: #55554F;
+    -gray-700: #383833;
+    -gray-800: #20201D;
+    -gray-900: #0B0B0B;
     
     /* ========================================= */
     /* SEMANTIC COLORS - Status & Feedback       */
     /* ========================================= */
     
     /* Success - Green */
-    -success: #22C55E;
-    -success-light: #4ADE80;
+    -success: #16A34A;
+    -success-light: #22C55E;
     -success-lighter: #86EFAC;
-    -success-bg: #DCFCE7;
-    -success-text: #166534;
-    
-    /* Warning - Amber */
+    -success-bg: #E8F9EE;
+    -success-text: #0A3B1D;
+
     -warning: #F59E0B;
     -warning-light: #FBBF24;
-    -warning-bg: #FEF3C7;
-    -warning-text: #92400E;
-    
-    /* Error - Red */
-    -error: #EF4444;
-    -error-light: #F87171;
-    -error-bg: #FEE2E2;
-    -error-text: #991B1B;
-    
-    /* Info - Cyan */
-    -info: #06B6D4;
-    -info-light: #22D3EE;
-    -info-bg: #ECFEFF;
-    -info-text: #0E7490;
+    -warning-bg: #FFF4D6;
+    -warning-text: #3E2A00;
+
+    -error: #E11D48;
+    -error-light: #F43F5E;
+    -error-bg: #FFE5EC;
+    -error-text: #3F0A16;
+
+    -info: #2D5BFF;
+    -info-light: #AFC3FF;
+    -info-bg: #EEF2FF;
+    -info-text: #0B1F63;
     
     /* ========================================= */
     /* SIDEBAR - Dark Theme                      */
     /* ========================================= */
     
-    -sidebar-bg: #0B1220;
-    -sidebar-bg-light: #111B2E;
-    -sidebar-hover: #111B2E;
-    -sidebar-active: #1B2B4A;
-    -sidebar-text: #E6EEF9;
-    -sidebar-text-muted: #A9B7CC;
-    -sidebar-border: #1B2B4A;
+    -sidebar-bg: #0B0B0B;
+    -sidebar-bg-light: #161616;
+    -sidebar-hover: #1F1F1F;
+    -sidebar-active: #2A2A2A;
+    -sidebar-text: #F6F6F6;
+    -sidebar-text-muted: #B5B5B5;
+    -sidebar-border: #2A2A2A;
     
     /* ========================================= */
     /* BACKGROUND & SURFACE                      */
     /* ========================================= */
     
-    -bg-primary: #F7F8FC;
-    -bg-secondary: #F1F4FF;
+    -bg-primary: #F8F8F3;
+    -bg-secondary: #EFEFE7;
     -surface: #FFFFFF;
-    -surface-hover: #F7F8FC;
-    -surface-active: #F1F4FF;
+    -surface-hover: #F2F2ED;
+    -surface-active: #E8E8E0;
     
     /* ========================================= */
     /* TEXT COLORS - High Contrast               */
     /* ========================================= */
     
-    -text-primary: #0B1220;
-    -text-secondary: #44546A;
-    -text-tertiary: #6B7A90;
-    -text-inverse: #F8FAFF;
-    -text-link: #6366F1;
-    -text-link-hover: #4F46E5;
+    -text-primary: #0B0B0B;
+    -text-secondary: #1E1E1E;
+    -text-tertiary: #3A3A3A;
+    -text-inverse: #FDFDFD;
+    -text-link: #2D5BFF;
+    -text-link-hover: #2349CC;
     
     /* ========================================= */
     /* BORDERS                                   */
     /* ========================================= */
     
-    -border-color: #E6E8F0;
-    -border-light: #F2F4F8;
-    -border-dark: #D3D8E3;
-    -border-focus: #6366F1;
+    -border-color: #0B0B0B;
+    -border-light: #D7D7CF;
+    -border-dark: #101010;
+    -border-focus: #2D5BFF;
     
     /* ========================================= */
     /* SHADOWS - Elevation System                */
@@ -114,15 +111,15 @@
 
     /* JavaFX supports looked-up values reliably for Paint (colors).
        Keep shadow TOKENS as colors that can be plugged into dropshadow(). */
-    -shadow-xs: rgba(0, 0, 0, 0.04);
-    -shadow-sm: rgba(0, 0, 0, 0.06);
-    -shadow-md: rgba(0, 0, 0, 0.10);
-    -shadow-lg: rgba(0, 0, 0, 0.15);
-    -shadow-xl: rgba(0, 0, 0, 0.20);
+    -shadow-xs: rgba(0, 0, 0, 0.10);
+    -shadow-sm: rgba(0, 0, 0, 0.16);
+    -shadow-md: rgba(0, 0, 0, 0.24);
+    -shadow-lg: rgba(0, 0, 0, 0.32);
+    -shadow-xl: rgba(0, 0, 0, 0.40);
 
-    -shadow-primary: rgba(99, 102, 241, 0.25);
-    -shadow-success: rgba(16, 185, 129, 0.25);
-    -shadow-error: rgba(239, 68, 68, 0.25);
+    -shadow-primary: rgba(45, 91, 255, 0.35);
+    -shadow-success: rgba(22, 163, 74, 0.35);
+    -shadow-error: rgba(225, 29, 72, 0.35);
 }
 
 /* ============================================= */
@@ -131,7 +128,7 @@
 
 /* Font Family */
 .root {
-    -fx-font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    -fx-font-family: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
 /* Display Styles - Hero Sections */

@@ -120,14 +120,7 @@ public class ManageStudentsController {
     private HBox createStudentBox(int rollId, String rollNumber, String studentName) {
         HBox box = new HBox();
         box.setSpacing(10);
-        box.setStyle(
-                "-fx-background-color: -card-bg;" +
-                        "-fx-border-color: -border-color;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-padding: 12;" +
-                        "-fx-border-radius: 8;" +
-                        "-fx-background-radius: 8;"
-        );
+        box.getStyleClass().add("inline-card");
 
         Label infoLabel = new Label(
                 rollNumber + (studentName != null && !studentName.isEmpty()
@@ -176,15 +169,14 @@ public class ManageStudentsController {
                     getClass().getResource("/fxml/admin-dashboard.fxml")
             );
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-            stage.setWidth(1600);
-            stage.setHeight(900);
-            stage.centerOnScreen();
+            stage.setMinWidth(1366);
+            stage.setMinHeight(800);
+            stage.setWidth(1366);
+            stage.setHeight(800);
             stage.show();
             ViewTransitions.fadeIn(root);
 
@@ -194,16 +186,27 @@ public class ManageStudentsController {
     }
 
     private void showError(String msg) {
-        messageLabel.setText(msg);
-        messageLabel.setStyle("-fx-text-fill: -error;");
+        setMessage(msg, "error-message");
         messageLabel.setVisible(true);
         messageLabel.setManaged(true);
     }
 
     private void showSuccess(String msg) {
-        messageLabel.setText(msg);
-        messageLabel.setStyle("-fx-text-fill: -success;");
+        setMessage(msg, "success-message");
         messageLabel.setVisible(true);
         messageLabel.setManaged(true);
+    }
+
+    private void setMessage(String msg, String messageStyleClass) {
+        messageLabel.setText(msg);
+        messageLabel.getStyleClass().removeAll(
+            "error-message",
+            "success-message",
+            "info-message",
+            "warning-message"
+        );
+        if (messageStyleClass != null && !messageStyleClass.isBlank()) {
+            messageLabel.getStyleClass().add(messageStyleClass);
+        }
     }
 }

@@ -10,7 +10,7 @@
 
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.classbuddy.controller.AdminAnalyticsController"
-      spacing="15" stylesheets="/css/styles.css" styleClass="content-body">
+    spacing="15" stylesheets="/css/app-theme.css" styleClass="content-body">
     <padding>
         <Insets top="15" right="15" bottom="15" left="15"/>
     </padding>

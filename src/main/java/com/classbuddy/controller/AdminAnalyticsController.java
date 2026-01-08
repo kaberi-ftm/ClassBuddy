@@ -203,7 +203,7 @@ public class AdminAnalyticsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin-dashboard.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomCombo.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

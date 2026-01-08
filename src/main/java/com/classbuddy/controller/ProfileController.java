@@ -215,7 +215,7 @@ public class ProfileController {
                 // Admin dashboard will auto-load via initialize
             }
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) cancelButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -232,9 +232,8 @@ public class ProfileController {
      */
     private void showStatus(String message, boolean success) {
         statusLabel.setText(message);
-        statusLabel.setStyle(success ? 
-            "-fx-text-fill: -success;" : 
-            "-fx-text-fill: -error;");
+        statusLabel.getStyleClass().removeAll("status-success", "status-danger");
+        statusLabel.getStyleClass().add(success ? "status-success" : "status-danger");
         statusLabel.setVisible(true);
 
         // Hide after 3 seconds

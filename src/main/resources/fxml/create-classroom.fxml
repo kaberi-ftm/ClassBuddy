@@ -64,14 +64,6 @@
                 </padding>
             </Button>
 
-            <Button onAction="#goToCalendar" styleClass="sidebar-item" text="Calendar" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
-                <graphic>
-                    <FontIcon iconLiteral="fas-calendar-alt" styleClass="sidebar-item-icon" />
-                </graphic>
-                <padding>
-                    <Insets left="25" />
-                </padding>
-            </Button>
         </VBox>
 
         <VBox styleClass="sidebar-footer">

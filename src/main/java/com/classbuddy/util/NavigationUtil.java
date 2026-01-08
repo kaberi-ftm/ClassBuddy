@@ -12,15 +12,37 @@ import java.io.IOException;
  */
 public class NavigationUtil {
 
-    private static final double DEFAULT_WIDTH = 1600;
-    private static final double DEFAULT_HEIGHT = 900;
-    private static final double MIN_WIDTH = 1600;
-    private static final double MIN_HEIGHT = 900;
+    private static final double DEFAULT_WIDTH = 1366;
+    private static final double DEFAULT_HEIGHT = 800;
+    private static final double MIN_WIDTH = 960;
+    private static final double MIN_HEIGHT = 540;
 
-    private static final double LOGIN_WIDTH = 1600;
-    private static final double LOGIN_HEIGHT = 900;
-    private static final double LOGIN_MIN_WIDTH = 1600;
-    private static final double LOGIN_MIN_HEIGHT = 900;
+    private static final double LOGIN_WIDTH = 960;
+    private static final double LOGIN_HEIGHT = 540;
+    private static final double LOGIN_MIN_WIDTH = 960;
+    private static final double LOGIN_MIN_HEIGHT = 540;
+
+    public static void applyDashboardScene(Stage stage, Parent root) {
+        Scene scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        stage.setScene(scene);
+        stage.setResizable(true);
+        stage.setMinWidth(MIN_WIDTH);
+        stage.setMinHeight(MIN_HEIGHT);
+        stage.setWidth(DEFAULT_WIDTH);
+        stage.setHeight(DEFAULT_HEIGHT);
+        stage.show();
+    }
+
+    public static void applyLoginScene(Stage stage, Parent root) {
+        Scene scene = new Scene(root, LOGIN_WIDTH, LOGIN_HEIGHT);
+        stage.setScene(scene);
+        stage.setResizable(true);
+        stage.setMinWidth(LOGIN_MIN_WIDTH);
+        stage.setMinHeight(LOGIN_MIN_HEIGHT);
+        stage.setWidth(LOGIN_WIDTH);
+        stage.setHeight(LOGIN_HEIGHT);
+        stage.show();
+    }
 
     /**
      * Navigate to a dashboard view with consistent sizing
@@ -29,12 +51,7 @@ public class NavigationUtil {
         FXMLLoader loader = new FXMLLoader(NavigationUtil.class.getResource(fxmlPath));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        stage.setScene(scene);
-        stage.setResizable(true);
-        stage.setMinWidth(MIN_WIDTH);
-        stage.setMinHeight(MIN_HEIGHT);
-        stage.show();
+        applyDashboardScene(stage, root);
     }
 
     /**
@@ -44,12 +61,7 @@ public class NavigationUtil {
         FXMLLoader loader = new FXMLLoader(NavigationUtil.class.getResource("/fxml/login.fxml"));
         Parent root = loader.load();
 
-        Scene scene = new Scene(root, LOGIN_WIDTH, LOGIN_HEIGHT);
-        stage.setScene(scene);
-        stage.setResizable(true);
-        stage.setMinWidth(LOGIN_MIN_WIDTH);
-        stage.setMinHeight(LOGIN_MIN_HEIGHT);
-        stage.show();
+        applyLoginScene(stage, root);
     }
 
     /**
@@ -64,6 +76,8 @@ public class NavigationUtil {
         stage.setResizable(true);
         stage.setMinWidth(MIN_WIDTH);
         stage.setMinHeight(MIN_HEIGHT);
+        stage.setWidth(width);
+        stage.setHeight(height);
         stage.show();
 
         return loader.getController();

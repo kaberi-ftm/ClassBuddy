@@ -6,6 +6,7 @@ import com.classbuddy.model.User;
 import com.classbuddy.service.ClassroomService;
 import com.classbuddy.service.ScheduleExportService;
 import com.classbuddy.service.ScheduleImportService;
+import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.ViewTransitions;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -51,6 +52,9 @@ public class ScheduleExportImportController {
         // Initially hide progress indicators
         exportProgress.setVisible(false);
         importProgress.setVisible(false);
+
+        hideStatus(exportStatusLabel);
+        hideStatus(importStatusLabel);
 
         // Load admin's classrooms
         loadClassrooms();
@@ -142,8 +146,7 @@ public class ScheduleExportImportController {
         // Show progress
         exportProgress.setVisible(true);
         exportButton.setDisable(true);
-        exportStatusLabel.setText("Exporting...");
-        exportStatusLabel.setStyle("-fx-text-fill: #3498db;");
+        setStatus(exportStatusLabel, "Exporting...", "info-message");
 
         // Perform export in background
         new Thread(() -> {
@@ -156,9 +159,11 @@ public class ScheduleExportImportController {
                 javafx.application.Platform.runLater(() -> {
                     exportProgress.setVisible(false);
                     exportButton.setDisable(false);
-                    exportStatusLabel.setText(String.format("✓ Export successful! %d rows exported to:\n%s", 
-                        result.getTotalRows(), result.getFilePath()));
-                    exportStatusLabel.setStyle("-fx-text-fill: #27ae60;");
+                    setStatus(
+                        exportStatusLabel,
+                        String.format("✓ Export successful! %d rows exported to:\n%s", result.getTotalRows(), result.getFilePath()),
+                        "success-message"
+                    );
                 });
 
             } catch (IOException e) {
@@ -166,8 +171,7 @@ public class ScheduleExportImportController {
                 javafx.application.Platform.runLater(() -> {
                     exportProgress.setVisible(false);
                     exportButton.setDisable(false);
-                    exportStatusLabel.setText("✗ Export failed: " + e.getMessage());
-                    exportStatusLabel.setStyle("-fx-text-fill: #e74c3c;");
+                    setStatus(exportStatusLabel, "✗ Export failed: " + e.getMessage(), "error-message");
                 });
             }
         }).start();
@@ -228,8 +232,7 @@ public class ScheduleExportImportController {
 
         importProgress.setVisible(true);
         importButton.setDisable(true);
-        importStatusLabel.setText("Importing...");
-        importStatusLabel.setStyle("-fx-text-fill: #3498db;");
+        setStatus(importStatusLabel, "Importing...", "info-message");
 
         new Thread(() -> {
             try {
@@ -241,30 +244,66 @@ public class ScheduleExportImportController {
                     importButton.setDisable(false);
 
                     if (!result.conflicts.isEmpty()) {
-                        importStatusLabel.setText("✗ Conflicts found:\n" + String.join("\n", result.conflicts));
-                        importStatusLabel.setStyle("-fx-text-fill: #e67e22;");
+                        setStatus(
+                            importStatusLabel,
+                            "✗ Conflicts found:\n" + String.join("\n", result.conflicts),
+                            "warning-message"
+                        );
                         return;
                     }
 
                     if (!result.errors.isEmpty()) {
-                        importStatusLabel.setText("✗ Import failed:\n" + String.join("\n", result.errors));
-                        importStatusLabel.setStyle("-fx-text-fill: #e74c3c;");
+                        setStatus(
+                            importStatusLabel,
+                            "✗ Import failed:\n" + String.join("\n", result.errors),
+                            "error-message"
+                        );
                         return;
                     }
 
-                    importStatusLabel.setText("✓ Import complete. " + result.toString());
-                    importStatusLabel.setStyle("-fx-text-fill: #27ae60;");
+                    setStatus(importStatusLabel, "✓ Import complete. " + result.toString(), "success-message");
                 });
 
             } catch (Exception e) {
                 javafx.application.Platform.runLater(() -> {
                     importProgress.setVisible(false);
                     importButton.setDisable(false);
-                    importStatusLabel.setText("✗ Import failed: " + e.getMessage());
-                    importStatusLabel.setStyle("-fx-text-fill: #e74c3c;");
+                    setStatus(importStatusLabel, "✗ Import failed: " + e.getMessage(), "error-message");
                 });
             }
         }).start();
+    }
+
+    private void hideStatus(Label label) {
+        if (label == null) {
+            return;
+        }
+        label.setText("");
+        label.setVisible(false);
+        label.setManaged(false);
+        clearMessageStyles(label);
+    }
+
+    private void setStatus(Label label, String text, String messageStyleClass) {
+        if (label == null) {
+            return;
+        }
+        label.setText(text);
+        label.setVisible(true);
+        label.setManaged(true);
+        clearMessageStyles(label);
+        if (messageStyleClass != null && !messageStyleClass.isBlank()) {
+            label.getStyleClass().add(messageStyleClass);
+        }
+    }
+
+    private void clearMessageStyles(Label label) {
+        label.getStyleClass().removeAll(
+            "error-message",
+            "success-message",
+            "info-message",
+            "warning-message"
+        );
     }
 
     @FXML
@@ -272,11 +311,8 @@ public class ScheduleExportImportController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin-dashboard.fxml"));
             Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) exportButton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();

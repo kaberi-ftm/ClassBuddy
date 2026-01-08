@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<HBox minHeight="700.0" minWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.classbuddy.controller.RegisterController">
+<HBox minHeight="700.0" minWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.classbuddy.controller.RegisterController">
 
     <stylesheets>
         <String fx:value="/css/app-theme.css" />

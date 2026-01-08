@@ -19,8 +19,7 @@
     
     <HBox alignment="CENTER" styleClass="calendar-header" spacing="15">
         <Button fx:id="prevMonthBtn" onAction="#handlePrevMonth" 
-                text="◄" styleClass="btn-ghost" 
-                style="-fx-text-fill: white; -fx-font-size: 18; -fx-background-color: rgba(255,255,255,0.2);"/>
+                text="◄" styleClass="btn-ghost calendar-nav-btn" />
         
         <Region HBox.hgrow="ALWAYS"/>
         
@@ -29,8 +28,7 @@
         <Region HBox.hgrow="ALWAYS"/>
         
         <Button fx:id="nextMonthBtn" onAction="#handleNextMonth" 
-                text="►" styleClass="btn-ghost" 
-                style="-fx-text-fill: white; -fx-font-size: 18; -fx-background-color: rgba(255,255,255,0.2);"/>
+            text="►" styleClass="btn-ghost calendar-nav-btn" />
     </HBox>
     
     <GridPane fx:id="calendarGrid" styleClass="calendar-grid">

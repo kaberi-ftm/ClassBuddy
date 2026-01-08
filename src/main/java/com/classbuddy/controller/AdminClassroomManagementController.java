@@ -91,13 +91,13 @@ public class AdminClassroomManagementController {
 
     private HBox createRoutineCard(Routine routine) {
         HBox card = new HBox(10);
-        card.setStyle("-fx-padding: 12; -fx-border-color: -border-color; -fx-border-width: 1; -fx-background-color: -card-bg; -fx-background-radius: 12; -fx-border-radius: 12;");
+        card.getStyleClass().add("inline-card");
 
         Label info = new Label(
                 routine.getDay() + " - Period " + routine.getPeriodNumber() + ": " +
                 routine.getCourseName() + " (" + routine.getTimeStart() + "-" + routine.getTimeEnd() + ")"
         );
-        info.setStyle("-fx-font-size: 12;");
+        info.getStyleClass().add("text-body-sm");
 
         Button deleteBtn = new Button("Delete");
         deleteBtn.getStyleClass().addAll("btn", "btn-danger");
@@ -163,13 +163,13 @@ public class AdminClassroomManagementController {
 
     private HBox createExamCard(Exam exam) {
         HBox card = new HBox(10);
-        card.setStyle("-fx-padding: 12; -fx-border-color: -border-color; -fx-border-width: 1; -fx-background-color: -card-bg; -fx-background-radius: 12; -fx-border-radius: 12;");
+        card.getStyleClass().add("inline-card");
 
         Label info = new Label(
                 exam.getCourseName() + " (" + exam.getExamType() + ") - " +
                 exam.getExamDate() + " at " + exam.getExamTime()
         );
-        info.setStyle("-fx-font-size: 12;");
+        info.getStyleClass().add("text-body-sm");
 
         Button deleteBtn = new Button("Delete");
         deleteBtn.getStyleClass().addAll("btn", "btn-danger");
@@ -235,13 +235,13 @@ public class AdminClassroomManagementController {
 
     private HBox createCTQuizCard(CTQuiz ctQuiz) {
         HBox card = new HBox(10);
-        card.setStyle("-fx-padding: 12; -fx-border-color: -border-color; -fx-border-width: 1; -fx-background-color: -card-bg; -fx-background-radius: 12; -fx-border-radius: 12;");
+        card.getStyleClass().add("inline-card");
 
         Label info = new Label(
                 ctQuiz.getName() + " - Deadline: " + ctQuiz.getDeadline() +
                 (ctQuiz.isCompleted() ? " (Completed)" : "")
         );
-        info.setStyle("-fx-font-size: 12;");
+        info.getStyleClass().add("text-body-sm");
 
         CheckBox completedCB = new CheckBox("Completed");
         completedCB.setSelected(ctQuiz.isCompleted());
@@ -313,13 +313,13 @@ public class AdminClassroomManagementController {
 
     private HBox createLabTestCard(LabTest labTest) {
         HBox card = new HBox(10);
-        card.setStyle("-fx-padding: 12; -fx-border-color: -border-color; -fx-border-width: 1; -fx-background-color: -card-bg; -fx-background-radius: 12; -fx-border-radius: 12;");
+        card.getStyleClass().add("inline-card");
 
         Label info = new Label(
                 "Experiment " + labTest.getExperimentNumber() + " - " +
                 labTest.getTestDate() + " (Teacher: " + labTest.getTeacherName() + ")"
         );
-        info.setStyle("-fx-font-size: 12;");
+        info.getStyleClass().add("text-body-sm");
 
         Button deleteBtn = new Button("Delete");
         deleteBtn.getStyleClass().addAll("btn", "btn-danger");
@@ -384,14 +384,14 @@ public class AdminClassroomManagementController {
 
     private VBox createNoticeCard(Notice notice) {
         VBox card = new VBox(5);
-        card.setStyle("-fx-padding: 12; -fx-border-color: -border-color; -fx-border-width: 1; -fx-background-color: -card-bg; -fx-background-radius: 12; -fx-border-radius: 12;");
+        card.getStyleClass().add("inline-card");
 
         Label title = new Label(notice.getTitle());
-        title.setStyle("-fx-font-weight: bold;");
+        title.getStyleClass().add("text-h4");
 
         Label content = new Label(notice.getContent());
         content.setWrapText(true);
-        content.setStyle("-fx-font-size: 11;");
+        content.getStyleClass().add("text-body-sm");
 
         HBox actions = new HBox(10);
         CheckBox pinCB = new CheckBox("Pinned");
@@ -467,16 +467,15 @@ public class AdminClassroomManagementController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/admin-dashboard.fxml"));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
 
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-            stage.setWidth(1600);
-            stage.setHeight(900);
-            stage.centerOnScreen();
+            stage.setMinWidth(1366);
+            stage.setMinHeight(800);
+            stage.setWidth(1366);
+            stage.setHeight(800);
             stage.show();
             ViewTransitions.fadeIn(root);
 

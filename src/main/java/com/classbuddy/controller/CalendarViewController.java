@@ -5,6 +5,7 @@ import com.classbuddy.model.Routine;
 import com.classbuddy.model.CalendarEvent;
 import com.classbuddy.service.RoutineService;
 import com.classbuddy.service.CalendarService;
+import com.classbuddy.util.DateFormats;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -15,7 +16,6 @@ import javafx.scene.control.Button;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -131,7 +131,6 @@ public class CalendarViewController {
         cell.setMaxHeight(120);
         
         if (date.getMonth() != currentYearMonth.getMonth()) {
-            cell.setStyle("-fx-opacity: 0.5;");
             cell.getStyleClass().add("calendar-day-other-month");
         }
         
@@ -187,7 +186,7 @@ public class CalendarViewController {
             int totalItems = dayEvents.size() + dayRoutines.size();
             if (totalItems > maxDisplay) {
                 Label moreLabel = new Label("+" + (totalItems - maxDisplay) + " more");
-                moreLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 9;");
+                moreLabel.getStyleClass().add("calendar-more-label");
                 cell.getChildren().add(moreLabel);
             }
         } else {
@@ -203,7 +202,7 @@ public class CalendarViewController {
             
             if (dayEvents.size() > 2) {
                 Label moreLabel = new Label("+" + (dayEvents.size() - 2) + " more");
-                moreLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 9;");
+                moreLabel.getStyleClass().add("calendar-more-label");
                 cell.getChildren().add(moreLabel);
             }
         }
@@ -216,19 +215,19 @@ public class CalendarViewController {
      */
     private HBox createEventBox(CalendarEvent event) {
         HBox eventBox = new HBox(3);
-        eventBox.getStyleClass().add("calendar-event");
+        eventBox.getStyleClass().addAll("calendar-event", "calendar-event-indicator");
         eventBox.setMaxWidth(Double.MAX_VALUE);
-        eventBox.setStyle("-fx-border-color: " + event.getColor() + ";");
+        eventBox.setStyle("-event-color: " + event.getColor() + ";");
         
         // Time indicator (optional)
         if (event.getStartTime() != null) {
-            Label timeLabel = new Label(event.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")));
-            timeLabel.setStyle("-fx-font-size: 8; -fx-text-fill: -text-secondary;");
+            Label timeLabel = new Label(DateFormats.time(event.getStartTime()));
+            timeLabel.getStyleClass().addAll("body-xs", "text-muted");
             eventBox.getChildren().add(timeLabel);
         }
         
         Label eventLabel = new Label(event.getTitle());
-        eventLabel.getStyleClass().add("calendar-event-text");
+        eventLabel.getStyleClass().addAll("calendar-event-text", "calendar-event-label");
         eventLabel.setMaxWidth(Double.MAX_VALUE);
         eventLabel.setWrapText(true);
         eventBox.getChildren().add(eventLabel);
@@ -241,12 +240,12 @@ public class CalendarViewController {
      */
     private HBox createRoutineBox(Routine routine) {
         HBox eventBox = new HBox(3);
-        eventBox.getStyleClass().add("calendar-event");
+        eventBox.getStyleClass().addAll("calendar-event", "calendar-event-indicator");
         eventBox.setMaxWidth(Double.MAX_VALUE);
-        eventBox.setStyle("-fx-border-color: -primary-orange;");
+        eventBox.setStyle("-event-color: -primary-orange;");
         
-        Label timeLabel = new Label(routine.getTimeStart().format(DateTimeFormatter.ofPattern("h:mm a")));
-        timeLabel.setStyle("-fx-font-size: 8; -fx-text-fill: -text-secondary;");
+        Label timeLabel = new Label(DateFormats.time(routine.getTimeStart()));
+        timeLabel.getStyleClass().addAll("body-xs", "text-muted");
         eventBox.getChildren().add(timeLabel);
         
         Label eventLabel = new Label(routine.getCourseName());

@@ -117,7 +117,7 @@
                 <VBox styleClass="card" spacing="14" maxWidth="700">
                     <Label styleClass="card-title" text="Routine details" />
 
-                    <Label fx:id="messageLabel" managed="false" visible="false" wrapText="true" />
+                    <Label fx:id="messageLabel" managed="false" visible="false" wrapText="true" styleClass="error-message" />
 
                     <VBox spacing="10">
                         <Label styleClass="field-label" text="How often does this class run?" />

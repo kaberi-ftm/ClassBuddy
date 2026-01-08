@@ -211,7 +211,7 @@ public class ClassroomDetailController {
             AttendanceAnalyticsController controller = loader.getController();
             controller.setClassroom(classroom);
             controller.loadData();
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -253,13 +253,13 @@ public class ClassroomDetailController {
 
         // Exams
         Label examsHeader = new Label("Exams");
-        examsHeader.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 10 0 5 0;");
+        examsHeader.getStyleClass().add("section-title");
         examsContainer.getChildren().add(examsHeader);
 
         List<Exam> exams = ExamService.getClassroomExams(classroom.getId());
         if (exams.isEmpty()) {
             Label emptyLabel = new Label("No exams scheduled");
-            emptyLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
+            emptyLabel.getStyleClass().addAll("text-muted", "body-sm");
             examsContainer.getChildren().add(emptyLabel);
         } else {
             for (Exam exam : exams) {
@@ -270,12 +270,12 @@ public class ClassroomDetailController {
 
         // Tests (CT/Quiz)
         Label testsHeader = new Label("Tests");
-        testsHeader.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15 0 5 0;");
+        testsHeader.getStyleClass().add("section-title");
         examsContainer.getChildren().add(testsHeader);
         List<CTQuiz> tests = CTQuizService.getClassroomCTQuizzes(classroom.getId());
         if (tests.isEmpty()) {
             Label emptyTests = new Label("No tests added");
-            emptyTests.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
+            emptyTests.getStyleClass().addAll("text-muted", "body-sm");
             examsContainer.getChildren().add(emptyTests);
         } else {
             for (CTQuiz test : tests) {
@@ -286,12 +286,12 @@ public class ClassroomDetailController {
 
         // Lab Tests
         Label labHeader = new Label("Lab Tests");
-        labHeader.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 15 0 5 0;");
+        labHeader.getStyleClass().add("section-title");
         examsContainer.getChildren().add(labHeader);
         List<LabTest> labs = LabTestService.getClassroomLabTests(classroom.getId());
         if (labs.isEmpty()) {
             Label emptyLabs = new Label("No lab tests added");
-            emptyLabs.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
+            emptyLabs.getStyleClass().addAll("text-muted", "body-sm");
             examsContainer.getChildren().add(emptyLabs);
         } else {
             for (LabTest lab : labs) {
@@ -303,14 +303,8 @@ public class ClassroomDetailController {
 
     private HBox createExamBox(Exam exam) {
         HBox box = new HBox(15);
-        box.setStyle(
-                "-fx-background-color: -card-bg;" +
-                        "-fx-border-color: -primary-orange;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-padding: 12;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-background-radius: 12;"
-        );
+        box.getStyleClass().addAll("inline-card", "list-card-accent");
+        box.setStyle("-event-color: -primary-orange;");
 
         Label examLabel = new Label(
                 exam.getCourseName() + " (" + exam.getExamType() + ")\n" +
@@ -318,7 +312,7 @@ public class ClassroomDetailController {
                         (exam.getRoom() != null && !exam.getRoom().isEmpty()
                                 ? " | Room: " + exam.getRoom() : "")
         );
-        examLabel.setStyle("-fx-font-size: 13;");
+                    examLabel.getStyleClass().add("body-sm");
         examLabel.setWrapText(true);
         HBox.setHgrow(examLabel, javafx.scene.layout.Priority.ALWAYS);
 
@@ -328,19 +322,12 @@ public class ClassroomDetailController {
 
     private HBox createCTQuizBox(CTQuiz test) {
         HBox box = new HBox(15);
-        box.setStyle(
-                "-fx-background-color: -card-bg;" +
-                        "-fx-border-color: -border-color;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-padding: 12;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-background-radius: 12;"
-        );
+        box.getStyleClass().add("inline-card");
 
         String title = (test.getName() != null && !test.getName().isEmpty()) ? test.getName() : "Test";
         String deadline = (test.getDeadline() != null) ? (" | Due: " + test.getDeadline()) : "";
         Label label = new Label(title + deadline);
-        label.setStyle("-fx-font-size: 13;");
+        label.getStyleClass().add("body-sm");
         label.setWrapText(true);
         HBox.setHgrow(label, javafx.scene.layout.Priority.ALWAYS);
         box.getChildren().add(label);
@@ -349,19 +336,12 @@ public class ClassroomDetailController {
 
     private HBox createLabTestBox(LabTest lab) {
         HBox box = new HBox(15);
-        box.setStyle(
-                "-fx-background-color: -card-bg;" +
-                        "-fx-border-color: -border-color;" +
-                        "-fx-border-width: 1;" +
-                        "-fx-padding: 12;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-background-radius: 12;"
-        );
+        box.getStyleClass().add("inline-card");
 
         String title = "Experiment " + lab.getExperimentNumber();
         String date = (lab.getTestDate() != null) ? (" | Date: " + lab.getTestDate()) : "";
         Label label = new Label(title + date);
-        label.setStyle("-fx-font-size: 13;");
+        label.getStyleClass().add("body-sm");
         label.setWrapText(true);
         HBox.setHgrow(label, javafx.scene.layout.Priority.ALWAYS);
         box.getChildren().add(label);
@@ -375,7 +355,7 @@ public class ClassroomDetailController {
 
         if (notices.isEmpty()) {
             Label emptyLabel = new Label("No notices");
-            emptyLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
+            emptyLabel.getStyleClass().addAll("text-muted", "body-sm");
             noticesContainer.getChildren().add(emptyLabel);
         } else {
             for (Notice notice : notices) {
@@ -387,29 +367,25 @@ public class ClassroomDetailController {
 
     private VBox createNoticeBox(Notice notice) {
         VBox box = new VBox(8);
-        box.setStyle(
-                "-fx-background-color: " + (notice.isPinned() ? "#FEF2F2" : "-card-bg") + ";" +
-                        "-fx-border-color: " + (notice.isPinned() ? "-error" : "-border-color") + ";" +
-                        "-fx-border-width: " + (notice.isPinned() ? "2" : "1") + ";" +
-                        "-fx-padding: 15;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-background-radius: 12;"
-        );
+        box.getStyleClass().addAll("inline-card", "notice-card");
+        if (notice.isPinned()) {
+            box.getStyleClass().add("notice-card-pinned");
+        }
 
         Label titleLabel = new Label(
                 notice.getTitle()
         );
-        titleLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
+        titleLabel.getStyleClass().add("heading-xs");
 
         Label categoryLabel = new Label("[" + notice.getCategory() + "]");
-        categoryLabel.setStyle("-fx-font-size: 11; -fx-text-fill: -text-light;");
+        categoryLabel.getStyleClass().addAll("text-muted", "body-xs");
 
         Label contentLabel = new Label(notice.getContent());
-        contentLabel.setStyle("-fx-font-size: 12;");
+        contentLabel.getStyleClass().add("body-sm");
         contentLabel.setWrapText(true);
 
         Label timeLabel = new Label(notice.getCreatedAt().toString());
-        timeLabel.setStyle("-fx-font-size: 10; -fx-text-fill: -text-light;");
+        timeLabel.getStyleClass().addAll("text-muted", "body-xs");
 
         box.getChildren().addAll(titleLabel, categoryLabel, contentLabel, timeLabel);
         return box;
@@ -451,7 +427,7 @@ public class ClassroomDetailController {
             controller.setDate(java.time.LocalDate.now());
             controller.loadData();
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -490,15 +466,14 @@ public class ClassroomDetailController {
                 ctrl.setClassroom(classroom);
             }
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-            stage.setWidth(1600);
-            stage.setHeight(900);
-            stage.centerOnScreen();
+            stage.setMinWidth(1366);
+            stage.setMinHeight(800);
+            stage.setWidth(1366);
+            stage.setHeight(800);
             stage.show();
             ViewTransitions.fadeIn(root);
 
@@ -522,15 +497,14 @@ public class ClassroomDetailController {
             }
 
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-            stage.setWidth(1600);
-            stage.setHeight(900);
-            stage.centerOnScreen();
+            stage.setMinWidth(1366);
+            stage.setMinHeight(800);
+            stage.setWidth(1366);
+            stage.setHeight(800);
             stage.show();
             ViewTransitions.fadeIn(root);
 

@@ -64,7 +64,7 @@
                     </VBox.margin>
                 </Button>
             </VBox>
-            <Button onAction="#handleLogout" styleClass="btn-danger" text="Logout" maxWidth="Infinity" style="-fx-margin-top: 10;">
+            <Button onAction="#handleLogout" styleClass="btn-danger" text="Logout" maxWidth="Infinity">
                 <VBox.margin>
                     <Insets top="10" />
                 </VBox.margin>
@@ -82,7 +82,7 @@
                     <Font name="System Bold" size="28.0" />
                 </font>
             </Label>
-            <Label styleClass="page-subtitle" text="View all your enrolled classrooms" />
+            <Label styleClass="page-subtitle" text="View all your enrolled classrooms" style="-fx-padding: 0 0 8 0;" />
         </VBox>
 
         <!-- Content Body -->
@@ -97,7 +97,7 @@
 
             <!-- Classrooms Grid -->
             <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                <VBox fx:id="classroomsContainer" spacing="15" style="-fx-background-color: transparent;" />
+                <VBox fx:id="classroomsContainer" spacing="15" />
             </ScrollPane>
             
         </VBox>

@@ -5,13 +5,13 @@ import com.classbuddy.model.Exam;
 import com.classbuddy.model.LabTest;
 import com.classbuddy.model.Notice;
 import com.classbuddy.model.Routine;
+import com.classbuddy.util.DateFormats;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -19,8 +19,6 @@ import java.util.List;
  */
 public class ScheduleExportService {
 
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;
-    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("h:mm a");
 
     /**
      * Exports entire classroom schedule to CSV file
@@ -88,18 +86,18 @@ public class ScheduleExportService {
             escapeCsv(routine.getCourseName()),
             escapeCsv(routine.getTeacherName()),
             escapeCsv(routine.getRoom()),
-            routine.getTimeStart().format(TIME_FORMAT),
-            routine.getTimeEnd().format(TIME_FORMAT)
+            DateFormats.time(routine.getTimeStart()),
+            DateFormats.time(routine.getTimeEnd())
         );
     }
 
     private static String formatExamRow(Exam exam) {
         String metadata = "exam_type=" + exam.getExamType();
         return String.format("EXAM,%s,,%s,,%s,%s,,%s",
-            exam.getExamDate().format(DATE_FORMAT),
+            DateFormats.dateIso(exam.getExamDate()),
             escapeCsv(exam.getCourseName()),
             escapeCsv(exam.getRoom()),
-            exam.getExamTime().format(TIME_FORMAT),
+            DateFormats.time(exam.getExamTime()),
             escapeCsv(metadata)
         );
     }
@@ -107,7 +105,7 @@ public class ScheduleExportService {
     private static String formatCTQuizRow(CTQuiz ct) {
         String metadata = "name=" + ct.getName();
         return String.format("CT,%s,,%s,,,,,%s",
-            ct.getDeadline().format(DATE_FORMAT),
+            DateFormats.dateIso(ct.getDeadline()),
             escapeCsv(ct.getSyllabus()),
             escapeCsv(metadata)
         );
@@ -116,7 +114,7 @@ public class ScheduleExportService {
     private static String formatLabTestRow(LabTest lab) {
         String metadata = "experiment=" + lab.getExperimentNumber() + ";teacher=" + lab.getTeacherName();
         return String.format("LAB,%s,,,,,,,%s",
-            lab.getTestDate().format(DATE_FORMAT),
+            DateFormats.dateIso(lab.getTestDate()),
             escapeCsv(metadata)
         );
     }
@@ -125,7 +123,7 @@ public class ScheduleExportService {
         String metadata = String.format("category=%s;pinned=%b",
             notice.getCategory(), notice.isPinned());
         return String.format("NOTICE,%s,,%s,,,,,%s",
-            notice.getCreatedAt().toLocalDate().format(DATE_FORMAT),
+            DateFormats.dateIso(notice.getCreatedAt().toLocalDate()),
             escapeCsv(notice.getTitle()),
             escapeCsv(metadata)
         );

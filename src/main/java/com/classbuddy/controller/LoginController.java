@@ -3,11 +3,11 @@ package com.classbuddy.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import com.classbuddy.model.User;
 import com.classbuddy.service.AuthService;
+import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.ViewTransitions;
 import com.classbuddy.util.Toast;
 import java.io.IOException;
@@ -26,10 +26,22 @@ public class LoginController {
 
     @FXML
     public void handleLogin() {
+        clearValidation();
+
         String usernameOrEmail = usernameField.getText().trim();
         String password = passwordField.getText();
 
-        if (usernameOrEmail.isEmpty() || password.isEmpty()) {
+        boolean missingUser = usernameOrEmail.isEmpty();
+        boolean missingPass = password.isEmpty();
+
+        if (missingUser) {
+            markInvalid(usernameField);
+        }
+        if (missingPass) {
+            markInvalid(passwordField);
+        }
+
+        if (missingUser || missingPass) {
             showError("Please enter username/email and password.");
             return;
         }
@@ -62,7 +74,26 @@ public class LoginController {
 
         } else {
             showError("Invalid username/email or password.");
+            markInvalid(passwordField);
             passwordField.clear();
+        }
+    }
+
+    private void clearValidation() {
+        if (usernameField != null) {
+            usernameField.getStyleClass().remove("field-invalid");
+        }
+        if (passwordField != null) {
+            passwordField.getStyleClass().remove("field-invalid");
+        }
+    }
+
+    private void markInvalid(Control control) {
+        if (control == null) {
+            return;
+        }
+        if (!control.getStyleClass().contains("field-invalid")) {
+            control.getStyleClass().add("field-invalid");
         }
     }
 
@@ -72,16 +103,7 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            Scene scene = new Scene(root, 1600, 900);
-            
-            stage.setScene(scene);
-            stage.setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-            stage.setWidth(1600);
-            stage.setHeight(900);
-            stage.centerOnScreen();
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             System.err.println("Failed to load admin dashboard: " + e.getMessage());
@@ -96,16 +118,7 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            Scene scene = new Scene(root, 1600, 900);
-            
-            stage.setScene(scene);
-            stage.setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-            stage.setWidth(1600);
-            stage.setHeight(900);
-            stage.centerOnScreen();
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             System.err.println("Failed to load student dashboard: " + e.getMessage());
@@ -119,11 +132,9 @@ public class LoginController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1600, 900);
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyLoginScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,14 +149,20 @@ public class LoginController {
 
     private void showError(String message) {
         errorLabel.setText(message);
-        errorLabel.setStyle("-fx-text-fill: #e74c3c;");
+        errorLabel.getStyleClass().removeAll("success-message");
+        if (!errorLabel.getStyleClass().contains("error-message")) {
+            errorLabel.getStyleClass().add("error-message");
+        }
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
     }
 
     private void showSuccess(String message) {
         errorLabel.setText(message);
-        errorLabel.setStyle("-fx-text-fill: #27ae60;");
+        errorLabel.getStyleClass().removeAll("error-message");
+        if (!errorLabel.getStyleClass().contains("success-message")) {
+            errorLabel.getStyleClass().add("success-message");
+        }
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
 

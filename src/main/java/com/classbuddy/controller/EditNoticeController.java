@@ -113,7 +113,7 @@ public class EditNoticeController {
                 
                 new Thread(() -> {
                     try {
-                        Thread.sleep(900);
+                        Thread.sleep(780);
                     } catch (InterruptedException ignored) {
                     }
                     
@@ -142,7 +142,7 @@ public class EditNoticeController {
 
                 new Thread(() -> {
                     try {
-                        Thread.sleep(900);
+                        Thread.sleep(780);
                     } catch (InterruptedException ignored) {
                     }
 
@@ -167,7 +167,7 @@ public class EditNoticeController {
             controller.setUser(LoginController.getCurrentUser());
             controller.loadData();
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -220,7 +220,7 @@ public class EditNoticeController {
                 ctrl.setClassroom(classroom);
             }
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

@@ -415,7 +415,7 @@ public class TimetableGridController {
                 ctrl.setInitialTime(slot.start(), slot.end());
             }
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) grid.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -436,7 +436,7 @@ public class TimetableGridController {
             ctrl.setRoutine(routine);
             ctrl.loadData();
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) grid.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -496,7 +496,7 @@ public class TimetableGridController {
         if (cell != highlightedCell) {
             clearHighlight();
             highlightedCell = cell;
-            highlightedCell.setStyle("-fx-border-color: -fx-accent; -fx-border-width: 2; -fx-background-color: rgba(0,120,212,0.08);");
+            highlightedCell.getStyleClass().add("timetable-highlight");
         }
 
         // Update remaining time tooltip and small footer label
@@ -521,7 +521,6 @@ public class TimetableGridController {
         if (footer.get() == null) {
             Label l = new Label();
             l.getStyleClass().add("timetable-remaining");
-            l.setStyle("-fx-font-size: 10px; -fx-text-fill: -fx-text-inner-color;");
             cell.getChildren().add(l);
             footer.set(l);
         }
@@ -531,7 +530,7 @@ public class TimetableGridController {
     private void clearHighlight() {
         if (highlightedCell != null) {
             // remove inline style and footer label
-            highlightedCell.setStyle("");
+            highlightedCell.getStyleClass().remove("timetable-highlight");
             highlightedCell.getChildren().removeIf(n -> n instanceof Label l && l.getStyleClass().contains("timetable-remaining"));
             highlightedCell = null;
         }

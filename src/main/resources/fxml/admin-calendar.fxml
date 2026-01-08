@@ -109,13 +109,13 @@
             <VBox spacing="15" HBox.hgrow="ALWAYS">
                 
                 <!-- Calendar Controls -->
-                <HBox alignment="CENTER" spacing="15" styleClass="card" style="-fx-padding: 15;">
+                <HBox alignment="CENTER" spacing="15" styleClass="card calendar-controls">
                     <Button onAction="#handlePrevMonth" text="◄" styleClass="btn-ghost" />
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Label fx:id="monthYearLabel" styleClass="calendar-month-year" text="January 2024" style="-fx-text-fill: -text-primary; -fx-font-size: 20; -fx-font-weight: bold;"/>
+                    <Label fx:id="monthYearLabel" styleClass="calendar-title" text="January 2024" />
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button onAction="#handleNextMonth" text="►" styleClass="btn-ghost" />
-                    <Button onAction="#handleToday" text="Today" styleClass="btn-primary" style="-fx-min-width: 80;"/>
+                    <Button onAction="#handleToday" text="Today" styleClass="btn-primary" minWidth="80" />
                 </HBox>
 
                 <!-- Calendar Grid -->
@@ -134,14 +134,14 @@
                 
                 <!-- Selected Date Header -->
                 <VBox styleClass="card" spacing="10">
-                    <Label fx:id="selectedDateLabel" text="Today" styleClass="card-title" style="-fx-font-size: 16; -fx-font-weight: bold;" wrapText="true"/>
+                    <Label fx:id="selectedDateLabel" text="Today" styleClass="text-h4" wrapText="true" />
                 </VBox>
 
                 <!-- Events List -->
                 <VBox styleClass="card" VBox.vgrow="ALWAYS">
-                    <Label text="Events" styleClass="card-title" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 0 0 10 0;"/>
+                    <Label text="Events" styleClass="section-title" />
                     <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                        <VBox fx:id="eventsList" spacing="10" style="-fx-background-color: transparent;"/>
+                        <VBox fx:id="eventsList" spacing="10" />
                     </ScrollPane>
                 </VBox>
                 

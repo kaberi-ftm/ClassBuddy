@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import com.classbuddy.model. Classroom;
 import com.classbuddy.model.User;
 import com.classbuddy.service.ClassroomService;
+import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.ViewTransitions;
 import java.io.IOException;
 import java.util.List;
@@ -97,7 +98,7 @@ public class StudentDashboardController {
 
         if (currentStudent == null) {
             Label errorLabel = new Label("Error:  User not logged in");
-            errorLabel.setStyle("-fx-text-fill: -error;");
+            errorLabel.getStyleClass().addAll("text-body-md", "text-error");
             classroomsContainer.getChildren().add(errorLabel);
             return;
         }
@@ -110,7 +111,7 @@ public class StudentDashboardController {
             Label emptyLabel = new Label(
                     "No classrooms joined yet. Click 'Join Classroom' to get started!"
             );
-            emptyLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
+            emptyLabel.getStyleClass().addAll("text-body-md", "text-tertiary");
             classroomsContainer.getChildren().add(emptyLabel);
 
         } else {
@@ -188,11 +189,8 @@ public class StudentDashboardController {
                     fxmlLoader.getController();
             controller.setClassroom(classroom);
             controller.setUser(currentStudent);
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+                NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -210,11 +208,8 @@ public class StudentDashboardController {
 
             StudentCalendarController controller = loader.getController();
             controller.setSelectedClassroom(classroom);
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -255,11 +250,8 @@ public class StudentDashboardController {
             JoinClassroomController controller =
                     fxmlLoader.getController();
             controller. setAdmin(currentStudent);
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage. show();
+                NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -274,11 +266,8 @@ public class StudentDashboardController {
                     getClass().getResource("/fxml/student-calendar.fxml")
             );
             Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+                NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -297,11 +286,8 @@ public class StudentDashboardController {
 
             ProfileController controller = loader.getController();
             controller.setUser(currentStudent, "/fxml/student-dashboard.fxml");
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -318,11 +304,8 @@ public class StudentDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/notification-center.fxml"));
             Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -341,11 +324,9 @@ public class StudentDashboardController {
                     getClass().getResource("/fxml/login.fxml")
             );
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1600, 900);
 
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+                NavigationUtil.applyLoginScene(stage, root);
             ViewTransitions.fadeIn(root);
 
             LoginController.setCurrentUser(null);

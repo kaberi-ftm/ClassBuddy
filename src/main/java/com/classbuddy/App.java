@@ -2,11 +2,11 @@ package com.classbuddy;
 
 import com.classbuddy.service.NotificationScheduler;
 import com.classbuddy.util.DatabaseUtil;
+import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.ViewTransitions;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -25,16 +25,9 @@ public class App extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
         Parent root = fxmlLoader.load();
-        Scene scene = new Scene(root, 1600, 900);
 
         stage.setTitle("ClassBuddy - Classroom Management System");
-        stage.setScene(scene);
-        stage.setResizable(true);
-        stage.setMinWidth(1600);
-        stage.setMinHeight(900);
-        stage.setWidth(1600);
-        stage.setHeight(900);
-        stage.show();
+        NavigationUtil.applyLoginScene(stage, root);
         ViewTransitions.fadeIn(root);
         // Stop scheduler when app closes
         stage.setOnCloseRequest(e -> {

@@ -109,7 +109,7 @@ public class EditExamController {
 
                 new Thread(() -> {
                     try {
-                        Thread.sleep(900);
+                        Thread.sleep(780);
                     } catch (InterruptedException ignored) {
                     }
 
@@ -149,7 +149,7 @@ public class EditExamController {
 
                 new Thread(() -> {
                     try {
-                        Thread.sleep(900);
+                        Thread.sleep(780);
                     } catch (InterruptedException ignored) {
                     }
 
@@ -174,7 +174,7 @@ public class EditExamController {
             controller.setUser(LoginController.getCurrentUser());
             controller.loadData();
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -227,7 +227,7 @@ public class EditExamController {
                 ctrl.loadData();
             }
 
-            Scene scene = new Scene(root, 1600, 900);
+            Scene scene = new Scene(root, 1366, 800);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -238,16 +238,27 @@ public class EditExamController {
     }
 
     private void showError(String msg) {
-        messageLabel.setText(msg);
-        messageLabel.setStyle("-fx-text-fill: -error;");
+        setMessage(msg, "error-message");
         messageLabel.setVisible(true);
         messageLabel.setManaged(true);
     }
 
     private void showSuccess(String msg) {
-        messageLabel.setText(msg);
-        messageLabel.setStyle("-fx-text-fill: -success;");
+        setMessage(msg, "success-message");
         messageLabel.setVisible(true);
         messageLabel.setManaged(true);
+    }
+
+    private void setMessage(String msg, String messageStyleClass) {
+        messageLabel.setText(msg);
+        messageLabel.getStyleClass().removeAll(
+            "error-message",
+            "success-message",
+            "info-message",
+            "warning-message"
+        );
+        if (messageStyleClass != null && !messageStyleClass.isBlank()) {
+            messageLabel.getStyleClass().add(messageStyleClass);
+        }
     }
 }

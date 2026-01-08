@@ -5,6 +5,7 @@ import com.classbuddy.model.Classroom;
 import com.classbuddy.model.Exam;
 import com.classbuddy.model.Role;
 import com.classbuddy.model.Routine;
+import com.classbuddy.util.DateFormats;
 import com.classbuddy.service.CalendarService;
 import com.classbuddy.service.ExamService;
 import com.classbuddy.service.RoutineService;
@@ -20,7 +21,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -252,12 +252,10 @@ public class IntegratedCalendarController {
                 break;
             case WEEK:
                 LocalDate weekEnd = currentWeekStart.plusDays(6);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d");
-                calendarTitle.setText(currentWeekStart.format(formatter) + " - " + weekEnd.format(formatter) + ", " + currentWeekStart.getYear());
+                calendarTitle.setText(DateFormats.dateShort(currentWeekStart) + " - " + DateFormats.dateShort(weekEnd) + ", " + currentWeekStart.getYear());
                 break;
             case DAY:
-                DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy");
-                calendarTitle.setText(currentDay.format(dayFormatter));
+                calendarTitle.setText(DateFormats.dateLong(currentDay));
                 break;
         }
     }
@@ -266,7 +264,7 @@ public class IntegratedCalendarController {
         GridPane grid = new GridPane();
         grid.setHgap(5);
         grid.setVgap(5);
-        grid.setStyle("-fx-padding: 15;");
+        grid.getStyleClass().add("calendar-grid");
         
         // Day headers
         String[] dayNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -328,7 +326,7 @@ public class IntegratedCalendarController {
         }
 
         if (date.equals(selectedDate)) {
-            cell.setStyle(cell.getStyle() + "; -fx-border-color: -primary-orange; -fx-border-width: 2;");
+            cell.getStyleClass().add("calendar-day-selected");
         }
 
         Label dayNumber = new Label(String.valueOf(date.getDayOfMonth()));
@@ -347,7 +345,7 @@ public class IntegratedCalendarController {
 
         if (dayEvents.size() > 3) {
             Label moreLabel = new Label("+" + (dayEvents.size() - 3) + " more");
-            moreLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 9;");
+            moreLabel.getStyleClass().add("calendar-more-label");
             cell.getChildren().add(moreLabel);
         }
 
@@ -431,13 +429,11 @@ public class IntegratedCalendarController {
     private HBox createEventIndicator(Object event) {
         HBox indicator = new HBox();
         indicator.setMaxWidth(Double.MAX_VALUE);
-        indicator.setStyle("-fx-background-color: " + getEventColor(event) + "22; " +
-                          "-fx-border-color: " + getEventColor(event) + "; " +
-                          "-fx-border-width: 0 0 0 3; -fx-padding: 2 5; " +
-                          "-fx-background-radius: 3;");
+        indicator.getStyleClass().addAll("calendar-event", "calendar-event-indicator");
+        indicator.setStyle("-event-color: " + getEventColor(event) + ";");
         
         Label label = new Label(getEventTitle(event));
-        label.setStyle("-fx-text-fill: -text-primary; -fx-font-size: 9;");
+        label.getStyleClass().addAll("calendar-event-text", "calendar-event-label");
         indicator.getChildren().add(label);
         
         return indicator;
@@ -502,7 +498,7 @@ public class IntegratedCalendarController {
         grid.getStyleClass().add("calendar-time-grid");
         grid.setHgap(1);
         grid.setVgap(1);
-        grid.setStyle("-fx-padding: 10;");
+        grid.getStyleClass().add("calendar-time-grid-wrapper");
 
         // Header row
         Label timeHeader = new Label("Time");
@@ -510,11 +506,10 @@ public class IntegratedCalendarController {
         timeHeader.setMinWidth(80);
         grid.add(timeHeader, 0, 0);
 
-        DateTimeFormatter headerFmt = DateTimeFormatter.ofPattern("EEE M/d");
         int days = currentView == CalendarView.DAY ? 1 : 7;
         for (int d = 0; d < days; d++) {
             LocalDate day = (currentView == CalendarView.DAY ? weekStartOrDay : weekStartOrDay.plusDays(d));
-            Label dayLabel = new Label(day.format(headerFmt));
+            Label dayLabel = new Label(DateFormats.weekHeader(day));
             dayLabel.getStyleClass().add("calendar-time-header");
             if (day.equals(LocalDate.now())) dayLabel.getStyleClass().add("calendar-time-header-today");
             GridPane.setHgrow(dayLabel, Priority.ALWAYS);
@@ -528,7 +523,7 @@ public class IntegratedCalendarController {
             LocalTime t = LocalTime.of(minuteOfDay / 60, minuteOfDay % 60);
 
             // Time label at the left only on hour boundaries
-            Label tl = new Label(t.getMinute() == 0 ? t.toString() : "");
+            Label tl = new Label(t.getMinute() == 0 ? DateFormats.time(t) : "");
             tl.getStyleClass().add("calendar-hour-label");
             tl.setMinWidth(80);
             grid.add(tl, 0, r + 1);
@@ -649,7 +644,7 @@ public class IntegratedCalendarController {
     private void updateEventDetails() {
         if (selectedDate == null) selectedDate = LocalDate.now();
         
-        selectedDateLabel.setText(selectedDate.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy")));
+        selectedDateLabel.setText(DateFormats.dateLong(selectedDate));
         eventsList.getChildren().clear();
         
         List<Object> events = getEventsForDate(selectedDate);
@@ -668,19 +663,18 @@ public class IntegratedCalendarController {
 
     private VBox createDetailEventCard(Object event) {
         VBox card = new VBox(8);
-        card.getStyleClass().add("card");
-        card.setStyle(card.getStyle() + "; -fx-border-color: " + getEventColor(event) + ";");
+        card.getStyleClass().addAll("card", "event-card");
+        card.setStyle("-event-color: " + getEventColor(event) + ";");
         
         Label titleLabel = new Label(getEventTitle(event));
-        titleLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: -text-primary;");
+        titleLabel.getStyleClass().add("heading-sm");
         
         Label typeLabel = new Label(getEventType(event));
-        typeLabel.getStyleClass().add("badge");
-        typeLabel.setStyle("-fx-background-color: " + getEventColor(event) + "22; " +
-                          "-fx-text-fill: " + getEventColor(event) + ";");
+        typeLabel.getStyleClass().addAll("badge", "badge-tone");
+        typeLabel.setStyle("-event-color: " + getEventColor(event) + ";");
         
         Label detailsLabel = new Label(getEventDetails(event));
-        detailsLabel.setStyle("-fx-text-fill: -text-secondary; -fx-font-size: 13;");
+        detailsLabel.getStyleClass().addAll("text-muted", "body-small");
         detailsLabel.setWrapText(true);
         
         card.getChildren().addAll(titleLabel, typeLabel, detailsLabel);

@@ -110,7 +110,7 @@
                 <VBox styleClass="card" spacing="14" maxWidth="700">
                     <Label styleClass="card-title" text="Exam details" />
 
-                    <Label fx:id="messageLabel" managed="false" visible="false" wrapText="true" />
+                    <Label fx:id="messageLabel" managed="false" visible="false" wrapText="true" styleClass="error-message" />
 
                     <VBox spacing="8">
                         <Label styleClass="field-label" text="Course Name *" />

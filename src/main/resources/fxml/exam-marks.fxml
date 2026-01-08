@@ -3,24 +3,50 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.lang.String?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.classbuddy.controller.ExamMarksController"
-            stylesheets="@../css/styles.css">
-    <top>
-        <HBox spacing="12">
+<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.classbuddy.controller.ExamMarksController">
+
+    <stylesheets>
+        <String fx:value="/css/app-theme.css" />
+    </stylesheets>
+
+    <!-- Sidebar -->
+    <VBox prefWidth="250" minWidth="250" maxWidth="250" styleClass="sidebar" VBox.vgrow="ALWAYS">
+        <VBox styleClass="sidebar-header" alignment="CENTER">
+            <Label text="Exams" styleClass="sidebar-logo" />
+        </VBox>
+
+        <VBox styleClass="sidebar-menu" spacing="5" VBox.vgrow="ALWAYS">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets top="10" bottom="10" />
             </padding>
-            <Button text="← Back" onAction="#goBack"/>
-            <Label text="Exam &amp; Marks" styleClass="page-title"/>
-        </HBox>
-    </top>
-    <center>
-        <VBox spacing="18">
+
+            <Button onAction="#goBack" styleClass="sidebar-item" text="Back to Dashboard" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+        </VBox>
+    </VBox>
+
+    <!-- Main Content -->
+    <ScrollPane fitToWidth="true" fitToHeight="true" HBox.hgrow="ALWAYS">
+        <VBox spacing="18" styleClass="main-container">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
+                <Insets top="24" right="24" bottom="24" left="24"/>
             </padding>
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Button text="← Back" onAction="#goBack" styleClass="btn-secondary"/>
+                <Label text="Exam &amp; Marks" styleClass="page-title"/>
+            </HBox>
+
+            <Separator />
+
+            <!-- Form -->
             <GridPane hgap="12" vgap="12">
                 <columnConstraints>
                     <ColumnConstraints minWidth="140" prefWidth="160"/>
@@ -84,5 +110,5 @@
                 </TableView>
             </VBox>
         </VBox>
-    </center>
-</BorderPane>
+    </ScrollPane>
+</HBox>

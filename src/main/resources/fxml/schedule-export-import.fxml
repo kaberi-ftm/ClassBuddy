@@ -1,122 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/21"
-            fx:controller="com.classbuddy.controller.ScheduleExportImportController"
-            fitToWidth="true"
-            stylesheets="@../css/styles.css">
-    
-    <VBox spacing="24" styleClass="main-container">
-        <padding>
-            <Insets top="32" right="32" bottom="32" left="32"/>
-        </padding>
+<HBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="com.classbuddy.controller.ScheduleExportImportController">
 
-        <!-- Header -->
-        <VBox spacing="8">
-            <HBox alignment="CENTER_LEFT" spacing="16">
-                <Button text="← Back" onAction="#goBack" styleClass="btn-secondary"/>
-                <Label text="Schedule Export/Import" styleClass="page-title"/>
-            </HBox>
-            <Label text="Export classroom schedules to CSV or import schedules from files" 
-                   styleClass="page-subtitle" wrapText="true"/>
+    <stylesheets>
+        <String fx:value="/css/app-theme.css" />
+    </stylesheets>
+
+    <!-- Sidebar -->
+    <VBox prefWidth="250.0" minWidth="250.0" maxWidth="250.0" styleClass="sidebar" VBox.vgrow="ALWAYS">
+        <VBox styleClass="sidebar-header" alignment="CENTER">
+            <Label text="Schedule" styleClass="sidebar-logo" />
         </VBox>
 
-        <Separator/>
+        <VBox styleClass="sidebar-menu" spacing="5" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="10" bottom="10" />
+            </padding>
 
-        <!-- EXPORT SECTION -->
-        <VBox spacing="16" styleClass="card">
-            <Label text="Export Schedule" styleClass="card-title"/>
-            <Label text="Export a classroom's complete schedule to CSV format" 
-                   styleClass="page-subtitle" wrapText="true"/>
-
-            <GridPane hgap="16" vgap="16">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="150" prefWidth="150"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <!-- Classroom Selection -->
-                <Label text="Classroom:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label"/>
-                <ComboBox fx:id="exportClassroomCombo" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
-                <!-- Output File -->
-                <Label text="Output File:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="field-label"/>
-                <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <TextField fx:id="exportFilePathField" promptText="Select output file..." HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="exportBrowseButton" text="Browse..." onAction="#handleExportBrowse" styleClass="btn-secondary"/>
-                </HBox>
-            </GridPane>
-
-            <!-- Export Actions -->
-            <HBox spacing="12" alignment="CENTER_LEFT">
-                <Button fx:id="exportButton" text="Export Schedule" onAction="#handleExportSchedule" styleClass="btn-primary"/>
-                <ProgressIndicator fx:id="exportProgress" prefWidth="24" prefHeight="24" visible="false"/>
-            </HBox>
-
-            <!-- Export Status -->
-            <Label fx:id="exportStatusLabel" wrapText="true" styleClass="field-help"/>
-        </VBox>
-
-        <Separator/>
-
-        <!-- IMPORT SECTION -->
-        <VBox spacing="16" styleClass="card">
-                 <Label text="Import Schedule" styleClass="card-title"/>
-                 <Label text="Import schedule from CSV and apply with conflict checks" 
-                     styleClass="page-subtitle" wrapText="true"/>
-
-            <GridPane hgap="16" vgap="16">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="150" prefWidth="150"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-
-                <!-- Classroom Selection -->
-                <Label text="Target Classroom:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label"/>
-                <ComboBox fx:id="importClassroomCombo" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
-                <!-- Input File -->
-                <Label text="Import File:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="field-label"/>
-                <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                    <TextField fx:id="importFilePathField" promptText="Select CSV file..." HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="importBrowseButton" text="Browse..." onAction="#handleImportBrowse" styleClass="btn-secondary"/>
-                </HBox>
-            </GridPane>
-
-            <!-- File Preview -->
-            <VBox spacing="8">
-                <Label text="File Preview (first 10 rows):" styleClass="field-label"/>
-                <TextArea fx:id="importPreviewArea" 
-                         prefRowCount="8" 
-                         editable="false" 
-                         wrapText="true"
-                         promptText="Select a file to preview its contents..."
-                         style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px;"/>
-            </VBox>
-
-            <!-- Import Actions -->
-            <HBox spacing="12" alignment="CENTER_LEFT">
-                <Button fx:id="importButton" text="Import Schedule" onAction="#handleImportSchedule" styleClass="btn-primary"/>
-                <ProgressIndicator fx:id="importProgress" prefWidth="24" prefHeight="24" visible="false"/>
-            </HBox>
-
-            <!-- Import Status -->
-            <Label fx:id="importStatusLabel" wrapText="true" styleClass="field-help"/>
-        </VBox>
-
-        <!-- Info Box -->
-        <VBox spacing="8" style="-fx-background-color: #e8f4f8; -fx-background-radius: 8; -fx-padding: 16;">
-            <Label text="ℹ Export Format Information" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
-            <Label text="CSV Format: Type, Day/Date, Period, Course, Teacher, Room, StartTime, EndTime, Metadata" 
-                   wrapText="true" styleClass="field-help"/>
-            <Label text="• ROUTINE rows include day of week and period number" wrapText="true" styleClass="field-help"/>
-            <Label text="• EXAM rows include date and exam type in metadata" wrapText="true" styleClass="field-help"/>
-            <Label text="• CT/LAB rows include dates and metadata fields" wrapText="true" styleClass="field-help"/>
-            <Label text="• NOTICE rows include title and category information" wrapText="true" styleClass="field-help"/>
+            <Button onAction="#goBack" styleClass="sidebar-item" text="Back to Dashboard" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
         </VBox>
     </VBox>
-</ScrollPane>
+
+    <!-- Main Content -->
+    <ScrollPane fitToWidth="true" fitToHeight="true" HBox.hgrow="ALWAYS" styleClass="scroll-pane">
+        <VBox spacing="24" styleClass="main-container">
+            <padding>
+                <Insets top="32" right="32" bottom="32" left="32"/>
+            </padding>
+
+            <!-- Header -->
+            <VBox spacing="8">
+                <Label text="Schedule Export/Import" styleClass="page-title"/>
+                <Label text="Export classroom schedules to CSV or import schedules from files"
+                       styleClass="page-subtitle" wrapText="true"/>
+            </VBox>
+
+            <Separator />
+
+            <!-- EXPORT SECTION -->
+            <VBox spacing="16" styleClass="card">
+                <Label text="Export Schedule" styleClass="card-title"/>
+                <Label text="Export a classroom's complete schedule to CSV format"
+                       styleClass="page-subtitle" wrapText="true"/>
+
+                <GridPane hgap="16" vgap="16">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="150" prefWidth="150"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <!-- Classroom Selection -->
+                    <Label text="Classroom:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label"/>
+                    <ComboBox fx:id="exportClassroomCombo" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <!-- Output File -->
+                    <Label text="Output File:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="field-label"/>
+                    <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <TextField fx:id="exportFilePathField" promptText="Select output file..." HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="exportBrowseButton" text="Browse..." onAction="#handleExportBrowse" styleClass="btn-secondary"/>
+                    </HBox>
+                </GridPane>
+
+                <!-- Export Actions -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Button fx:id="exportButton" text="Export Schedule" onAction="#handleExportSchedule" styleClass="btn-primary"/>
+                    <ProgressIndicator fx:id="exportProgress" prefWidth="24" prefHeight="24" visible="false"/>
+                </HBox>
+
+                <!-- Export Status -->
+                <Label fx:id="exportStatusLabel" wrapText="true" styleClass="field-help" visible="false" managed="false" />
+            </VBox>
+
+            <Separator />
+
+            <!-- IMPORT SECTION -->
+            <VBox spacing="16" styleClass="card">
+                <Label text="Import Schedule" styleClass="card-title"/>
+                <Label text="Import schedule from CSV and apply with conflict checks"
+                       styleClass="page-subtitle" wrapText="true"/>
+
+                <GridPane hgap="16" vgap="16">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="150" prefWidth="150"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <!-- Classroom Selection -->
+                    <Label text="Target Classroom:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label"/>
+                    <ComboBox fx:id="importClassroomCombo" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <!-- Input File -->
+                    <Label text="Import File:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="field-label"/>
+                    <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <TextField fx:id="importFilePathField" promptText="Select CSV file..." HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="importBrowseButton" text="Browse..." onAction="#handleImportBrowse" styleClass="btn-secondary"/>
+                    </HBox>
+                </GridPane>
+
+                <!-- File Preview -->
+                <VBox spacing="8">
+                    <Label text="File Preview (first 10 rows):" styleClass="field-label"/>
+                    <TextArea fx:id="importPreviewArea"
+                              prefRowCount="8"
+                              editable="false"
+                              wrapText="true"
+                              promptText="Select a file to preview its contents..."
+                              styleClass="text-mono" />
+                </VBox>
+
+                <!-- Import Actions -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Button fx:id="importButton" text="Import Schedule" onAction="#handleImportSchedule" styleClass="btn-primary"/>
+                    <ProgressIndicator fx:id="importProgress" prefWidth="24" prefHeight="24" visible="false"/>
+                </HBox>
+
+                <!-- Import Status -->
+                <Label fx:id="importStatusLabel" wrapText="true" styleClass="field-help" visible="false" managed="false" />
+            </VBox>
+
+            <!-- Info Box -->
+            <VBox spacing="8" styleClass="callout callout-info">
+                <Label text="ℹ Export Format Information" styleClass="callout-title" />
+                <Label text="CSV Format: Type, Day/Date, Period, Course, Teacher, Room, StartTime, EndTime, Metadata"
+                       wrapText="true" styleClass="field-help"/>
+                <Label text="• ROUTINE rows include day of week and period number" wrapText="true" styleClass="field-help"/>
+                <Label text="• EXAM rows include date and exam type in metadata" wrapText="true" styleClass="field-help"/>
+                <Label text="• CT/LAB rows include dates and metadata fields" wrapText="true" styleClass="field-help"/>
+                <Label text="• NOTICE rows include title and category information" wrapText="true" styleClass="field-help"/>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</HBox>

@@ -3,6 +3,8 @@ package com.classbuddy.controller;
 import com.classbuddy.model.User;
 import com.classbuddy.model.Notification;
 import com.classbuddy.service.NotificationService;
+import com.classbuddy.util.DateFormats;
+import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.ViewTransitions;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +26,6 @@ public class NotificationCenterController {
     @FXML private VBox notificationContainer;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> typeFilter;
-    @FXML private Button markAllReadBtn;
     @FXML private Label totalCountLabel;
     @FXML private Label unreadCountLabel;
 
@@ -37,7 +38,13 @@ public class NotificationCenterController {
         if (currentUser != null) {
             loadNotifications();
             setupTypeFilter();
+            setupSearch();
         }
+    }
+
+    private void setupSearch() {
+        if (searchField == null) return;
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> filterAndRefresh());
     }
 
     private void setupTypeFilter() {
@@ -61,9 +68,16 @@ public class NotificationCenterController {
         notificationContainer.getChildren().clear();
 
         if (allNotifications == null || allNotifications.isEmpty()) {
-            Label emptyLabel = new Label("No notifications");
-            emptyLabel.setStyle("-fx-text-fill: #999; -fx-font-size: 14;");
-            notificationContainer.getChildren().add(emptyLabel);
+            VBox emptyBox = new VBox(6);
+            emptyBox.getStyleClass().add("empty-state");
+
+            Label title = new Label("No notifications");
+            title.getStyleClass().add("empty-state-title");
+            Label msg = new Label("You're all caught up.");
+            msg.getStyleClass().add("empty-state-message");
+
+            emptyBox.getChildren().addAll(title, msg);
+            notificationContainer.getChildren().add(emptyBox);
             totalCountLabel.setText("0");
             unreadCountLabel.setText("0");
             return;
@@ -81,28 +95,25 @@ public class NotificationCenterController {
 
     private VBox createNotificationCard(Notification notif) {
         VBox card = new VBox(8);
-        card.setStyle(
-            "-fx-border-color: " + (notif.isRead() ? "#ddd" : "#2196F3") + "; " +
-            "-fx-border-width: 1; " +
-            "-fx-padding: 12; " +
-            "-fx-background-color: " + (notif.isRead() ? "#f5f5f5" : "#f0f7ff") + "; " +
-            "-fx-cursor: hand"
-        );
+        card.getStyleClass().add("notification-card");
+        if (!notif.isRead()) {
+            card.getStyleClass().add("notification-card-unread");
+        }
 
         // Header: Title + close button
         HBox headerBox = new HBox(10);
         Label titleLabel = new Label(notif.getTitle());
-        titleLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
+        titleLabel.getStyleClass().add("notification-title");
 
         Label typeLabel = new Label(notif.getType().toString());
-        typeLabel.setStyle("-fx-font-size: 11; -fx-text-fill: #666; -fx-padding: 2 6;");
-        typeLabel.setStyle(typeLabel.getStyle() + "-fx-border-color: #ccc; -fx-border-radius: 3;");
+        typeLabel.getStyleClass().addAll("badge", "badge-blue");
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
 
         Button markReadBtn = new Button(notif.isRead() ? "✓ Read" : "Mark Read");
-        markReadBtn.setStyle("-fx-font-size: 11; -fx-padding: 4 8;");
+        markReadBtn.getStyleClass().addAll("btn-secondary", "btn-mini");
+        markReadBtn.setDisable(notif.isRead());
         markReadBtn.setOnAction(e -> {
             NotificationService.markNotificationAsRead(notif.getId());
             notif.setRead(true);
@@ -114,11 +125,11 @@ public class NotificationCenterController {
         // Message
         Label messageLabel = new Label(notif.getMessage());
         messageLabel.setWrapText(true);
-        messageLabel.setStyle("-fx-font-size: 12; -fx-text-fill: #333;");
+        messageLabel.getStyleClass().add("notification-message");
 
         // Timestamp
-        Label timeLabel = new Label(formatTime(notif.getCreatedAt()));
-        timeLabel.setStyle("-fx-font-size: 10; -fx-text-fill: #999;");
+        Label timeLabel = new Label(DateFormats.relativeTime(notif.getCreatedAt()));
+        timeLabel.getStyleClass().add("notification-time");
 
         card.getChildren().addAll(headerBox, messageLabel, timeLabel);
 
@@ -135,8 +146,11 @@ public class NotificationCenterController {
     }
 
     private void filterAndRefresh() {
-        String selectedType = typeFilter.getValue();
-        String searchTerm = searchField.getText().toLowerCase();
+        if (allNotifications == null) return;
+
+        String selectedType = typeFilter != null ? typeFilter.getValue() : "All Types";
+        String searchText = searchField != null ? searchField.getText() : "";
+        String searchTerm = searchText == null ? "" : searchText.toLowerCase();
 
         notificationContainer.getChildren().clear();
 
@@ -148,9 +162,16 @@ public class NotificationCenterController {
             .toList();
 
         if (filtered.isEmpty()) {
-            Label emptyLabel = new Label("No notifications match filters");
-            emptyLabel.setStyle("-fx-text-fill: #999; -fx-font-size: 14;");
-            notificationContainer.getChildren().add(emptyLabel);
+            VBox emptyBox = new VBox(6);
+            emptyBox.getStyleClass().add("empty-state");
+
+            Label title = new Label("Nothing found");
+            title.getStyleClass().add("empty-state-title");
+            Label msg = new Label("Try clearing the search or changing the type.");
+            msg.getStyleClass().add("empty-state-message");
+
+            emptyBox.getChildren().addAll(title, msg);
+            notificationContainer.getChildren().add(emptyBox);
             return;
         }
 
@@ -201,27 +222,12 @@ public class NotificationCenterController {
             }
             
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) notificationContainer.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private String formatTime(java.time.LocalDateTime dateTime) {
-        if (dateTime == null) return "Unknown";
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
-        java.time.Duration duration = java.time.Duration.between(dateTime, now);
-        
-        if (duration.toMinutes() < 1) return "Just now";
-        if (duration.toMinutes() < 60) return duration.toMinutes() + " min ago";
-        if (duration.toHours() < 24) return duration.toHours() + " hours ago";
-        if (duration.toDays() < 7) return duration.toDays() + " days ago";
-        
-        return dateTime.toLocalDate().toString();
     }
 
     private void showError(String message) {

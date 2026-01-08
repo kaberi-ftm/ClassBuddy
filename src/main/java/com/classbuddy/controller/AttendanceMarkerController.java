@@ -5,6 +5,7 @@ import com.classbuddy.model.Classroom;
 import com.classbuddy.model.User;
 import com.classbuddy.service.AttendanceService;
 import com.classbuddy.util.ViewTransitions;
+import com.classbuddy.util.NavigationUtil;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -172,7 +173,8 @@ public class AttendanceMarkerController {
         statusLabel.setText(alreadyMarked ? 
             "Attendance already marked for this date. You can update it." : 
             "No attendance marked yet for this date.");
-        statusLabel.setStyle(alreadyMarked ? "-fx-text-fill: #3498db;" : "-fx-text-fill: #7f8c8d;");
+        statusLabel.getStyleClass().removeAll("status-info", "status-muted", "status-success", "status-error");
+        statusLabel.getStyleClass().add(alreadyMarked ? "status-info" : "status-muted");
     }
 
     @FXML
@@ -219,7 +221,8 @@ public class AttendanceMarkerController {
 
         if (savedCount > 0) {
             statusLabel.setText("✓ Attendance saved successfully! " + savedCount + " records updated.");
-            statusLabel.setStyle("-fx-text-fill: #27ae60;");
+            statusLabel.getStyleClass().removeAll("status-info", "status-muted", "status-success", "status-error");
+            statusLabel.getStyleClass().add("status-success");
             
             // Refresh after short delay
             new Thread(() -> {
@@ -238,18 +241,16 @@ public class AttendanceMarkerController {
     @FXML
     private void goBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/classroom-detail.fxml"));
-            Parent root = loader.load();
-
-            ClassroomDetailController controller = loader.getController();
+            Stage stage = (Stage) saveButton.getScene().getWindow();
+            ClassroomDetailController controller = NavigationUtil.navigateWithController(
+                    "/fxml/classroom-detail.fxml",
+                    stage,
+                    1366,
+                    800
+            );
             controller.setClassroom(classroom);
             controller.loadData();
-
-            Scene scene = new Scene(root, 1600, 900);
-            Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-            ViewTransitions.fadeIn(root);
+            ViewTransitions.fadeIn(stage.getScene().getRoot());
         } catch (IOException e) {
             e.printStackTrace();
             showError("Failed to return to classroom: " + e.getMessage());

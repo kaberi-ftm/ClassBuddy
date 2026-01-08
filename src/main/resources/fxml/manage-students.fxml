@@ -87,7 +87,7 @@
                         </Button>
                     </HBox>
 
-                    <Label fx:id="messageLabel" managed="false" visible="false" wrapText="true" />
+                    <Label fx:id="messageLabel" managed="false" visible="false" wrapText="true" styleClass="error-message" />
                 </VBox>
 
                 <VBox styleClass="card" spacing="14" VBox.vgrow="ALWAYS">

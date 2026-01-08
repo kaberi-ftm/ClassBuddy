@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import com.classbuddy.model.Classroom;
 import com.classbuddy.model.User;
 import com.classbuddy.service.ClassroomService;
+import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.ViewTransitions;
 import java.io.IOException;
 import java.util.List;
@@ -49,7 +50,7 @@ public class AdminDashboardController {
 
         if (currentAdmin == null) {
             Label errorLabel = new Label("Error: User not logged in");
-            errorLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 14;");
+            errorLabel.getStyleClass().addAll("text-body-md", "text-error");
             classroomsContainer.getChildren().add(errorLabel);
             return;
         }
@@ -58,7 +59,7 @@ public class AdminDashboardController {
 
         if (classrooms.isEmpty()) {
             Label emptyLabel = new Label("No classrooms yet. Create one to get started!");
-            emptyLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 14;");
+            emptyLabel.getStyleClass().addAll("text-body-md", "text-tertiary");
             classroomsContainer.getChildren().add(emptyLabel);
         } else {
             for (Classroom classroom : classrooms) {
@@ -128,11 +129,8 @@ public class AdminDashboardController {
             controller.setClassroom(classroom);
             controller.setUser(currentAdmin);
             controller.loadData(); // Call this after setting data
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -153,17 +151,8 @@ public class AdminDashboardController {
             ManageStudentsController controller = fxmlLoader.getController();
             controller.setClassroom(classroom);
             controller.loadData(); // Call after setting classroom
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-            stage.setWidth(1600);
-            stage.setHeight(900);
-            stage.centerOnScreen();
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -188,17 +177,8 @@ public class AdminDashboardController {
 
             CreateClassroomController controller = fxmlLoader.getController();
             controller.setAdmin(currentAdmin);
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-
-            // Enable resizing
-            stage. setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-
-            stage. show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -214,17 +194,8 @@ public class AdminDashboardController {
 
             JoinClassroomController controller = fxmlLoader.getController();
             controller.setAdmin(currentAdmin);
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-
-            // Enable resizing
-            stage.setResizable(true);
-            stage.setMinWidth(1600);
-            stage.setMinHeight(900);
-
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -239,11 +210,8 @@ public class AdminDashboardController {
                     getClass().getResource("/fxml/admin-calendar.fxml")
             );
             Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -262,11 +230,8 @@ public class AdminDashboardController {
 
             ProfileController controller = loader.getController();
             controller.setUser(currentAdmin, "/fxml/admin-dashboard.fxml");
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
 
         } catch (IOException e) {
@@ -280,11 +245,8 @@ public class AdminDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/schedule-export-import.fxml"));
             Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -297,11 +259,8 @@ public class AdminDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/exam-marks.fxml"));
             Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -314,11 +273,8 @@ public class AdminDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin-analytics.fxml"));
             Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -331,11 +287,8 @@ public class AdminDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/notification-center.fxml"));
             Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -349,11 +302,8 @@ public class AdminDashboardController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1600, 900);
-
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
+            NavigationUtil.applyLoginScene(stage, root);
             ViewTransitions.fadeIn(root);
 
             LoginController.setCurrentUser(null);

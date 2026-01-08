@@ -37,12 +37,11 @@
             <!-- Navigation Controls -->
             <HBox spacing="10" alignment="CENTER">
                 <Button fx:id="prevBtn" text="◄" styleClass="btn-ghost" minWidth="40"/>
-                <Label fx:id="calendarTitle" text="January 2024" styleClass="calendar-month-year" 
-                       style="-fx-text-fill: -text-primary; -fx-font-size: 18; -fx-font-weight: bold; -fx-min-width: 200; -fx-alignment: center;"/>
+                <Label fx:id="calendarTitle" text="January 2024" styleClass="calendar-title" minWidth="200" alignment="CENTER" />
                 <Button fx:id="nextBtn" text="►" styleClass="btn-ghost" minWidth="40"/>
                 <Button fx:id="todayBtn" text="Today" styleClass="btn-primary" minWidth="80"/>
                 <Region minWidth="20" />
-                <Label fx:id="countdownLabel" text="" style="-fx-text-fill: -text-light; -fx-font-size: 12;" />
+                <Label fx:id="countdownLabel" text="" styleClass="text-label-md text-tertiary" />
             </HBox>
         </HBox>
     </VBox>
@@ -51,11 +50,13 @@
     <HBox spacing="15" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
         
         <!-- Main Calendar View -->
-        <VBox fx:id="calendarContent" styleClass="card" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-            <padding>
-                <Insets top="0" right="0" bottom="0" left="0"/>
-            </padding>
-        </VBox>
+        <ScrollPane fitToWidth="true" fitToHeight="true" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+            <VBox fx:id="calendarContent" styleClass="card" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="0" right="0" bottom="0" left="0"/>
+                </padding>
+            </VBox>
+        </ScrollPane>
 
         <!-- Event Details Panel -->
         <VBox fx:id="eventDetailsPanel" spacing="15" prefWidth="320" minWidth="320" maxWidth="320">
@@ -65,10 +66,8 @@
                 <padding>
                     <Insets top="15" right="15" bottom="15" left="15"/>
                 </padding>
-                <Label text="Selected Date" style="-fx-text-fill: -text-light; -fx-font-size: 11; -fx-font-weight: 600;"/>
-                <Label fx:id="selectedDateLabel" text="Today" 
-                       style="-fx-text-fill: -text-primary; -fx-font-size: 15; -fx-font-weight: bold;" 
-                       wrapText="true"/>
+                <Label text="Selected Date" styleClass="text-label-sm text-tertiary" />
+                <Label fx:id="selectedDateLabel" text="Today" styleClass="text-h4" wrapText="true" />
             </VBox>
 
             <!-- Events List -->
@@ -76,10 +75,9 @@
                 <padding>
                     <Insets top="15" right="15" bottom="15" left="15"/>
                 </padding>
-                <Label text="Events &amp; Classes" 
-                       style="-fx-text-fill: -text-primary; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 0 0 10 0;"/>
+                <Label text="Events &amp; Classes" styleClass="section-title" />
                 <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                    <VBox fx:id="eventsList" spacing="10" style="-fx-background-color: transparent;"/>
+                    <VBox fx:id="eventsList" spacing="10" />
                 </ScrollPane>
             </VBox>
             

@@ -3,11 +3,11 @@ package com.classbuddy. controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene. control.*;
 import javafx.stage.Stage;
 import com.classbuddy.model.Role;
 import com.classbuddy.service.AuthService;
+import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.ViewTransitions;
 import com.classbuddy.util.Toast;
 import java.io.IOException;
@@ -30,6 +30,8 @@ public class RegisterController {
 
     @FXML
     public void handleRegister() {
+        clearValidation();
+
         String username = usernameField.getText().trim();
         String email = emailField.getText().trim();
         String password = passwordField.getText();
@@ -38,40 +40,51 @@ public class RegisterController {
 
         // Validation: Check empty fields
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            if (username.isEmpty()) markInvalid(usernameField);
+            if (email.isEmpty()) markInvalid(emailField);
+            if (password.isEmpty()) markInvalid(passwordField);
+            if (confirmPassword.isEmpty()) markInvalid(confirmPasswordField);
             showError("All fields are required.");
             return;
         }
 
         // Validation: Username length
         if (username.length() < 3) {
+            markInvalid(usernameField);
             showError("Username must be at least 3 characters long.");
             return;
         }
 
         // Validation: Email format
         if (!isValidEmail(email)) {
+            markInvalid(emailField);
             showError("Please enter a valid email address.");
             return;
         }
 
 
         if (!password.equals(confirmPassword)) {
+            markInvalid(passwordField);
+            markInvalid(confirmPasswordField);
             showError("Passwords do not match.");
             return;
         }
 
 
         if (password.length() < 6) {
+            markInvalid(passwordField);
             showError("Password must be at least 6 characters long.");
             return;
         }
 
         if (!AuthService.isUsernameUnique(username)) {
+            markInvalid(usernameField);
             showError("Username already exists. Please choose another.");
             return;
         }
 
         if (!AuthService.isEmailUnique(email)) {
+            markInvalid(emailField);
             showError("Email already registered. Please use another or login.");
             return;
         }
@@ -82,6 +95,7 @@ public class RegisterController {
 
         if (registered) {
             showSuccess("Registration successful! Please login with your credentials.");
+            clearValidation();
             clearFields();
 
             // Auto-navigate to login after 2 seconds
@@ -98,6 +112,22 @@ public class RegisterController {
         }
     }
 
+    private void clearValidation() {
+        if (usernameField != null) usernameField.getStyleClass().remove("field-invalid");
+        if (emailField != null) emailField.getStyleClass().remove("field-invalid");
+        if (passwordField != null) passwordField.getStyleClass().remove("field-invalid");
+        if (confirmPasswordField != null) confirmPasswordField.getStyleClass().remove("field-invalid");
+    }
+
+    private void markInvalid(Control control) {
+        if (control == null) {
+            return;
+        }
+        if (!control.getStyleClass().contains("field-invalid")) {
+            control.getStyleClass().add("field-invalid");
+        }
+    }
+
 
     private boolean isValidEmail(String email) {
         return email. matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
@@ -108,12 +138,10 @@ public class RegisterController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1600, 900);
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
             if (stage != null) {
-                stage.setScene(scene);
-                stage.show();
+                NavigationUtil.applyLoginScene(stage, root);
                 ViewTransitions.fadeIn(root);
             }
         } catch (IOException e) {
@@ -126,14 +154,20 @@ public class RegisterController {
 
     private void showError(String message) {
         errorLabel.setText(message);
-        errorLabel.setStyle("-fx-text-fill: red;");
+        errorLabel.getStyleClass().removeAll("success-message");
+        if (!errorLabel.getStyleClass().contains("error-message")) {
+            errorLabel.getStyleClass().add("error-message");
+        }
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
     }
 
     private void showSuccess(String message) {
         errorLabel.setText(message);
-        errorLabel. setStyle("-fx-text-fill: green;");
+        errorLabel.getStyleClass().removeAll("error-message");
+        if (!errorLabel.getStyleClass().contains("success-message")) {
+            errorLabel.getStyleClass().add("success-message");
+        }
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
 
