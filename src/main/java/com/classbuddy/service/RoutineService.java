@@ -1,5 +1,6 @@
 package com.classbuddy.service;
 
+import com.classbuddy.model.AuditLog;
 import com.classbuddy.model.Routine;
 import com.classbuddy.util.DatabaseUtil;
 import java.sql.*;
@@ -42,6 +43,16 @@ public class RoutineService {
                                      int periodNumber, String courseName,
                                      String teacherName, String room,
                                      LocalTime timeStart, LocalTime timeEnd) {
+        return addRoutine(classroomId, applicableDays, periodNumber, courseName, teacherName, room, timeStart, timeEnd, -1);
+    }
+
+    /**
+     * ADMIN: Add routine entry (multi-day) with audit logging
+     */
+    public static boolean addRoutine(int classroomId, List<String> applicableDays,
+                                     int periodNumber, String courseName,
+                                     String teacherName, String room,
+                                     LocalTime timeStart, LocalTime timeEnd, int userId) {
         List<String> normalizedDays = normalizeDays(applicableDays);
         if (normalizedDays.isEmpty()) {
             System.err.println("Error adding routine: no applicable days provided");
@@ -57,7 +68,7 @@ public class RoutineService {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setInt(1, classroomId);
             pstmt.setString(2, primaryDay);
@@ -70,6 +81,21 @@ public class RoutineService {
             pstmt.setTime(9, java.sql.Time.valueOf(timeEnd));
 
             pstmt.executeUpdate();
+            
+            // Get the generated ID for audit logging
+            int generatedId = -1;
+            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    generatedId = generatedKeys.getInt(1);
+                }
+            }
+            
+            if (userId > 0 && generatedId > 0) {
+                String newValue = String.format("course=%s, days=%s, time=%s-%s, room=%s", 
+                    courseName, applicableDaysJson, timeStart, timeEnd, room);
+                AuditService.log(userId, AuditLog.Action.CREATE, "Routine", generatedId, null, newValue);
+            }
+            
             System.out.println("Routine added");
             return true;
 
@@ -207,6 +233,13 @@ public class RoutineService {
      * Delete routine entry
      */
     public static boolean deleteRoutine(int routineId) {
+        return deleteRoutine(routineId, -1);  // -1 indicates no user tracking
+    }
+
+    /**
+     * Delete routine entry with audit logging
+     */
+    public static boolean deleteRoutine(int routineId, int userId) {
         String sql = "DELETE FROM routine WHERE id = ?";
 
         try (Connection conn = DatabaseUtil.getConnection();
@@ -214,6 +247,11 @@ public class RoutineService {
 
             pstmt.setInt(1, routineId);
             pstmt.executeUpdate();
+            
+            if (userId > 0) {
+                AuditService.log(userId, AuditLog.Action.DELETE, "Routine", routineId, null, null);
+            }
+            
             System.out.println("Routine deleted");
             return true;
 
@@ -229,6 +267,16 @@ public class RoutineService {
                                         int periodNumber, String courseName,
                                         String teacherName, String room,
                                         LocalTime timeStart, LocalTime timeEnd) {
+        return updateRoutine(routineId, day, periodNumber, courseName, teacherName, room, timeStart, timeEnd, -1);
+    }
+
+    /**
+     * Update routine entry with audit logging
+     */
+    public static boolean updateRoutine(int routineId, String day,
+                                        int periodNumber, String courseName,
+                                        String teacherName, String room,
+                                        LocalTime timeStart, LocalTime timeEnd, int userId) {
         String sql = "UPDATE routine SET day=?, period_number=?, " +
                 "course_name=?, teacher_name=?, room=?, " +
                 "time_start=?, time_end=? WHERE id=?";
@@ -246,6 +294,13 @@ public class RoutineService {
             pstmt.setInt(8, routineId);
 
             pstmt.executeUpdate();
+            
+            if (userId > 0) {
+                String oldValue = String.format("day=%s, course=%s, time=%s-%s", day, courseName, timeStart, timeEnd);
+                AuditService.log(userId, AuditLog.Action.UPDATE, "Routine", routineId, oldValue, 
+                               String.format("day=%s, course=%s, time=%s-%s", day, courseName, timeStart, timeEnd));
+            }
+            
             System.out.println("Routine updated");
             return true;
 

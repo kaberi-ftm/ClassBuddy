@@ -10,6 +10,7 @@ public class NotificationScheduler {
 
     private static Timer timer;
     private static final long CHECK_INTERVAL = 5 * 60 * 1000; // Check every 5 minutes
+    private static final long INITIAL_DELAY = 30 * 1000; // Wait 30 seconds before first check
 
     /**
      * Start the notification scheduler
@@ -37,7 +38,7 @@ public class NotificationScheduler {
                     System.err.println("Error in notification scheduler: " + e.getMessage());
                 }
             }
-        }, 0, CHECK_INTERVAL);  // Start immediately, then every 5 minutes
+        }, INITIAL_DELAY, CHECK_INTERVAL);  // Wait 30 seconds, then every 5 minutes
 
         System.out.println("Notification scheduler started");
     }

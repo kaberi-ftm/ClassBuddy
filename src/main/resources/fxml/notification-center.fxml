@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.classbuddy.controller.NotificationCenterController"
+            stylesheets="@../css/styles.css">
+    
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #f5f5f5; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Button text="← Back" onAction="#handleGoBack" styleClass="btn-secondary"/>
+                <Label text="Notification Center" styleClass="page-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Mark All Read" onAction="#handleMarkAllRead" styleClass="btn-primary"/>
+                <Button text="Clear All" onAction="#handleClearAll" styleClass="btn-danger"/>
+            </HBox>
+            
+            <HBox spacing="12">
+                <padding><Insets top="5" right="15" bottom="5" left="15"/></padding>
+                <Label text="Search:" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="searchField" promptText="Search notifications..." HBox.hgrow="ALWAYS" maxWidth="400"/>
+                <Label text="Type:" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="typeFilter" prefWidth="150"/>
+            </HBox>
+            
+            <HBox spacing="20">
+                <padding><Insets top="5" right="15" bottom="5" left="15"/></padding>
+                <Label text="Total: " style="-fx-font-weight: bold;"/>
+                <Label fx:id="totalCountLabel" text="0" style="-fx-text-fill: #2196F3; -fx-font-weight: bold;"/>
+                <Label text="Unread: " style="-fx-font-weight: bold;"/>
+                <Label fx:id="unreadCountLabel" text="0" style="-fx-text-fill: #f44336; -fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+    </top>
+    
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox fx:id="notificationContainer" spacing="8">
+                <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

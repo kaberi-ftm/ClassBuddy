@@ -241,6 +241,28 @@ public class ExamMarksController {
         }
     }
 
+    @FXML
+    private void handleDeleteSelected() {
+        Classroom c = classroomCombo.getValue();
+        RecentEntry sel = recentTable.getSelectionModel().getSelectedItem();
+        if (c == null || sel == null) {
+            statusLabel.setText("Select a row to delete");
+            return;
+        }
+        boolean ok = false;
+        switch (sel.type()) {
+            case "Exam" -> ok = sel.examId() != null && GradesService.deleteExamResult(c.getId(), sel.examId(), sel.roll());
+            case "CT/Quiz" -> ok = sel.ctId() != null && GradesService.deleteCTQuizResult(c.getId(), sel.ctId(), sel.roll());
+            case "Lab" -> ok = sel.labId() != null && GradesService.deleteLabEvaluation(c.getId(), sel.labId(), sel.roll());
+        }
+        if (ok) {
+            statusLabel.setText("Deleted");
+            refreshTable();
+        } else {
+            statusLabel.setText("Delete failed");
+        }
+    }
+
     private void refreshTable() {
         Classroom c = classroomCombo.getValue();
         if (c == null) return;

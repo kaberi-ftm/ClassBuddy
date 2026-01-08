@@ -16,7 +16,8 @@ public class App extends Application {
         DatabaseUtil.initializeDatabase();
         System.out.println("Database ready.");
 
-        // Start notification scheduler
+        // Initialize system notifications and start scheduler
+        com.classbuddy.util.DesktopNotifier.init();
         NotificationScheduler.start();
         System.out.println("Notification system active.");
 

@@ -212,7 +212,7 @@ public class ClassroomDetailController {
             controller.setClassroom(classroom);
             controller.loadData();
             Scene scene = new Scene(root, 1600, 900);
-            Stage stage = (Stage) btnAddRoutine.getScene().getWindow();
+            Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
             ViewTransitions.fadeIn(root);
@@ -238,6 +238,7 @@ public class ClassroomDetailController {
     }
 
     private void loadRoutine() {
+        if (classroom == null) return;
         List<Routine> routines = RoutineService.getWeeklyRoutine(classroom.getId());
 
         if (timetableGridController != null) {
@@ -451,7 +452,7 @@ public class ClassroomDetailController {
             controller.loadData();
 
             Scene scene = new Scene(root, 1600, 900);
-            Stage stage = (Stage) btnAddRoutine.getScene().getWindow();
+            Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
             ViewTransitions.fadeIn(root);
@@ -510,7 +511,7 @@ public class ClassroomDetailController {
     public void goBackToDashboard() {
         try {
             FXMLLoader fxmlLoader;
-            if (user.getRole().name().equals("ADMIN")) {
+            if (user != null && user.getRole().name().equals("ADMIN")) {
                 fxmlLoader = new FXMLLoader(
                         getClass().getResource("/fxml/admin-dashboard.fxml")
                 );

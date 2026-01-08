@@ -41,6 +41,8 @@
                        style="-fx-text-fill: -text-primary; -fx-font-size: 18; -fx-font-weight: bold; -fx-min-width: 200; -fx-alignment: center;"/>
                 <Button fx:id="nextBtn" text="►" styleClass="btn-ghost" minWidth="40"/>
                 <Button fx:id="todayBtn" text="Today" styleClass="btn-primary" minWidth="80"/>
+                <Region minWidth="20" />
+                <Label fx:id="countdownLabel" text="" style="-fx-text-fill: -text-light; -fx-font-size: 12;" />
             </HBox>
         </HBox>
     </VBox>

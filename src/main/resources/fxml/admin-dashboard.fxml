@@ -125,7 +125,6 @@
                 <Button onAction="#goToCreateClassroom" styleClass="btn-primary" text="Create New Classroom" />
                 <Button onAction="#goToJoinClassroom" styleClass="btn-secondary" text="Join Classroom" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button onAction="#refreshClassrooms" styleClass="btn-ghost" text="Refresh" />
             </HBox>
 
             <!-- Classrooms Grid -->

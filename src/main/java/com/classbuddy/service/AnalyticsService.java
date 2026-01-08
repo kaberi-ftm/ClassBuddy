@@ -178,4 +178,57 @@ public class AnalyticsService {
         }
         return result;
     }
+
+    public static Map<String, Double> weeklyAttendancePercent(int classroomId, int weeks) {
+        LocalDate end = LocalDate.now();
+        LocalDate start = end.minusDays((long) (weeks - 1) * 7);
+        String sql = "SELECT strftime('%Y-%W', date) AS wk, " +
+                "SUM(CASE WHEN status='PRESENT' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS pct " +
+                "FROM attendance WHERE classroom_id = ? AND date >= ? AND date <= ? " +
+                "GROUP BY wk ORDER BY wk";
+        Map<String, Double> out = new LinkedHashMap<>();
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, classroomId);
+            ps.setDate(2, java.sql.Date.valueOf(start));
+            ps.setDate(3, java.sql.Date.valueOf(end));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String wk = rs.getString(1);
+                    double pct = rs.getDouble(2);
+                    if (!rs.wasNull()) out.put(wk, pct);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error computing weekly attendance: " + e.getMessage());
+        }
+        return out;
+    }
+
+    public static Map<String, Double> weeklyExamAvgPercent(int classroomId, int weeks) {
+        LocalDate end = LocalDate.now();
+        LocalDate start = end.minusDays((long) (weeks - 1) * 7);
+        String sql = "SELECT strftime('%Y-%W', recorded_at) AS wk, " +
+                "AVG((score * 100.0)/total) AS pct " +
+                "FROM exam_result WHERE classroom_id = ? AND recorded_at >= ? AND recorded_at <= ? " +
+                "AND score IS NOT NULL AND total IS NOT NULL AND total > 0 " +
+                "GROUP BY wk ORDER BY wk";
+        Map<String, Double> out = new LinkedHashMap<>();
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, classroomId);
+            ps.setString(2, start.toString());
+            ps.setString(3, end.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String wk = rs.getString(1);
+                    double pct = rs.getDouble(2);
+                    if (!rs.wasNull()) out.put(wk, pct);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error computing weekly exam avg: " + e.getMessage());
+        }
+        return out;
+    }
 }

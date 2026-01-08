@@ -1,7 +1,9 @@
-package com.classbuddy. service;
+package com.classbuddy.service;
 
+import com.classbuddy.model.AuditLog;
 import com.classbuddy.model.Notification;
-import com.classbuddy.model. Notification.NotificationType;
+import com.classbuddy.model.Notification.NotificationType;
+import com.classbuddy.util.DesktopNotifier;
 import com.classbuddy.model.NotificationSettings;
 import com.classbuddy.util.DatabaseUtil;
 
@@ -38,6 +40,7 @@ public class NotificationService {
 
             pstmt.executeUpdate();
             System.out.println("Notification created: " + title);
+            DesktopNotifier.show(title, message);
             return true;
 
         } catch (SQLException e) {
@@ -103,6 +106,13 @@ public class NotificationService {
      * Mark notification as read
      */
     public static boolean markAsRead(int notificationId) {
+        return markAsRead(notificationId, -1);
+    }
+
+    /**
+     * Mark notification as read with audit logging
+     */
+    public static boolean markAsRead(int notificationId, int userId) {
         String sql = "UPDATE notifications SET is_read = 1 WHERE id = ? ";
 
         try (Connection conn = DatabaseUtil.getConnection();
@@ -110,6 +120,11 @@ public class NotificationService {
 
             pstmt.setInt(1, notificationId);
             pstmt.executeUpdate();
+            
+            if (userId > 0) {
+                AuditService.log(userId, AuditLog.Action.MARK_READ, "Notification", notificationId, "is_read=0", "is_read=1");
+            }
+            
             return true;
 
         } catch (SQLException e) {
@@ -246,11 +261,12 @@ public class NotificationService {
                         createNotification(
                                 studentId,
                                 rs.getInt("classroom_id"),
-                                NotificationType. ROUTINE,
+                            NotificationType.ROUTINE,
                                 "Class Starting Soon",
                                 courseName + " class starts in " + minutesUntilClass + " minutes at " + room,
                                 rs.getInt("id")
                         );
+                        DesktopNotifier.show("Class Starting Soon", courseName + " in " + minutesUntilClass + " min (" + room + ")");
                     }
                 }
             }
@@ -294,7 +310,7 @@ public class NotificationService {
                     String examType = rs.getString("exam_type");
                     String classroomName = rs.getString("classroom_name");
 
-                    createNotification(
+                        createNotification(
                             studentId,
                             rs.getInt("classroom_id"),
                             NotificationType.EXAM,
@@ -302,6 +318,7 @@ public class NotificationService {
                             courseName + " " + examType + " exam in " + classroomName + " at " + examTime,
                             rs.getInt("id")
                     );
+                        DesktopNotifier.show("Exam Reminder", courseName + " " + examType + " at " + examTime);
                 }
             }
 
@@ -350,7 +367,7 @@ public class NotificationService {
      */
     private static Notification parseNotification(ResultSet rs) throws SQLException {
         return new Notification(
-                rs. getInt("id"),
+                rs.getInt("id"),
                 rs.getInt("user_id"),
                 rs.getInt("classroom_id"),
                 NotificationType.valueOf(rs.getString("type")),
@@ -360,5 +377,50 @@ public class NotificationService {
                 rs.getBoolean("is_read"),
                 rs.getTimestamp("created_at").toLocalDateTime()
         );
+    }
+
+    /**
+     * Get notifications for a user (for notification center display)
+     */
+    public static List<Notification> getNotificationsForUser(int userId, int limit) {
+        return getAllNotifications(userId, limit);
+    }
+
+    /**
+     * Mark notification as read by ID
+     */
+    public static void markNotificationAsRead(int notificationId) {
+        markAsRead(notificationId);
+    }
+
+    /**
+     * Delete a notification
+     */
+    public static boolean deleteNotification(int notificationId) {
+        return deleteNotification(notificationId, -1);
+    }
+
+    /**
+     * Delete a notification with audit logging
+     */
+    public static boolean deleteNotification(int notificationId, int userId) {
+        String sql = "DELETE FROM notifications WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, notificationId);
+            pstmt.executeUpdate();
+            
+            if (userId > 0) {
+                AuditService.log(userId, AuditLog.Action.DELETE_NOTIFICATION, "Notification", notificationId, null, null);
+            }
+            
+            return true;
+
+        } catch (SQLException e) {
+            System.err.println("Error deleting notification: " + e.getMessage());
+            return false;
+        }
     }
 }

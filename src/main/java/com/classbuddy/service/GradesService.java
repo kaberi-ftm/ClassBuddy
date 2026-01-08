@@ -74,6 +74,48 @@ public class GradesService {
         }
     }
 
+    public static boolean deleteExamResult(int classroomId, int examId, String rollNumber) {
+        String sql = "DELETE FROM exam_result WHERE classroom_id = ? AND exam_id = ? AND roll_number = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, classroomId);
+            ps.setInt(2, examId);
+            ps.setString(3, rollNumber);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error deleting exam result: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean deleteCTQuizResult(int classroomId, int ctQuizId, String rollNumber) {
+        String sql = "DELETE FROM ct_quiz_result WHERE classroom_id = ? AND ct_quiz_id = ? AND roll_number = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, classroomId);
+            ps.setInt(2, ctQuizId);
+            ps.setString(3, rollNumber);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error deleting CT result: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean deleteLabEvaluation(int classroomId, int labTestId, String rollNumber) {
+        String sql = "DELETE FROM lab_evaluation WHERE classroom_id = ? AND lab_test_id = ? AND roll_number = ?";
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, classroomId);
+            ps.setInt(2, labTestId);
+            ps.setString(3, rollNumber);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error deleting lab evaluation: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static List<ExamResult> getExamResults(int classroomId) {
         String sql = "SELECT * FROM exam_result WHERE classroom_id = ? ORDER BY recorded_at DESC LIMIT 50";
         List<ExamResult> list = new ArrayList<>();

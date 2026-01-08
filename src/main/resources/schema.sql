@@ -276,6 +276,18 @@ CREATE TABLE IF NOT EXISTS lab_evaluation (
     UNIQUE(classroom_id, lab_test_id, roll_number)
     );
 
+CREATE TABLE IF NOT EXISTS audit_log (
+                                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                         user_id INTEGER NOT NULL,
+    action VARCHAR(20) NOT NULL,
+    entity_type VARCHAR(50) NOT NULL,
+    entity_id INTEGER,
+    old_value TEXT,
+    new_value TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_classroom_admin ON classroom(admin_id);
@@ -293,3 +305,6 @@ CREATE INDEX IF NOT EXISTS idx_attendance_student ON attendance(student_id, clas
 CREATE INDEX IF NOT EXISTS idx_exam_result_classroom ON exam_result(classroom_id, exam_id);
 CREATE INDEX IF NOT EXISTS idx_ct_result_classroom ON ct_quiz_result(classroom_id, ct_quiz_id);
 CREATE INDEX IF NOT EXISTS idx_lab_eval_classroom ON lab_evaluation(classroom_id, lab_test_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_user ON audit_log(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_entity ON audit_log(entity_type, entity_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_timestamp ON audit_log(timestamp);

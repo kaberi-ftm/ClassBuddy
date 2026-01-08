@@ -42,6 +42,7 @@ public class IntegratedCalendarController {
     @FXML private VBox eventDetailsPanel;
     @FXML private Label selectedDateLabel;
     @FXML private VBox eventsList;
+    @FXML private Label countdownLabel;
 
     private Classroom classroom;
     private CalendarView currentView = CalendarView.MONTH;
@@ -66,6 +67,13 @@ public class IntegratedCalendarController {
         
         setupViewSwitcher();
         updateView();
+
+        // Live countdown update every 30s
+        javafx.animation.Timeline t = new javafx.animation.Timeline(
+                new javafx.animation.KeyFrame(javafx.util.Duration.seconds(30), e -> updateCountdownOnly())
+        );
+        t.setCycleCount(javafx.animation.Animation.INDEFINITE);
+        t.play();
     }
 
     public void setClassroom(Classroom classroom) {
@@ -183,6 +191,57 @@ public class IntegratedCalendarController {
         }
         
         updateEventDetails();
+        updateCountdownOnly();
+    }
+
+    private void updateCountdownOnly() {
+        if (countdownLabel == null) return;
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime next = null;
+        String label = null;
+
+        // Next routine today
+        if (classroomRoutines != null) {
+            DayOfWeek today = now.getDayOfWeek();
+            for (Routine r : classroomRoutines) {
+                if (r.getDay() == null || r.getTimeStart() == null) continue;
+                if (matchesDay(today, r.getDay())) {
+                    LocalDateTime start = LocalDateTime.of(LocalDate.now(), r.getTimeStart());
+                    if (start.isAfter(now) && (next == null || start.isBefore(next))) {
+                        next = start;
+                        label = r.getCourseName() != null ? r.getCourseName() : "Class";
+                    }
+                }
+            }
+        }
+
+        // Next exam
+        if (classroomExams != null) {
+            for (Exam e : classroomExams) {
+                if (e.getExamDate() == null || e.getExamTime() == null) continue;
+                LocalDateTime start = LocalDateTime.of(e.getExamDate(), e.getExamTime());
+                if (start.isAfter(now) && (next == null || start.isBefore(next))) {
+                    next = start;
+                    String type = e.getExamType() != null ? e.getExamType() : "Exam";
+                    label = (e.getCourseName() != null ? e.getCourseName() + " " : "") + type;
+                }
+            }
+        }
+
+        if (next == null) {
+            countdownLabel.setText("");
+            return;
+        }
+        long minutes = java.time.Duration.between(now, next).toMinutes();
+        long hours = minutes / 60;
+        long mins = minutes % 60;
+        String timeLeft = (hours > 0 ? hours + "h " : "") + mins + "m";
+        countdownLabel.setText("Next: " + label + " in " + timeLeft);
+    }
+
+    private boolean matchesDay(DayOfWeek today, String routineDay) {
+        String t = today.getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        return t.equalsIgnoreCase(routineDay);
     }
 
     private void updateTitle() {

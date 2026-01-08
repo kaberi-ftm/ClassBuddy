@@ -2,6 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -16,6 +19,7 @@
         <Button text="Back" onAction="#goBack" styleClass="btn-secondary" />
         <Label styleClass="page-title" text="Analytics" />
         <Region HBox.hgrow="ALWAYS" />
+        <Button text="Export CSV" onAction="#handleExportCsv" styleClass="btn-primary" />
     </HBox>
 
     <GridPane hgap="12" vgap="12">
@@ -58,4 +62,29 @@
         <Label text="Per-Course Exam Averages" styleClass="field-label" />
         <ListView fx:id="courseAvgList" prefHeight="200" />
     </VBox>
+
+    <HBox spacing="15">
+        <VBox spacing="8" HBox.hgrow="ALWAYS">
+            <Label text="Weekly Attendance % (last 8 weeks)" styleClass="field-label" />
+            <LineChart fx:id="attendanceTrend" prefHeight="240">
+                <xAxis>
+                    <CategoryAxis label="Week" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Percent" />
+                </yAxis>
+            </LineChart>
+        </VBox>
+        <VBox spacing="8" HBox.hgrow="ALWAYS">
+            <Label text="Weekly Exam Avg % (last 8 weeks)" styleClass="field-label" />
+            <LineChart fx:id="examTrend" prefHeight="240">
+                <xAxis>
+                    <CategoryAxis label="Week" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Percent" />
+                </yAxis>
+            </LineChart>
+        </VBox>
+    </HBox>
 </VBox>

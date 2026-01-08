@@ -23,7 +23,7 @@
             <TableColumn fx:id="presentColumn" text="Present" prefWidth="100" />
             <TableColumn fx:id="absentColumn" text="Absent" prefWidth="100" />
             <TableColumn fx:id="lateColumn" text="Late" prefWidth="100" />
-            <TableColumn fx:id="percentageColumn" text="%" prefWidth="100" />
+            <TableColumn fx:id="percentageColumn" text="Percent" prefWidth="100" />
         </columns>
     </TableView>
 

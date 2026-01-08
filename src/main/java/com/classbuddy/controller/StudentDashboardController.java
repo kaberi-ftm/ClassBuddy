@@ -311,6 +311,26 @@ public class StudentDashboardController {
     }
 
     /**
+     * Navigate to notification center
+     */
+    @FXML
+    public void goToNotificationCenter() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/notification-center.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root, 1600, 900);
+            Stage stage = (Stage) studentNameLabel.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading notification center: " + e.getMessage());
+        }
+    }
+
+    /**
      * Logout
      */
     @FXML
