@@ -171,12 +171,12 @@
 
                     <HBox spacing="20.0">
                         <VBox spacing="8">
-                            <Label styleClass="field-label" text="Start Time (HH:mm) *" />
-                            <TextField fx:id="timeStartField" prefWidth="150.0" promptText="09:00" />
+                            <Label styleClass="field-label" text="Start Time (h:mm AM/PM) *" />
+                            <ComboBox fx:id="timeStartComboBox" prefWidth="150.0" promptText="09:00" editable="true" />
                         </VBox>
                         <VBox spacing="8">
-                            <Label styleClass="field-label" text="End Time (HH:mm) *" />
-                            <TextField fx:id="timeEndField" prefWidth="150.0" promptText="10:00" />
+                            <Label styleClass="field-label" text="End Time (h:mm AM/PM) *" />
+                            <ComboBox fx:id="timeEndComboBox" prefWidth="150.0" promptText="10:00" editable="true" />
                         </VBox>
                         <Region HBox.hgrow="ALWAYS" />
                     </HBox>

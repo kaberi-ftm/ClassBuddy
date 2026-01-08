@@ -88,7 +88,7 @@ public class AdminCalendarController {
             ProfileController controller = loader.getController();
             controller.setUser(currentAdmin, "/fxml/admin-calendar.fxml");
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -105,7 +105,7 @@ public class AdminCalendarController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Parent root = loader.load();
             
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -381,7 +381,7 @@ public class AdminCalendarController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

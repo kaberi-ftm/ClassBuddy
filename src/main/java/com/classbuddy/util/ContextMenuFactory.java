@@ -1,11 +1,18 @@
 package com.classbuddy.util;
 
-import com.classbuddy.controller.*;
+import com.classbuddy.controller.AddCTQuizController;
+import com.classbuddy.controller.AddExamController;
+import com.classbuddy.controller.AddLabTestController;
+import com.classbuddy.controller.AddNoticeController;
+import com.classbuddy.controller.AddRoutineController;
+import com.classbuddy.controller.EditExamController;
+import com.classbuddy.controller.EditNoticeController;
 import com.classbuddy.model.Classroom;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -18,20 +25,30 @@ import java.util.List;
 
 public class ContextMenuFactory {
 
+    private static ContextMenu activeMenu;
+
     public static void attachAdminMenu(VBox dayCell, LocalDate date, List<Classroom> classrooms) {
-        dayCell.setOnContextMenuRequested(e -> {
+        dayCell.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
             ContextMenu menu = buildMenuForDate(date, classrooms, dayCell, true);
-            menu.show(dayCell, e.getScreenX(), e.getScreenY());
+            showOnlyOne(menu, dayCell, e.getScreenX(), e.getScreenY());
             e.consume();
         });
     }
 
     public static void attachStudentMenu(VBox dayCell, LocalDate date, List<Classroom> classrooms) {
-        dayCell.setOnContextMenuRequested(e -> {
+        dayCell.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
             ContextMenu menu = buildMenuForDate(date, classrooms, dayCell, false);
-            menu.show(dayCell, e.getScreenX(), e.getScreenY());
+            showOnlyOne(menu, dayCell, e.getScreenX(), e.getScreenY());
             e.consume();
         });
+    }
+
+    private static void showOnlyOne(ContextMenu menu, VBox dayCell, double screenX, double screenY) {
+        if (activeMenu != null && activeMenu.isShowing()) {
+            activeMenu.hide();
+        }
+        activeMenu = menu;
+        menu.show(dayCell, screenX, screenY);
     }
 
     private static ContextMenu buildMenuForDate(LocalDate date, List<Classroom> classrooms, VBox dayCell, boolean isAdmin) {
@@ -45,21 +62,27 @@ public class ContextMenuFactory {
         }
 
         // Add quick add actions
-        Menu addRoutine = new Menu("Add Routine");
-        Menu addExam = new Menu("Add Exam");
-        Menu addCTQuiz = new Menu("Add Test (CT/Quiz)");
-        Menu addLabTest = new Menu("Add Lab Test");
-        Menu addNotice = new Menu("Add Notice");
+        if (classrooms.size() == 1) {
+            // Integrated (single-classroom) calendar: no need to choose a classroom
+            Classroom classroom = classrooms.get(0);
+            menu.getItems().addAll(
+                    createNavigateItemForDate("Add Routine", "/fxml/add-routine.fxml", dayCell, classroom, date),
+                    createNavigateItemForDate("Add Exam", "/fxml/add-exam.fxml", dayCell, classroom, date),
+                    createNavigateItemForDate("Add Notice", "/fxml/add-notice.fxml", dayCell, classroom, date)
+            );
+        } else {
+            Menu addRoutine = new Menu("Add Routine");
+            Menu addExam = new Menu("Add Exam");
+            Menu addNotice = new Menu("Add Notice");
 
-        for (Classroom c : classrooms) {
-            addRoutine.getItems().add(createNavigateItem("Add to " + c.getName(), "/fxml/add-routine.fxml", dayCell, c));
-            addExam.getItems().add(createNavigateItem("Add to " + c.getName(), "/fxml/add-exam.fxml", dayCell, c));
-            addCTQuiz.getItems().add(createNavigateItem("Add to " + c.getName(), "/fxml/add-ctquiz.fxml", dayCell, c));
-            addLabTest.getItems().add(createNavigateItem("Add to " + c.getName(), "/fxml/add-labtest.fxml", dayCell, c));
-            addNotice.getItems().add(createNavigateItem("Add to " + c.getName(), "/fxml/add-notice.fxml", dayCell, c));
+            for (Classroom c : classrooms) {
+                addRoutine.getItems().add(createNavigateItemForDate("Add to " + c.getName(), "/fxml/add-routine.fxml", dayCell, c, date));
+                addExam.getItems().add(createNavigateItemForDate("Add to " + c.getName(), "/fxml/add-exam.fxml", dayCell, c, date));
+                addNotice.getItems().add(createNavigateItemForDate("Add to " + c.getName(), "/fxml/add-notice.fxml", dayCell, c, date));
+            }
+
+            menu.getItems().addAll(addRoutine, addExam, addNotice);
         }
-
-        menu.getItems().addAll(addRoutine, addExam, addCTQuiz, addLabTest, addNotice);
 
         // If admin: check for existing events and add Edit/Delete options
         if (isAdmin && classrooms.size() == 1) {
@@ -69,22 +92,10 @@ public class ContextMenuFactory {
             // Check for existing events/routines on this date
             boolean hasEvents = false;
 
-            // Check for routines
-            List<com.classbuddy.model.Routine> dayRoutines = getDayRoutines(classroom.getId(), date);
-            if (!dayRoutines.isEmpty()) {
-                menu.getItems().add(new SeparatorMenuItem());
-                for (com.classbuddy.model.Routine routine : dayRoutines) {
-                    MenuItem editRoutine = new MenuItem("Edit: " + routine.getCourseName());
-                    editRoutine.setOnAction(ev -> openEditRoutineScreen(dayCell, classroom, routine));
-                    menu.getItems().add(editRoutine);
-                }
-                hasEvents = true;
-            }
-
             // Check for exams
             List<com.classbuddy.model.Exam> dayExams = getDayExams(classroom.getId(), date);
             if (!dayExams.isEmpty()) {
-                if (!hasEvents) menu.getItems().add(new SeparatorMenuItem());
+                menu.getItems().add(new SeparatorMenuItem());
                 for (com.classbuddy.model.Exam exam : dayExams) {
                     MenuItem editExam = new MenuItem("Edit: " + exam.getCourseName());
                     editExam.setOnAction(ev -> openEditExamScreen(dayCell, classroom, exam));
@@ -106,17 +117,6 @@ public class ContextMenuFactory {
         }
 
         return menu;
-    }
-
-    private static List<com.classbuddy.model.Routine> getDayRoutines(int classroomId, LocalDate date) {
-        // Query RoutineService for routines in this classroom
-        List<com.classbuddy.model.Routine> allRoutines = com.classbuddy.service.RoutineService.getWeeklyRoutine(classroomId);
-        
-        // Filter for applicable day
-        String dayName = date.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH);
-        return allRoutines.stream()
-                .filter(r -> r.getDay().equalsIgnoreCase(dayName))
-                .toList();
     }
 
     private static List<com.classbuddy.model.Exam> getDayExams(int classroomId, LocalDate date) {
@@ -180,26 +180,6 @@ public class ContextMenuFactory {
         }
     }
 
-    private static void openEditRoutineScreen(VBox dayCell, Classroom classroom, com.classbuddy.model.Routine routine) {
-        try {
-            FXMLLoader loader = new FXMLLoader(ContextMenuFactory.class.getResource("/fxml/edit-routine.fxml"));
-            Parent root = loader.load();
-
-            EditRoutineController ctrl = loader.getController();
-            ctrl.setClassroom(classroom);
-            ctrl.setRoutine(routine);
-            ctrl.loadData();
-
-            Scene scene = new Scene(root, 1200, 800);
-            Stage stage = (Stage) dayCell.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-            ViewTransitions.fadeIn(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private static void openEditExamScreen(VBox dayCell, Classroom classroom, com.classbuddy.model.Exam exam) {
         try {
             FXMLLoader loader = new FXMLLoader(ContextMenuFactory.class.getResource("/fxml/edit-exam.fxml"));
@@ -210,7 +190,7 @@ public class ContextMenuFactory {
             ctrl.setExam(exam);
             ctrl.loadData();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) dayCell.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -230,7 +210,7 @@ public class ContextMenuFactory {
             ctrl.setNotice(notice);
             ctrl.loadData();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) dayCell.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -240,13 +220,13 @@ public class ContextMenuFactory {
         }
     }
 
-    private static MenuItem createNavigateItem(String text, String fxmlPath, VBox dayCell, Classroom classroom) {
+    private static MenuItem createNavigateItemForDate(String text, String fxmlPath, VBox dayCell, Classroom classroom, LocalDate date) {
         MenuItem item = new MenuItem(text);
-        item.setOnAction(ev -> navigateToAddScreen(fxmlPath, dayCell, classroom));
+        item.setOnAction(ev -> navigateToAddScreen(fxmlPath, dayCell, classroom, date));
         return item;
     }
 
-    private static void navigateToAddScreen(String fxmlPath, VBox dayCell, Classroom classroom) {
+    private static void navigateToAddScreen(String fxmlPath, VBox dayCell, Classroom classroom, LocalDate date) {
         try {
             FXMLLoader loader = new FXMLLoader(ContextMenuFactory.class.getResource(fxmlPath));
             Parent root = loader.load();
@@ -260,19 +240,28 @@ public class ContextMenuFactory {
                 AddExamController ctrl = (AddExamController) controller;
                 ctrl.setClassroom(classroom);
                 ctrl.loadData();
+                if (date != null) {
+                    ctrl.setInitialDate(date);
+                }
             } else if (controller instanceof AddCTQuizController) {
                 AddCTQuizController ctrl = (AddCTQuizController) controller;
                 ctrl.setClassroom(classroom);
+                if (date != null) {
+                    ctrl.setInitialDeadline(date);
+                }
             } else if (controller instanceof AddLabTestController) {
                 AddLabTestController ctrl = (AddLabTestController) controller;
                 ctrl.setClassroom(classroom);
+                if (date != null) {
+                    ctrl.setInitialTestDate(date);
+                }
             } else if (controller instanceof AddNoticeController) {
                 AddNoticeController ctrl = (AddNoticeController) controller;
                 ctrl.setClassroom(classroom);
                 ctrl.loadData();
             }
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) dayCell.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

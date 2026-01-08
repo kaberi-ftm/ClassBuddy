@@ -23,8 +23,8 @@ public class SceneNavigator {
 
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(800);
-            stage.setMinHeight(500);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
             stage.show();
 
         } catch (IOException e) {
@@ -47,8 +47,8 @@ public class SceneNavigator {
 
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(800);
-            stage.setMinHeight(500);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
             stage.show();
 
             return loader.getController();

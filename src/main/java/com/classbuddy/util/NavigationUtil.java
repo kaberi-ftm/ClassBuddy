@@ -12,15 +12,15 @@ import java.io.IOException;
  */
 public class NavigationUtil {
 
-    private static final double DEFAULT_WIDTH = 1200;
-    private static final double DEFAULT_HEIGHT = 800;
-    private static final double MIN_WIDTH = 1000;
-    private static final double MIN_HEIGHT = 700;
+    private static final double DEFAULT_WIDTH = 1600;
+    private static final double DEFAULT_HEIGHT = 900;
+    private static final double MIN_WIDTH = 1600;
+    private static final double MIN_HEIGHT = 900;
 
-    private static final double LOGIN_WIDTH = 900;
-    private static final double LOGIN_HEIGHT = 600;
-    private static final double LOGIN_MIN_WIDTH = 800;
-    private static final double LOGIN_MIN_HEIGHT = 500;
+    private static final double LOGIN_WIDTH = 1600;
+    private static final double LOGIN_HEIGHT = 900;
+    private static final double LOGIN_MIN_WIDTH = 1600;
+    private static final double LOGIN_MIN_HEIGHT = 900;
 
     /**
      * Navigate to a dashboard view with consistent sizing

@@ -39,8 +39,6 @@ public class ClassroomDetailController {
     @FXML
     private TabPane classroomTabs;
     @FXML
-    private VBox routineContainer;
-    @FXML
     private VBox examsContainer;
     @FXML
     private VBox noticesContainer;
@@ -77,6 +75,8 @@ public class ClassroomDetailController {
     private Button btnAddNotice;
     @FXML
     private Button btnMarkAttendance;
+    @FXML
+    private Button btnAttendanceReport;
     // Additional quick-add buttons on Schedule tab
     @FXML private Button addExamFromScheduleBtn;
     @FXML private Button addNoticeFromScheduleBtn;
@@ -88,6 +88,9 @@ public class ClassroomDetailController {
     
     @FXML
     private IntegratedCalendarController integratedCalendarController;
+
+    @FXML
+    private TimetableGridController timetableGridController;
 
     public void setClassroom(Classroom classroom) {
         this.classroom = classroom;
@@ -126,6 +129,7 @@ public class ClassroomDetailController {
             if (addCTQuizFromScheduleBtn != null) addCTQuizFromScheduleBtn.setVisible(isAdmin);
             if (addLabTestFromScheduleBtn != null) addLabTestFromScheduleBtn.setVisible(isAdmin);
             if (btnMarkAttendance != null) btnMarkAttendance.setVisible(isAdmin);
+            if (btnAttendanceReport != null) btnAttendanceReport.setVisible(isAdmin);
 
             loadClassroomData();
             loadIntegratedCalendar();
@@ -198,6 +202,24 @@ public class ClassroomDetailController {
         loadRoutine();
         if (integratedCalendarController != null) integratedCalendarController.refresh();
     }
+
+    @FXML
+    public void goToAttendanceAnalytics() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/attendance-analytics.fxml"));
+            Parent root = loader.load();
+            AttendanceAnalyticsController controller = loader.getController();
+            controller.setClassroom(classroom);
+            controller.loadData();
+            Scene scene = new Scene(root, 1600, 900);
+            Stage stage = (Stage) btnAddRoutine.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     @FXML
     public void refreshExams() {
@@ -216,66 +238,13 @@ public class ClassroomDetailController {
     }
 
     private void loadRoutine() {
-        routineContainer.getChildren().clear();
-
         List<Routine> routines = RoutineService.getWeeklyRoutine(classroom.getId());
 
-        if (routines.isEmpty()) {
-            Label emptyLabel = new Label("No routine set");
-            emptyLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 14;");
-            routineContainer.getChildren().add(emptyLabel);
-        } else {
-            java.util.Map<String, java.util.List<Routine>> byDay =
-                    new java.util.LinkedHashMap<>();
-
-            for (Routine routine : routines) {
-                byDay.computeIfAbsent(routine.getDay(),
-                        k -> new java.util.ArrayList<>()).add(routine);
-            }
-
-            for (String day : byDay.keySet()) {
-                Label dayLabel = new Label(day);
-                dayLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-padding: 10 0 5 0;");
-                routineContainer.getChildren().add(dayLabel);
-
-                for (Routine routine : byDay.get(day)) {
-                    HBox routineBox = createRoutineBox(routine);
-                    routineContainer.getChildren().add(routineBox);
-                }
-            }
+        if (timetableGridController != null) {
+            timetableGridController.setClassroom(classroom);
+            timetableGridController.setRoutines(routines);
+            return;
         }
-    }
-
-    private HBox createRoutineBox(Routine routine) {
-        HBox box = new HBox(15);
-        box.getStyleClass().add("card");
-
-        VBox infoBox = new VBox(8);
-        
-        Label courseLabel = new Label(routine.getCourseName());
-        courseLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: -text-primary;");
-        
-        String details = "Period " + routine.getPeriodNumber() + " · " + 
-                routine.getTimeStart() + " - " + routine.getTimeEnd();
-        if (routine.getRoom() != null && !routine.getRoom().isEmpty()) {
-            details += " · Room " + routine.getRoom();
-        }
-        
-        Label detailsLabel = new Label(details);
-        detailsLabel.setStyle("-fx-font-size: 13; -fx-text-fill: -text-light;");
-        
-        infoBox.getChildren().addAll(courseLabel, detailsLabel);
-        
-        if (routine.getTeacherName() != null && !routine.getTeacherName().isEmpty()) {
-            Label teacherLabel = new Label(routine.getTeacherName());
-            teacherLabel.getStyleClass().add("badge-blue");
-            teacherLabel.setStyle("-fx-background-radius: 12; -fx-padding: 4 12; -fx-font-size: 11;");
-            infoBox.getChildren().add(teacherLabel);
-        }
-        
-        HBox.setHgrow(infoBox, javafx.scene.layout.Priority.ALWAYS);
-        box.getChildren().add(infoBox);
-        return box;
     }
 
     private void loadExams() {
@@ -481,7 +450,7 @@ public class ClassroomDetailController {
             controller.setDate(java.time.LocalDate.now());
             controller.loadData();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) btnAddRoutine.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -520,14 +489,14 @@ public class ClassroomDetailController {
                 ctrl.setClassroom(classroom);
             }
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1000);
-            stage.setMinHeight(700);
-            stage.setWidth(1200);
-            stage.setHeight(800);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
+            stage.setWidth(1600);
+            stage.setHeight(900);
             stage.centerOnScreen();
             stage.show();
             ViewTransitions.fadeIn(root);
@@ -552,14 +521,14 @@ public class ClassroomDetailController {
             }
 
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1000);
-            stage.setMinHeight(700);
-            stage.setWidth(1200);
-            stage.setHeight(800);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
+            stage.setWidth(1600);
+            stage.setHeight(900);
             stage.centerOnScreen();
             stage.show();
             ViewTransitions.fadeIn(root);

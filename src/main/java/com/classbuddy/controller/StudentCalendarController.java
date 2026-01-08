@@ -150,7 +150,7 @@ public class StudentCalendarController {
             ProfileController controller = loader.getController();
             controller.setUser(currentStudent, "/fxml/student-calendar.fxml");
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -167,7 +167,7 @@ public class StudentCalendarController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Parent root = loader.load();
             
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -519,7 +519,7 @@ public class StudentCalendarController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

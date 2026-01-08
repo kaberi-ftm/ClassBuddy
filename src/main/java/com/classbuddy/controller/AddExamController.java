@@ -9,10 +9,10 @@ import com.classbuddy.util.ViewTransitions;
 import javafx.stage.Stage;
 import com.classbuddy.model.Classroom;
 import com.classbuddy.service.ExamService;
+import com.classbuddy.util.TimeOptions;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class AddExamController {
     @FXML
@@ -24,7 +24,7 @@ public class AddExamController {
     @FXML
     private DatePicker examDatePicker;
     @FXML
-    private TextField examTimeField;
+    private ComboBox<String> examTimeComboBox;
     @FXML
     private TextField roomField;
     @FXML
@@ -46,13 +46,22 @@ public class AddExamController {
     @FXML
     public void initialize() {
         // Initialize exam types
-        examTypeComboBox.getItems().addAll("Mid", "Final", "Viva");
+        examTypeComboBox.getItems().addAll("Mid", "Final", "Viva", "CT", "Quiz", "Lab Test");
         examTypeComboBox.setValue("Mid");
+
+        examTimeComboBox.getItems().setAll(TimeOptions.defaultTimes());
+        examTimeComboBox.setEditable(true);
     }
 
     public void loadData() {
         if (classroom != null) {
             classroomNameLabel.setText(classroom.getName());
+        }
+    }
+
+    public void setInitialDate(LocalDate date) {
+        if (examDatePicker != null && date != null) {
+            examDatePicker.setValue(date);
         }
     }
 
@@ -63,7 +72,7 @@ public class AddExamController {
             String examType = examTypeComboBox.getValue();
             LocalDate examDate = examDatePicker.getValue();
             String room = roomField.getText().trim();
-            String timeText = examTimeField.getText().trim();
+            String timeText = getComboText(examTimeComboBox);
 
             // Validation
             if (courseName.isEmpty()) {
@@ -86,15 +95,7 @@ public class AddExamController {
                 return;
             }
 
-            // Validate time format before parsing
-            if (!timeText.matches("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")) {
-                showError("Invalid time format. Use HH:mm (e.g., 14:00)");
-                return;
-            }
-
-            // Parse time
-            LocalTime examTime = LocalTime.parse(timeText,
-                    DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime examTime = TimeOptions.parseHHmm(timeText);
 
             // Add exam
             boolean added = ExamService.addExam(
@@ -127,9 +128,19 @@ public class AddExamController {
             }
 
         } catch (Exception e) {
-            showError("Invalid time format. Use HH:mm (e.g., 14:00)");
+            showError("Invalid time format. Use h:mm AM/PM (e.g., 2:00 PM)");
             e.printStackTrace();
         }
+    }
+
+    private static String getComboText(ComboBox<String> comboBox) {
+        if (comboBox == null) return "";
+        String editor = comboBox.getEditor() != null ? comboBox.getEditor().getText() : null;
+        if (editor != null && !editor.trim().isEmpty()) {
+            return editor.trim();
+        }
+        String value = comboBox.getValue();
+        return value != null ? value.trim() : "";
     }
 
     @FXML
@@ -145,7 +156,7 @@ public class AddExamController {
             controller.setUser(LoginController.getCurrentUser());
             controller.loadData();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -198,7 +209,7 @@ public class AddExamController {
                 ctrl.loadData();
             }
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -211,7 +222,10 @@ public class AddExamController {
     private void clearFields() {
         courseNameField.clear();
         examDatePicker.setValue(null);
-        examTimeField.clear();
+        examTimeComboBox.setValue(null);
+        if (examTimeComboBox.getEditor() != null) {
+            examTimeComboBox.getEditor().clear();
+        }
         roomField.clear();
     }
 

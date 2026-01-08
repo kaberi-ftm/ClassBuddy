@@ -8,7 +8,8 @@ import java.util.List;
 public class MigrationRunner {
 
     private static final List<String> MIGRATIONS = List.of(
-            "/migrations/001_roll_classid_enrollment.sql"
+            "/migrations/001_roll_classid_enrollment.sql",
+            "/migrations/002_expand_exam_type.sql"
     );
 
     public static void run(Connection conn) {

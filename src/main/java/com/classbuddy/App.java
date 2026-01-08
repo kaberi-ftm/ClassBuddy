@@ -24,15 +24,15 @@ public class App extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
         Parent root = fxmlLoader.load();
-        Scene scene = new Scene(root, 900, 600);
+        Scene scene = new Scene(root, 1600, 900);
 
         stage.setTitle("ClassBuddy - Classroom Management System");
         stage.setScene(scene);
         stage.setResizable(true);
-        stage.setMinWidth(850);
-        stage.setMinHeight(600);
-        stage.setWidth(900);
-        stage.setHeight(600);
+        stage.setMinWidth(1600);
+        stage.setMinHeight(900);
+        stage.setWidth(1600);
+        stage.setHeight(900);
         stage.show();
         ViewTransitions.fadeIn(root);
         // Stop scheduler when app closes

@@ -198,6 +198,85 @@
     -fx-border-color: -border-color;
 }
 
+/* ============================================= */
+/* Timetable Grid                                */
+/* ============================================= */
+
+.timetable-root {
+    -fx-background-color: transparent;
+}
+
+.timetable-grid {
+    -fx-background-color: transparent;
+}
+
+.timetable-header,
+.timetable-day {
+    -fx-background-color: -surface;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 10 12;
+}
+
+.timetable-header-text {
+    -fx-text-fill: -text-secondary;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.timetable-day-text {
+    -fx-text-fill: -text-primary;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+.timetable-cell {
+    -fx-background-color: -card-bg;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 10 12;
+    -fx-min-height: 72;
+}
+
+.timetable-empty {
+    -fx-background-color: -surface-hover;
+}
+
+.timetable-break {
+    -fx-background-color: -warning-bg;
+    -fx-border-color: -warning;
+    -fx-alignment: center;
+}
+
+.timetable-break-text {
+    -fx-text-fill: -warning-text;
+    -fx-font-weight: 700;
+}
+
+.timetable-entry {
+    -fx-border-color: -brand-primary;
+}
+
+.timetable-entry-lab {
+    -fx-background-color: -info-bg;
+    -fx-border-color: -info;
+}
+
+.timetable-entry-title {
+    -fx-text-fill: -text-primary;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+.timetable-entry-sub {
+    -fx-text-fill: -text-secondary;
+    -fx-font-size: 11px;
+}
+
 .page-title {
     -fx-text-fill: -text-primary;
     -fx-font-size: 28;

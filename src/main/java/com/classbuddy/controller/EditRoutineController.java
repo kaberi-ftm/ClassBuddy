@@ -12,9 +12,9 @@ import javafx.stage.Stage;
 import com.classbuddy.model.Classroom;
 import com.classbuddy.model.Routine;
 import com.classbuddy.service.RoutineService;
+import com.classbuddy.util.TimeOptions;
 import java.io.IOException;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javafx.scene.layout.VBox;
 
@@ -65,9 +65,9 @@ public class EditRoutineController {
     @FXML
     private TextField roomField;
     @FXML
-    private TextField timeStartField;
+    private ComboBox<String> timeStartComboBox;
     @FXML
-    private TextField timeEndField;
+    private ComboBox<String> timeEndComboBox;
     @FXML
     private Label messageLabel;
     @FXML
@@ -104,6 +104,11 @@ public class EditRoutineController {
         }
 
         updateScheduleModeUI();
+
+        timeStartComboBox.getItems().setAll(TimeOptions.defaultTimes());
+        timeStartComboBox.setEditable(true);
+        timeEndComboBox.getItems().setAll(TimeOptions.defaultTimes());
+        timeEndComboBox.setEditable(true);
     }
 
     public void loadData() {
@@ -117,8 +122,8 @@ public class EditRoutineController {
             courseNameField.setText(routine.getCourseName());
             teacherNameField.setText(routine.getTeacherName());
             roomField.setText(routine.getRoom());
-            timeStartField.setText(routine.getTimeStart().format(DateTimeFormatter.ofPattern("HH:mm")));
-            timeEndField.setText(routine.getTimeEnd().format(DateTimeFormatter.ofPattern("HH:mm")));
+            timeStartComboBox.setValue(TimeOptions.format12h(routine.getTimeStart()));
+            timeEndComboBox.setValue(TimeOptions.format12h(routine.getTimeEnd()));
 
             // Determine schedule mode based on applicable days
             List<String> applicableDays = routine.getApplicableDays();
@@ -170,8 +175,8 @@ public class EditRoutineController {
             String courseName = courseNameField.getText().trim();
             String teacherName = teacherNameField.getText().trim();
             String room = roomField.getText().trim();
-            String timeStartText = timeStartField.getText().trim();
-            String timeEndText = timeEndField.getText().trim();
+            String timeStartText = getComboText(timeStartComboBox);
+            String timeEndText = getComboText(timeEndComboBox);
 
             // Validation
             if (courseName.isEmpty()) {
@@ -194,23 +199,10 @@ public class EditRoutineController {
                 return;
             }
 
-            // Validate time format before parsing
-            if (!timeStartText.matches("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")) {
-                showError("Invalid start time format. Use HH:mm (e.g., 09:00)");
-                return;
-            }
-
-            if (!timeEndText.matches("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")) {
-                showError("Invalid end time format. Use HH:mm (e.g., 10:00)");
-                return;
-            }
-
             // Parse values
             int periodNumber = Integer.parseInt(periodText);
-            LocalTime timeStart = LocalTime.parse(timeStartText,
-                    DateTimeFormatter.ofPattern("HH:mm"));
-            LocalTime timeEnd = LocalTime.parse(timeEndText,
-                    DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime timeStart = TimeOptions.parseHHmm(timeStartText);
+            LocalTime timeEnd = TimeOptions.parseHHmm(timeEndText);
 
             if (timeEnd.isBefore(timeStart) || timeEnd.equals(timeStart)) {
                 showError("End time must be after start time");
@@ -241,8 +233,18 @@ public class EditRoutineController {
         } catch (NumberFormatException e) {
             showError("Period number must be a valid number");
         } catch (Exception e) {
-            showError("Invalid time format. Use HH:mm (e.g., 09:00)");
+            showError("Invalid time format. Use h:mm AM/PM (e.g., 2:00 PM)");
         }
+    }
+
+    private static String getComboText(ComboBox<String> comboBox) {
+        if (comboBox == null) return "";
+        String editor = comboBox.getEditor() != null ? comboBox.getEditor().getText() : null;
+        if (editor != null && !editor.trim().isEmpty()) {
+            return editor.trim();
+        }
+        String value = comboBox.getValue();
+        return value != null ? value.trim() : "";
     }
 
     @FXML
@@ -285,7 +287,7 @@ public class EditRoutineController {
             controller.setUser(LoginController.getCurrentUser());
             controller.loadData();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -338,7 +340,7 @@ public class EditRoutineController {
                 ctrl.loadData();
             }
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

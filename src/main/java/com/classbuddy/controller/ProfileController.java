@@ -215,7 +215,7 @@ public class ProfileController {
                 // Admin dashboard will auto-load via initialize
             }
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) cancelButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

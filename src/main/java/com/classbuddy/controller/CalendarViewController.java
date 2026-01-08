@@ -222,7 +222,7 @@ public class CalendarViewController {
         
         // Time indicator (optional)
         if (event.getStartTime() != null) {
-            Label timeLabel = new Label(event.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            Label timeLabel = new Label(event.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")));
             timeLabel.setStyle("-fx-font-size: 8; -fx-text-fill: -text-secondary;");
             eventBox.getChildren().add(timeLabel);
         }
@@ -245,7 +245,7 @@ public class CalendarViewController {
         eventBox.setMaxWidth(Double.MAX_VALUE);
         eventBox.setStyle("-fx-border-color: -primary-orange;");
         
-        Label timeLabel = new Label(routine.getTimeStart().format(DateTimeFormatter.ofPattern("HH:mm")));
+        Label timeLabel = new Label(routine.getTimeStart().format(DateTimeFormatter.ofPattern("h:mm a")));
         timeLabel.setStyle("-fx-font-size: 8; -fx-text-fill: -text-secondary;");
         eventBox.getChildren().add(timeLabel);
         

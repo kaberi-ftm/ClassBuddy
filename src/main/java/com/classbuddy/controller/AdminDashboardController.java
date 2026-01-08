@@ -129,7 +129,7 @@ public class AdminDashboardController {
             controller.setUser(currentAdmin);
             controller.loadData(); // Call this after setting data
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -154,14 +154,14 @@ public class AdminDashboardController {
             controller.setClassroom(classroom);
             controller.loadData(); // Call after setting classroom
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1000);
-            stage.setMinHeight(700);
-            stage.setWidth(1200);
-            stage.setHeight(800);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
+            stage.setWidth(1600);
+            stage.setHeight(900);
             stage.centerOnScreen();
             stage.show();
             ViewTransitions.fadeIn(root);
@@ -189,14 +189,14 @@ public class AdminDashboardController {
             CreateClassroomController controller = fxmlLoader.getController();
             controller.setAdmin(currentAdmin);
 
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
 
             // Enable resizing
             stage. setResizable(true);
-            stage.setMinWidth(800);
-            stage.setMinHeight(500);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
 
             stage. show();
             ViewTransitions.fadeIn(root);
@@ -215,14 +215,14 @@ public class AdminDashboardController {
             JoinClassroomController controller = fxmlLoader.getController();
             controller.setAdmin(currentAdmin);
 
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
 
             // Enable resizing
             stage.setResizable(true);
-            stage.setMinWidth(800);
-            stage.setMinHeight(500);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
 
             stage.show();
             ViewTransitions.fadeIn(root);
@@ -240,7 +240,7 @@ public class AdminDashboardController {
             );
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -263,7 +263,7 @@ public class AdminDashboardController {
             ProfileController controller = loader.getController();
             controller.setUser(currentAdmin, "/fxml/admin-dashboard.fxml");
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -281,7 +281,7 @@ public class AdminDashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/schedule-export-import.fxml"));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -298,7 +298,7 @@ public class AdminDashboardController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root, 1600, 900);
 
             Stage stage = (Stage) adminNameLabel.getScene().getWindow();
             stage.setScene(scene);

@@ -72,14 +72,14 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1000);
-            stage.setMinHeight(700);
-            stage.setWidth(1200);
-            stage.setHeight(800);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
+            stage.setWidth(1600);
+            stage.setHeight(900);
             stage.centerOnScreen();
             stage.show();
             ViewTransitions.fadeIn(root);
@@ -96,14 +96,14 @@ public class LoginController {
             Parent root = loader.load();
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1000);
-            stage.setMinHeight(700);
-            stage.setWidth(1200);
-            stage.setHeight(800);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
+            stage.setWidth(1600);
+            stage.setHeight(900);
             stage.centerOnScreen();
             stage.show();
             ViewTransitions.fadeIn(root);
@@ -119,7 +119,7 @@ public class LoginController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root, 1600, 900);
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(scene);

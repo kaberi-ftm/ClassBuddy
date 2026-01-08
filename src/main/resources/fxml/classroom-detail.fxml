@@ -74,6 +74,12 @@
                     <Insets left="25" />
                 </padding>
             </Button>
+
+            <Button fx:id="btnAttendanceReport" onAction="#goToAttendanceAnalytics" styleClass="sidebar-item" text="Attendance Report" maxWidth="Infinity" alignment="CENTER_LEFT" visible="false">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
             
             <!-- Tests and Lab Tests moved under Exams tab -->
         </VBox>
@@ -98,10 +104,8 @@
                             <Region HBox.hgrow="ALWAYS" />
                             <Button onAction="#refreshRoutine" styleClass="btn-secondary" text="Refresh" />
                         </HBox>
-                        
-                        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                            <VBox fx:id="routineContainer" spacing="15" style="-fx-background-color: transparent;" />
-                        </ScrollPane>
+
+                        <fx:include fx:id="timetableGrid" source="timetable-grid.fxml" VBox.vgrow="ALWAYS"/>
                     </VBox>
                 </Tab>
 

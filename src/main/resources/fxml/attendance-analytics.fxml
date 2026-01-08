@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.classbuddy.controller.AttendanceAnalyticsController"
+      spacing="15" stylesheets="/css/styles.css" styleClass="content-body">
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Button text="Back" onAction="#goBack" styleClass="btn-secondary" />
+        <Label fx:id="classroomNameLabel" styleClass="page-title" text="Attendance Analytics" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="Export CSV" onAction="#handleExportCsv" styleClass="btn-primary" />
+    </HBox>
+
+    <TableView fx:id="statsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="rollColumn" text="Roll" prefWidth="120" />
+            <TableColumn fx:id="nameColumn" text="Student Name" prefWidth="260" />
+            <TableColumn fx:id="presentColumn" text="Present" prefWidth="100" />
+            <TableColumn fx:id="absentColumn" text="Absent" prefWidth="100" />
+            <TableColumn fx:id="lateColumn" text="Late" prefWidth="100" />
+            <TableColumn fx:id="percentageColumn" text="%" prefWidth="100" />
+        </columns>
+    </TableView>
+
+    <Label fx:id="exportStatusLabel" text="Shows per-student attendance stats for this classroom." styleClass="info-text" />
+</VBox>

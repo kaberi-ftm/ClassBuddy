@@ -226,7 +226,7 @@ public class ScheduleExportImportController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin-dashboard.fxml"));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) exportButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

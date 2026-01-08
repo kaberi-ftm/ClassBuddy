@@ -128,8 +128,8 @@
                     </VBox>
 
                     <VBox spacing="8">
-                        <Label styleClass="field-label" text="Exam Time (HH:mm) *" />
-                        <TextField fx:id="examTimeField" prefWidth="200.0" promptText="14:00" />
+                        <Label styleClass="field-label" text="Exam Time (h:mm AM/PM) *" />
+                        <ComboBox fx:id="examTimeComboBox" prefWidth="200.0" promptText="14:00" editable="true" />
                     </VBox>
 
                     <VBox spacing="8">

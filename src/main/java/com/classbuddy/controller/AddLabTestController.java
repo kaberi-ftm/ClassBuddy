@@ -49,6 +49,12 @@ public class AddLabTestController {
         this.onSuccess = callback;
     }
 
+    public void setInitialTestDate(LocalDate date) {
+        if (testDatePicker != null && date != null) {
+            testDatePicker.setValue(date);
+        }
+    }
+
     @FXML
     public void handleAdd() {
         LocalDate testDate = testDatePicker.getValue();
@@ -127,14 +133,14 @@ public class AddLabTestController {
             controller.setUser(LoginController.getCurrentUser());
             controller.loadData();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) testDatePicker.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1000);
-            stage.setMinHeight(700);
-            stage.setWidth(1200);
-            stage.setHeight(800);
+            stage.setMinWidth(1600);
+            stage.setMinHeight(900);
+            stage.setWidth(1600);
+            stage.setHeight(900);
             stage.centerOnScreen();
             stage.show();
             ViewTransitions.fadeIn(root);
@@ -187,7 +193,7 @@ public class AddLabTestController {
                 ctrl.loadData();
             }
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) testDatePicker.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

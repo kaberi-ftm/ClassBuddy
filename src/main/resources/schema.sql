@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS exam (
                                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                                     classroom_id INTEGER NOT NULL,
                                     course_name VARCHAR(100) NOT NULL,
-    exam_type VARCHAR(20) CHECK(exam_type IN ('Mid', 'Final', 'Viva')),
+    exam_type VARCHAR(20) CHECK(exam_type IN ('Mid', 'Final', 'Viva', 'CT', 'Quiz', 'Lab Test')),
     exam_date DATE NOT NULL,
     exam_time TIME NOT NULL,
     room VARCHAR(50),

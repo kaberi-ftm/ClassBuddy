@@ -189,7 +189,7 @@ public class StudentDashboardController {
             controller.setClassroom(classroom);
             controller.setUser(currentStudent);
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -211,7 +211,7 @@ public class StudentDashboardController {
             StudentCalendarController controller = loader.getController();
             controller.setSelectedClassroom(classroom);
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -256,7 +256,7 @@ public class StudentDashboardController {
                     fxmlLoader.getController();
             controller. setAdmin(currentStudent);
 
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage. show();
@@ -275,7 +275,7 @@ public class StudentDashboardController {
             );
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -298,7 +298,7 @@ public class StudentDashboardController {
             ProfileController controller = loader.getController();
             controller.setUser(currentStudent, "/fxml/student-dashboard.fxml");
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -321,7 +321,7 @@ public class StudentDashboardController {
                     getClass().getResource("/fxml/login.fxml")
             );
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root, 1600, 900);
 
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
             stage.setScene(scene);

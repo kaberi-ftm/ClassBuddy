@@ -12,10 +12,10 @@ import javafx.stage.Stage;
 import com.classbuddy.model.Classroom;
 import com.classbuddy.model.Exam;
 import com.classbuddy.service.ExamService;
+import com.classbuddy.util.TimeOptions;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class EditExamController {
     @FXML
@@ -27,7 +27,7 @@ public class EditExamController {
     @FXML
     private DatePicker examDatePicker;
     @FXML
-    private TextField examTimeField;
+    private ComboBox<String> examTimeComboBox;
     @FXML
     private TextField roomField;
     @FXML
@@ -51,8 +51,11 @@ public class EditExamController {
     @FXML
     public void initialize() {
         // Initialize exam types
-        examTypeComboBox.getItems().addAll("Mid", "Final", "Viva");
+        examTypeComboBox.getItems().addAll("Mid", "Final", "Viva", "CT", "Quiz", "Lab Test");
         examTypeComboBox.setValue("Mid");
+
+        examTimeComboBox.getItems().setAll(TimeOptions.defaultTimes());
+        examTimeComboBox.setEditable(true);
     }
 
     public void loadData() {
@@ -64,7 +67,7 @@ public class EditExamController {
             courseNameField.setText(exam.getCourseName());
             examTypeComboBox.setValue(exam.getExamType());
             examDatePicker.setValue(exam.getExamDate());
-            examTimeField.setText(exam.getExamTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            examTimeComboBox.setValue(TimeOptions.format12h(exam.getExamTime()));
             roomField.setText(exam.getRoom() != null ? exam.getRoom() : "");
         }
     }
@@ -76,7 +79,7 @@ public class EditExamController {
             String examType = examTypeComboBox.getValue();
             LocalDate examDate = examDatePicker.getValue();
             String room = roomField.getText().trim();
-            String timeText = examTimeField.getText().trim();
+            String timeText = getComboText(examTimeComboBox);
 
             // Validation
             if (courseName.isEmpty()) {
@@ -94,15 +97,7 @@ public class EditExamController {
                 return;
             }
 
-            // Validate time format before parsing
-            if (!timeText.matches("^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")) {
-                showError("Invalid time format. Use HH:mm (e.g., 14:00)");
-                return;
-            }
-
-            // Parse time
-            LocalTime examTime = LocalTime.parse(timeText,
-                    DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime examTime = TimeOptions.parseHHmm(timeText);
 
             // Update exam
             boolean updated = ExamService.updateExam(
@@ -127,6 +122,16 @@ public class EditExamController {
         } catch (Exception e) {
             showError("Invalid input: " + e.getMessage());
         }
+    }
+
+    private static String getComboText(ComboBox<String> comboBox) {
+        if (comboBox == null) return "";
+        String editor = comboBox.getEditor() != null ? comboBox.getEditor().getText() : null;
+        if (editor != null && !editor.trim().isEmpty()) {
+            return editor.trim();
+        }
+        String value = comboBox.getValue();
+        return value != null ? value.trim() : "";
     }
 
     @FXML
@@ -169,7 +174,7 @@ public class EditExamController {
             controller.setUser(LoginController.getCurrentUser());
             controller.loadData();
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();
@@ -222,7 +227,7 @@ public class EditExamController {
                 ctrl.loadData();
             }
 
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 1600, 900);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

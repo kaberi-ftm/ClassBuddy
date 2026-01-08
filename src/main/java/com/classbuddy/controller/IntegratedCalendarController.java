@@ -3,13 +3,16 @@ package com.classbuddy.controller;
 import com.classbuddy.model.CalendarEvent;
 import com.classbuddy.model.Classroom;
 import com.classbuddy.model.Exam;
+import com.classbuddy.model.Role;
 import com.classbuddy.model.Routine;
 import com.classbuddy.service.CalendarService;
 import com.classbuddy.service.ExamService;
 import com.classbuddy.service.RoutineService;
+import com.classbuddy.util.ContextMenuFactory;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -251,8 +254,10 @@ public class IntegratedCalendarController {
         cell.setMinHeight(90);
         cell.setMaxHeight(110);
         cell.setOnMouseClicked(e -> {
-            selectedDate = date;
-            updateView(); // Refresh selection + details (prevents duplicate month grids)
+            if (e.getButton() == MouseButton.PRIMARY) {
+                selectedDate = date;
+                updateView(); // Refresh selection + details (prevents duplicate month grids)
+            }
         });
 
         if (date.getMonth() != currentYearMonth.getMonth()) {
@@ -285,6 +290,17 @@ public class IntegratedCalendarController {
             Label moreLabel = new Label("+" + (dayEvents.size() - 3) + " more");
             moreLabel.setStyle("-fx-text-fill: -text-light; -fx-font-size: 9;");
             cell.getChildren().add(moreLabel);
+        }
+
+        // Attach context menu for this classroom's calendar.
+        // Note: Integrated calendar is used inside classroom detail (single-classroom context).
+        if (classroom != null) {
+            var user = LoginController.getCurrentUser();
+            if (user != null && user.getRole() == Role.ADMIN) {
+                ContextMenuFactory.attachAdminMenu(cell, date, java.util.List.of(classroom));
+            } else {
+                ContextMenuFactory.attachStudentMenu(cell, date, java.util.List.of(classroom));
+            }
         }
 
         return cell;
