@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.classbuddy.controller.ExamMarksController"
+            stylesheets="@../css/styles.css">
+    <top>
+        <HBox spacing="12" padding="10">
+            <Button text="← Back" onAction="#goBack"/>
+            <Label text="Exam & Marks" styleClass="page-title"/>
+        </HBox>
+    </top>
+    <center>
+        <VBox spacing="18" padding="20">
+            <GridPane hgap="12" vgap="12">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="140" prefWidth="160"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="Classroom" GridPane.rowIndex="0"/>
+                <ComboBox fx:id="classroomCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                <Label text="Type" GridPane.rowIndex="1"/>
+                <ComboBox fx:id="typeCombo" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                <Label text="Exam" GridPane.rowIndex="2"/>
+                <ComboBox fx:id="examCombo" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                <Label text="CT/Quiz" GridPane.rowIndex="3"/>
+                <ComboBox fx:id="ctCombo" GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                <Label text="Lab Test" GridPane.rowIndex="4"/>
+                <ComboBox fx:id="labCombo" GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                <Label text="Roll Number" GridPane.rowIndex="5"/>
+                <TextField fx:id="rollField" promptText="e.g., 23-001" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                <Label text="Score / Total" GridPane.rowIndex="6"/>
+                <HBox spacing="8" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                    <TextField fx:id="scoreField" promptText="Score" maxWidth="120"/>
+                    <TextField fx:id="totalField" promptText="Total" maxWidth="120"/>
+                </HBox>
+
+                <Label text="Grade" GridPane.rowIndex="7"/>
+                <TextField fx:id="gradeField" promptText="A+" GridPane.rowIndex="7" GridPane.columnIndex="1" maxWidth="120"/>
+
+                <Label text="Remarks" GridPane.rowIndex="8"/>
+                <TextArea fx:id="remarksArea" prefRowCount="2" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <HBox spacing="10">
+                <Button text="Save" styleClass="btn-primary" onAction="#handleSave"/>
+                <Label fx:id="statusLabel"/>
+            </HBox>
+
+            <VBox spacing="8">
+                <Label text="Recent Entries" styleClass="field-label"/>
+                <HBox spacing="8">
+                    <Label text="Filter by Roll" />
+                    <TextField fx:id="filterRollField" promptText="e.g., 23-001" maxWidth="180" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label text="Select a row to load it into the form" styleClass="info-text" />
+                </HBox>
+                <TableView fx:id="recentTable" prefHeight="260">
+                    <columns>
+                        <TableColumn fx:id="typeCol" text="Type" prefWidth="90" />
+                        <TableColumn fx:id="itemCol" text="Item" prefWidth="90" />
+                        <TableColumn fx:id="rollCol" text="Roll" prefWidth="140" />
+                        <TableColumn fx:id="scoreCol" text="Score" prefWidth="120" />
+                        <TableColumn fx:id="gradeCol" text="Grade" prefWidth="80" />
+                        <TableColumn fx:id="remarksCol" text="Remarks" prefWidth="260" />
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

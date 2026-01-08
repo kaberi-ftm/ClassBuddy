@@ -67,6 +67,22 @@
                     <Insets left="25" />
                 </padding>
             </Button>
+            <Button onAction="#goToExamMarks" styleClass="sidebar-item" text="Exam/Marks" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-clipboard-list" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+            <Button onAction="#goToAnalytics" styleClass="sidebar-item" text="Analytics" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <graphic>
+                    <FontIcon iconLiteral="fas-chart-pie" styleClass="sidebar-item-icon" />
+                </graphic>
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
         </VBox>
 
         <!-- User Info Footer -->

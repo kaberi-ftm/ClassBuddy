@@ -5,6 +5,7 @@ import com.classbuddy.model.Role;
 import com.classbuddy.model.User;
 import com.classbuddy.service.ClassroomService;
 import com.classbuddy.service.ScheduleExportService;
+import com.classbuddy.service.ScheduleImportService;
 import com.classbuddy.util.ViewTransitions;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -212,12 +213,58 @@ public class ScheduleExportImportController {
 
     @FXML
     private void handleImportSchedule() {
-        showInfo("Import functionality is currently not implemented.\n\n" +
-                "To use imported schedules:\n" +
-                "1. Export a classroom schedule as CSV\n" +
-                "2. Edit the CSV file with schedule changes\n" +
-                "3. Manually add entries through the calendar interface\n\n" +
-                "Full import functionality will be available in a future update.");
+        Classroom selectedClassroom = importClassroomCombo.getValue();
+        String filePath = importFilePathField.getText();
+
+        if (selectedClassroom == null) {
+            showError("Please select a classroom to import into.");
+            return;
+        }
+
+        if (filePath == null || filePath.trim().isEmpty()) {
+            showError("Please select an import file.");
+            return;
+        }
+
+        importProgress.setVisible(true);
+        importButton.setDisable(true);
+        importStatusLabel.setText("Importing...");
+        importStatusLabel.setStyle("-fx-text-fill: #3498db;");
+
+        new Thread(() -> {
+            try {
+                ScheduleImportService.ImportResult result = ScheduleImportService.importSchedule(
+                        selectedClassroom.getId(), currentUser.getId(), Path.of(filePath));
+
+                javafx.application.Platform.runLater(() -> {
+                    importProgress.setVisible(false);
+                    importButton.setDisable(false);
+
+                    if (!result.conflicts.isEmpty()) {
+                        importStatusLabel.setText("✗ Conflicts found:\n" + String.join("\n", result.conflicts));
+                        importStatusLabel.setStyle("-fx-text-fill: #e67e22;");
+                        return;
+                    }
+
+                    if (!result.errors.isEmpty()) {
+                        importStatusLabel.setText("✗ Import failed:\n" + String.join("\n", result.errors));
+                        importStatusLabel.setStyle("-fx-text-fill: #e74c3c;");
+                        return;
+                    }
+
+                    importStatusLabel.setText("✓ Import complete. " + result.toString());
+                    importStatusLabel.setStyle("-fx-text-fill: #27ae60;");
+                });
+
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    importProgress.setVisible(false);
+                    importButton.setDisable(false);
+                    importStatusLabel.setText("✗ Import failed: " + e.getMessage());
+                    importStatusLabel.setStyle("-fx-text-fill: #e74c3c;");
+                });
+            }
+        }).start();
     }
 
     @FXML
@@ -245,6 +292,7 @@ public class ScheduleExportImportController {
         alert.showAndWait();
     }
 
+    @SuppressWarnings("unused")
     private void showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");

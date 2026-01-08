@@ -293,6 +293,40 @@ public class AdminDashboardController {
     }
 
     @FXML
+    public void goToExamMarks() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/exam-marks.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root, 1600, 900);
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading exam marks page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void goToAnalytics() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin-analytics.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root, 1600, 900);
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading analytics page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     public void handleLogout() {
         System.out.println("Admin logging out...");
         try {

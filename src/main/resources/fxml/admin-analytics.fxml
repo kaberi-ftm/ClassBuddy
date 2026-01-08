@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.classbuddy.controller.AdminAnalyticsController"
+      spacing="15" stylesheets="/css/styles.css" styleClass="content-body">
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Button text="Back" onAction="#goBack" styleClass="btn-secondary" />
+        <Label styleClass="page-title" text="Analytics" />
+        <Region HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <GridPane hgap="12" vgap="12">
+        <columnConstraints>
+            <ColumnConstraints minWidth="140" prefWidth="160"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Classroom" GridPane.rowIndex="0" />
+        <ComboBox fx:id="classroomCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" maxWidth="Infinity" />
+
+        <Label text="Upcoming Exams (14d)" GridPane.rowIndex="1" />
+        <Label fx:id="upcomingExamsLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+        <Label text="Upcoming CT/Quiz (14d)" GridPane.rowIndex="2" />
+        <Label fx:id="upcomingCTLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+        <Label text="Upcoming Lab Tests (14d)" GridPane.rowIndex="3" />
+        <Label fx:id="upcomingLabsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+        <Label text="Avg Exam %" GridPane.rowIndex="4" />
+        <Label fx:id="avgExamLabel" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+        <Label text="Avg CT %" GridPane.rowIndex="5" />
+        <Label fx:id="avgCTLabel" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+
+        <Label text="Avg Lab %" GridPane.rowIndex="6" />
+        <Label fx:id="avgLabLabel" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+
+        <Label text="Overall Attendance %" GridPane.rowIndex="7" />
+        <Label fx:id="attendanceLabel" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+    </GridPane>
+
+    <VBox spacing="8">
+        <Label text="Exam Grade Distribution" styleClass="field-label" />
+        <PieChart fx:id="gradePie" prefHeight="280" />
+    </VBox>
+
+    <VBox spacing="8">
+        <Label text="Per-Course Exam Averages" styleClass="field-label" />
+        <ListView fx:id="courseAvgList" prefHeight="200" />
+    </VBox>
+</VBox>

@@ -65,9 +65,9 @@
 
         <!-- IMPORT SECTION -->
         <VBox spacing="16" styleClass="card">
-            <Label text="Import Schedule" styleClass="card-title"/>
-            <Label text="Import schedule from CSV file (Preview only - Full import coming soon)" 
-                   styleClass="page-subtitle" wrapText="true"/>
+                 <Label text="Import Schedule" styleClass="card-title"/>
+                 <Label text="Import schedule from CSV and apply with conflict checks" 
+                     styleClass="page-subtitle" wrapText="true"/>
 
             <GridPane hgap="16" vgap="16">
                 <columnConstraints>
@@ -100,9 +100,8 @@
 
             <!-- Import Actions -->
             <HBox spacing="12" alignment="CENTER_LEFT">
-                <Button fx:id="importButton" text="Import Schedule" onAction="#handleImportSchedule" styleClass="btn-primary" disable="true"/>
+                <Button fx:id="importButton" text="Import Schedule" onAction="#handleImportSchedule" styleClass="btn-primary"/>
                 <ProgressIndicator fx:id="importProgress" prefWidth="24" prefHeight="24" visible="false"/>
-                <Label text="(Import functionality coming soon)" styleClass="field-help"/>
             </HBox>
 
             <!-- Import Status -->
