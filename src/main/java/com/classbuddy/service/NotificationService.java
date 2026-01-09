@@ -3,16 +3,12 @@ package com.classbuddy.service;
 import com.classbuddy.model.AuditLog;
 import com.classbuddy.model.Notification;
 import com.classbuddy.model.Notification.NotificationType;
-import com.classbuddy.util.DesktopNotifier;
 import com.classbuddy.model.NotificationSettings;
 import com.classbuddy.util.DatabaseUtil;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.LocalDate;
-import java.util. ArrayList;
-import java.util. List;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotificationService {
 
@@ -40,7 +36,6 @@ public class NotificationService {
 
             pstmt.executeUpdate();
             System.out.println("Notification created: " + title);
-            DesktopNotifier.show(title, message);
             return true;
 
         } catch (SQLException e) {
@@ -169,10 +164,6 @@ public class NotificationService {
                     return new NotificationSettings(
                             rs.getInt("id"),
                             rs.getInt("user_id"),
-                            rs.getInt("exam_notification_hours"),
-                            rs.getInt("ct_quiz_notification_hours"),
-                            rs.getInt("lab_test_notification_hours"),
-                            rs.getInt("routine_notification_minutes"),
                             rs.getBoolean("enable_exam_notifications"),
                             rs.getBoolean("enable_routine_notifications"),
                             rs.getBoolean("enable_notice_notifications"),
@@ -197,22 +188,16 @@ public class NotificationService {
      */
     public static boolean saveNotificationSettings(NotificationSettings settings) {
         String sql = "INSERT OR REPLACE INTO notification_settings " +
-                "(user_id, exam_notification_hours, ct_quiz_notification_hours, " +
-                "lab_test_notification_hours, routine_notification_minutes, " +
-                "enable_exam_notifications, enable_routine_notifications, enable_notice_notifications) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "(user_id, enable_exam_notifications, enable_routine_notifications, enable_notice_notifications) " +
+                "VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, settings.getUserId());
-            pstmt.setInt(2, settings.getExamNotificationHours());
-            pstmt.setInt(3, settings.getCtQuizNotificationHours());
-            pstmt.setInt(4, settings.getLabTestNotificationHours());
-            pstmt.setInt(5, settings.getRoutineNotificationMinutes());
-            pstmt.setBoolean(6, settings.isEnableExamNotifications());
-            pstmt.setBoolean(7, settings.isEnableRoutineNotifications());
-            pstmt.setBoolean(8, settings.isEnableNoticeNotifications());
+            pstmt.setBoolean(2, settings.isEnableExamNotifications());
+            pstmt.setBoolean(3, settings.isEnableRoutineNotifications());
+            pstmt.setBoolean(4, settings.isEnableNoticeNotifications());
 
             pstmt.executeUpdate();
             System.out.println("Notification settings saved");
@@ -227,105 +212,7 @@ public class NotificationService {
     /**
      * Check and send notifications for upcoming classes (1 hour before)
      */
-    public static void checkRoutineNotifications() {
-        String sql = "SELECT r.*, cs.student_id, ns.routine_notification_minutes " +
-                "FROM routine r " +
-                "JOIN classroom_students cs ON r.classroom_id = cs.classroom_id " +
-                "JOIN notification_settings ns ON cs.student_id = ns.user_id " +
-                "WHERE ns.enable_routine_notifications = 1 " +
-                "AND (cs.enrollment_status IS NULL OR cs.enrollment_status = 'ACTIVE')";
 
-        try (Connection conn = DatabaseUtil.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            LocalDateTime now = LocalDateTime.now();
-            String currentDay = now.getDayOfWeek().toString();
-            LocalTime currentTime = now.toLocalTime();
-
-            while (rs.next()) {
-                String day = rs.getString("day");
-                LocalTime classTime = rs.getTime("time_start").toLocalTime();
-                int studentId = rs.getInt("student_id");
-                int notificationMinutes = rs.getInt("routine_notification_minutes");
-
-                // Check if class is today and within notification window
-                if (day.equalsIgnoreCase(currentDay)) {
-                    long minutesUntilClass = java.time.Duration.between(currentTime, classTime).toMinutes();
-
-                    if (minutesUntilClass > 0 && minutesUntilClass <= notificationMinutes) {
-                        // Send notification
-                        String courseName = rs.getString("course_name");
-                        String room = rs.getString("room");
-
-                        createNotification(
-                                studentId,
-                                rs.getInt("classroom_id"),
-                            NotificationType.ROUTINE,
-                                "Class Starting Soon",
-                                courseName + " class starts in " + minutesUntilClass + " minutes at " + room,
-                                rs.getInt("id")
-                        );
-                        DesktopNotifier.show("Class Starting Soon", courseName + " in " + minutesUntilClass + " min (" + room + ")");
-                    }
-                }
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error checking routine notifications: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Check and send notifications for upcoming exams (24 hours before)
-     */
-    public static void checkExamNotifications() {
-        String sql = "SELECT e.*, cs.student_id, ns.exam_notification_hours, c.name as classroom_name " +
-                "FROM exam e " +
-                "JOIN classroom c ON e.classroom_id = c.id " +
-                "JOIN classroom_students cs ON e.classroom_id = cs.classroom_id " +
-                "JOIN notification_settings ns ON cs. student_id = ns.user_id " +
-                "WHERE ns.enable_exam_notifications = 1 " +
-                "AND (cs.enrollment_status IS NULL OR cs.enrollment_status = 'ACTIVE') " +
-                "AND e.exam_date >= DATE('now')";
-
-        try (Connection conn = DatabaseUtil.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            LocalDateTime now = LocalDateTime.now();
-
-            while (rs.next()) {
-                LocalDate examDate = rs.getDate("exam_date").toLocalDate();
-                LocalTime examTime = rs.getTime("exam_time").toLocalTime();
-                LocalDateTime examDateTime = LocalDateTime.of(examDate, examTime);
-
-                int studentId = rs.getInt("student_id");
-                int notificationHours = rs.getInt("exam_notification_hours");
-
-                long hoursUntilExam = java.time.Duration.between(now, examDateTime).toHours();
-
-                if (hoursUntilExam > 0 && hoursUntilExam <= notificationHours) {
-                    String courseName = rs.getString("course_name");
-                    String examType = rs.getString("exam_type");
-                    String classroomName = rs.getString("classroom_name");
-
-                        createNotification(
-                            studentId,
-                            rs.getInt("classroom_id"),
-                            NotificationType.EXAM,
-                            examType + " Exam Tomorrow",
-                            courseName + " " + examType + " exam in " + classroomName + " at " + examTime,
-                            rs.getInt("id")
-                    );
-                        DesktopNotifier.show("Exam Reminder", courseName + " " + examType + " at " + examTime);
-                }
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error checking exam notifications: " + e.getMessage());
-        }
-    }
 
     /**
      * Send notification to all students in a classroom when notice is posted

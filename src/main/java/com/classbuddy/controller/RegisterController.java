@@ -113,18 +113,18 @@ public class RegisterController {
     }
 
     private void clearValidation() {
-        if (usernameField != null) usernameField.getStyleClass().remove("field-invalid");
-        if (emailField != null) emailField.getStyleClass().remove("field-invalid");
-        if (passwordField != null) passwordField.getStyleClass().remove("field-invalid");
-        if (confirmPasswordField != null) confirmPasswordField.getStyleClass().remove("field-invalid");
+        if (usernameField != null) usernameField.getStyleClass().removeAll("field-invalid", "invalid-field");
+        if (emailField != null) emailField.getStyleClass().removeAll("field-invalid", "invalid-field");
+        if (passwordField != null) passwordField.getStyleClass().removeAll("field-invalid", "invalid-field");
+        if (confirmPasswordField != null) confirmPasswordField.getStyleClass().removeAll("field-invalid", "invalid-field");
     }
 
     private void markInvalid(Control control) {
         if (control == null) {
             return;
         }
-        if (!control.getStyleClass().contains("field-invalid")) {
-            control.getStyleClass().add("field-invalid");
+        if (!control.getStyleClass().contains("invalid-field")) {
+            control.getStyleClass().add("invalid-field");
         }
     }
 

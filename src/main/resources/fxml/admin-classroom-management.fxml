@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+<AnchorPane prefHeight="800.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
             fx:controller="com.classbuddy.controller.AdminClassroomManagementController">
 
     <stylesheets>
@@ -14,7 +14,7 @@
     </stylesheets>
 
     <!-- HEADER -->
-    <HBox alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="70.0" prefWidth="1200.0" 
+    <HBox alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="70.0" prefWidth="1366.0" 
           spacing="20.0" styleClass="dashboard-header">
         <padding>
             <Insets left="20.0" right="20.0" />
@@ -31,7 +31,7 @@
     </HBox>
 
     <!-- TABS FOR MANAGEMENT -->
-    <TabPane fx:id="managementTabs" layoutY="70.0" prefHeight="730.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE">
+    <TabPane fx:id="managementTabs" layoutY="70.0" prefHeight="730.0" prefWidth="1366.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
             <!-- Routine Management -->
             <Tab text="Routine Management">

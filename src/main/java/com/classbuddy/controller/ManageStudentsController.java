@@ -169,14 +169,11 @@ public class ManageStudentsController {
                     getClass().getResource("/fxml/admin-dashboard.fxml")
             );
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 1366, 800);
+            Scene scene = new Scene(root);
             Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.setMinWidth(1366);
-            stage.setMinHeight(800);
-            stage.setWidth(1366);
-            stage.setHeight(800);
+            stage.sizeToScene();
             stage.show();
             ViewTransitions.fadeIn(root);
 

@@ -116,10 +116,6 @@ CREATE TABLE IF NOT EXISTS notice (
 CREATE TABLE IF NOT EXISTS notification_settings (
                                                      id INTEGER PRIMARY KEY AUTOINCREMENT,
                                                      user_id INTEGER NOT NULL,
-                                                     exam_notification_hours INTEGER DEFAULT 24,  -- Hours before exam to notify
-                                                     ct_quiz_notification_hours INTEGER DEFAULT 24,
-                                                     lab_test_notification_hours INTEGER DEFAULT 24,
-                                                     routine_notification_minutes INTEGER DEFAULT 60,  -- Minutes before class
                                                      enable_exam_notifications BOOLEAN DEFAULT 1,
                                                      enable_routine_notifications BOOLEAN DEFAULT 1,
                                                      enable_notice_notifications BOOLEAN DEFAULT 1,

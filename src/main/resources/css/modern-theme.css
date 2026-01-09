@@ -2,6 +2,7 @@
 
 /* Root Variables - Proper Light Mode Theme */
 .root {
+    -fx-font-family: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
     /* Brutalist monochrome + single accent */
     -primary-orange: #2D5BFF;   /* accent */
     -primary-purple: #2349CC;   /* accent dark */
@@ -36,6 +37,26 @@
     -error: #E11D48;
     -info: #2D5BFF;
 }
+
+/* Typography utilities */
+.text-display-lg { -fx-font-size: 48px; -fx-font-weight: 800; -fx-text-fill: -text-primary; }
+.text-display-md { -fx-font-size: 36px; -fx-font-weight: 700; -fx-text-fill: -text-primary; }
+.text-display-sm { -fx-font-size: 30px; -fx-font-weight: 700; -fx-text-fill: -text-primary; }
+
+.text-h1 { -fx-font-size: 24px; -fx-font-weight: 600; -fx-text-fill: -text-primary; }
+.text-h2 { -fx-font-size: 20px; -fx-font-weight: 600; -fx-text-fill: -text-primary; }
+.text-h3 { -fx-font-size: 18px; -fx-font-weight: 600; -fx-text-fill: -text-primary; }
+.text-h4 { -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: -text-primary; }
+
+.text-body-lg { -fx-font-size: 16px; -fx-font-weight: 400; -fx-text-fill: -text-primary; }
+.text-body-md { -fx-font-size: 14px; -fx-font-weight: 400; -fx-text-fill: -text-primary; }
+.text-body-sm { -fx-font-size: 13px; -fx-font-weight: 400; -fx-text-fill: -text-primary; }
+
+.text-label-lg { -fx-font-size: 14px; -fx-font-weight: 500; -fx-text-fill: -text-secondary; }
+.text-label-md { -fx-font-size: 12px; -fx-font-weight: 500; -fx-text-fill: -text-secondary; }
+.text-label-sm { -fx-font-size: 11px; -fx-font-weight: 500; -fx-text-fill: -text-secondary; }
+
+.text-primary { -fx-text-fill: -text-primary; }
 
 /* Sidebar - ALL TEXT WHITE */
 .sidebar {
@@ -88,6 +109,9 @@
 
 .sidebar-logo-image {
     -fx-effect: dropshadow(gaussian, rgba(99, 102, 241, 0.30), 14, 0, 0, 0);
+    -fx-fit-width: 36;
+    -fx-fit-height: 36;
+    -fx-preserve-ratio: true;
 }
 
 .sidebar-menu {
@@ -420,6 +444,7 @@
 .btn-primary:hover {
     -fx-background-color: -accent-orange;
     -fx-translate-y: -1;
+    -fx-border-color: -border-color;
 }
 
 .btn-primary:pressed {
@@ -440,6 +465,7 @@
 
 .btn-secondary:hover {
     -fx-background-color: -card-hover-bg;
+    -fx-border-color: -border-color;
 }
 
 .btn-secondary:pressed {
@@ -458,6 +484,7 @@
 
 .btn-outline:hover {
     -fx-background-color: -accent-purple;
+    -fx-border-color: -border-color;
 }
 
 .btn-outline-purple {
@@ -471,6 +498,7 @@
 
 .btn-outline-purple:hover {
     -fx-background-color: -accent-orange;
+    -fx-border-color: -border-color;
 }
 
 .btn-ghost {
@@ -487,6 +515,7 @@
 .btn-ghost:hover {
     -fx-background-color: -card-hover-bg;
     -fx-text-fill: -text-secondary;
+    -fx-border-color: -border-color;
 }
 
 .btn-danger {
@@ -501,6 +530,7 @@
 
 .btn-danger:hover {
     -fx-background-color: #b91c1c;
+    -fx-border-color: -border-color;
 }
 
 /* Smaller button variant (used in dense lists like notifications) */
@@ -514,14 +544,20 @@
 }
 
 /* Keyboard focus */
+.btn:focused,
 .btn-primary:focused,
 .btn-secondary:focused,
 .btn-ghost:focused,
 .btn-danger:focused,
-.submit-button:focused {
+.btn-outline:focused,
+.btn-outline-purple:focused,
+.submit-button:focused,
+.btn-mini:focused,
+.btn-success:focused,
+.btn-warning:focused {
     -fx-border-color: -primary-orange;
     -fx-border-width: 2;
-    -fx-effect: null;
+    -fx-effect: dropshadow(gaussian, -shadow-primary, 0, 0, 6, 6);
 }
 
 .btn:disabled,
@@ -771,7 +807,7 @@
 .date-picker:focused {
     -fx-border-color: -primary-orange;
     -fx-border-width: 2;
-    -fx-effect: null;
+    -fx-effect: dropshadow(gaussian, -shadow-primary, 0, 0, 6, 6);
 }
 
 /* Login/Register: keep border highlight, remove glow/shadow */
@@ -785,6 +821,13 @@
 }
 
 /* Validation */
+.invalid-field,
+.field-invalid,
+.text-field.invalid-field,
+.password-field.invalid-field,
+.text-area.invalid-field,
+.combo-box.invalid-field,
+.date-picker.invalid-field,
 .text-field.field-invalid,
 .password-field.field-invalid,
 .text-area.field-invalid,
@@ -795,6 +838,13 @@
     -fx-effect: null;
 }
 
+.invalid-field:focused,
+.field-invalid:focused,
+.text-field.invalid-field:focused,
+.password-field.invalid-field:focused,
+.text-area.invalid-field:focused,
+.combo-box.invalid-field:focused,
+.date-picker.invalid-field:focused,
 .text-field.field-invalid:focused,
 .password-field.field-invalid:focused,
 .text-area.field-invalid:focused,
@@ -805,14 +855,28 @@
     -fx-effect: null;
 }
 
+.form-message {
+    -fx-padding: 10 15;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
+    -fx-border-width: 2;
+    -fx-border-color: -border-color;
+    -fx-font-size: 13;
+}
+
+.error-message { -fx-background-color: -error-bg; -fx-text-fill: -error; }
+.success-message { -fx-background-color: -success-bg; -fx-text-fill: -success; }
+.info-message { -fx-background-color: -info-bg; -fx-text-fill: -info; }
+.warning-message { -fx-background-color: -warning-bg; -fx-text-fill: -warning; }
+
 /* ScrollPane */
 .scroll-pane {
-    -fx-background-color: transparent;
+    -fx-background-color: -content-bg;
     -fx-border-color: transparent;
 }
 
 .scroll-pane .viewport {
-    -fx-background-color: transparent;
+    -fx-background-color: -content-bg;
 }
 
 .scroll-pane .scroll-bar:horizontal {
@@ -980,6 +1044,7 @@
     -fx-border-radius: 2;
     -fx-background-radius: 2;
     -fx-border-width: 2;
+    -fx-effect: null;
 }
 
 /* Alias for screens using custom-table */
@@ -989,6 +1054,14 @@
     -fx-border-radius: 2;
     -fx-background-radius: 2;
     -fx-border-width: 2;
+    -fx-effect: null;
+}
+
+.table-view:focused,
+.custom-table:focused,
+.list-view:focused {
+    -fx-border-color: -primary-orange;
+    -fx-effect: dropshadow(gaussian, -shadow-primary, 0, 0, 6, 6);
 }
 
 .table-view .column-header {
@@ -2044,6 +2117,20 @@ FlowPane Label {
 .text-muted {
     -fx-text-fill: -text-light;
 }
+
+/* Spacing utilities */
+.pad-8 { -fx-padding: 8; }
+.pad-12 { -fx-padding: 12; }
+.pad-16 { -fx-padding: 16; }
+.pad-20 { -fx-padding: 20; }
+.pad-24 { -fx-padding: 24; }
+.pad-32 { -fx-padding: 32; }
+
+.gap-8 { -fx-spacing: 8; }
+.gap-12 { -fx-spacing: 12; }
+.gap-16 { -fx-spacing: 16; }
+.gap-20 { -fx-spacing: 20; }
+.gap-24 { -fx-spacing: 24; }
 
 .body-small, .body-sm {
     -fx-font-size: 12px;

@@ -1,6 +1,5 @@
 package com.classbuddy;
 
-import com.classbuddy.service.NotificationScheduler;
 import com.classbuddy.util.DatabaseUtil;
 import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.ViewTransitions;
@@ -16,11 +15,6 @@ public class App extends Application {
         DatabaseUtil.initializeDatabase();
         System.out.println("Database ready.");
 
-        // Initialize system notifications and start scheduler
-        com.classbuddy.util.DesktopNotifier.init();
-        NotificationScheduler.start();
-        System.out.println("Notification system active.");
-
         System.out.println("════════════════════════════════════════════\n");
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
@@ -29,11 +23,6 @@ public class App extends Application {
         stage.setTitle("ClassBuddy - Classroom Management System");
         NavigationUtil.applyLoginScene(stage, root);
         ViewTransitions.fadeIn(root);
-        // Stop scheduler when app closes
-        stage.setOnCloseRequest(e -> {
-            NotificationScheduler.stop();
-            System.out.println("ClassBuddy closed");
-        });
     }
 
     public static void main(String[] args) {

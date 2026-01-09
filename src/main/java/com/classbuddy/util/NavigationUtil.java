@@ -14,13 +14,13 @@ public class NavigationUtil {
 
     private static final double DEFAULT_WIDTH = 1366;
     private static final double DEFAULT_HEIGHT = 800;
-    private static final double MIN_WIDTH = 960;
-    private static final double MIN_HEIGHT = 540;
+    private static final double MIN_WIDTH = 1366;
+    private static final double MIN_HEIGHT = 800;
 
-    private static final double LOGIN_WIDTH = 960;
-    private static final double LOGIN_HEIGHT = 540;
-    private static final double LOGIN_MIN_WIDTH = 960;
-    private static final double LOGIN_MIN_HEIGHT = 540;
+    private static final double LOGIN_WIDTH = 1366;
+    private static final double LOGIN_HEIGHT = 800;
+    private static final double LOGIN_MIN_WIDTH = 1366;
+    private static final double LOGIN_MIN_HEIGHT = 800;
 
     public static void applyDashboardScene(Stage stage, Parent root) {
         Scene scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT);

@@ -81,10 +81,10 @@ public class LoginController {
 
     private void clearValidation() {
         if (usernameField != null) {
-            usernameField.getStyleClass().remove("field-invalid");
+            usernameField.getStyleClass().removeAll("field-invalid", "invalid-field");
         }
         if (passwordField != null) {
-            passwordField.getStyleClass().remove("field-invalid");
+            passwordField.getStyleClass().removeAll("field-invalid", "invalid-field");
         }
     }
 
@@ -92,8 +92,8 @@ public class LoginController {
         if (control == null) {
             return;
         }
-        if (!control.getStyleClass().contains("field-invalid")) {
-            control.getStyleClass().add("field-invalid");
+        if (!control.getStyleClass().contains("invalid-field")) {
+            control.getStyleClass().add("invalid-field");
         }
     }
 

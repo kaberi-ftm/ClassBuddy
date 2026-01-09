@@ -40,7 +40,6 @@
 
             <!-- Header -->
             <HBox alignment="CENTER_LEFT" spacing="16">
-                <Button text="← Back" onAction="#goBack" styleClass="btn-secondary"/>
                 <Label text="Exam &amp; Marks" styleClass="page-title"/>
             </HBox>
 
