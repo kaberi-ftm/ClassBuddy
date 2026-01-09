@@ -1,31 +1,33 @@
 package com.classbuddy.controller;
 
+import com.classbuddy.model.Classroom;
+import com.classbuddy.model.User;
+import com.classbuddy.model.UserProfile;
+import com.classbuddy.service.ClassroomService;
+import com.classbuddy.service.ProfileService;
+import com.classbuddy.util.NavigationUtil;
 import com.classbuddy.util.Toast;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
-import javafx.stage.Stage;
-import javafx.stage.FileChooser;
-import javafx.scene.layout.VBox;
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.awt.image.BufferedImage;
+import com.classbuddy.util.ViewTransitions;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
-import com.classbuddy.model. Classroom;
-import com.classbuddy.model.User;
-import com.classbuddy.service.ClassroomService;
-import com.classbuddy.service.ProfileService;
-import com.classbuddy.model.UserProfile;
-import com.classbuddy.util.ViewTransitions;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 public class JoinClassroomController {
@@ -124,12 +126,9 @@ public class JoinClassroomController {
             ProfileController controller = loader.getController();
             controller.setUser(u, "/fxml/join-classroom.fxml");
 
-            Scene scene = new Scene(root);
             Stage stage = (Stage) rollNumberField.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setResizable(true);
-            stage.show();
-            ViewTransitions.fadeIn(root);
+            NavigationUtil.applyDashboardScene(stage, root);
+            ViewTransitions.fadeIn(stage.getScene().getRoot());
         } catch (IOException e) {
             showError("Failed to load profile.");
         }
@@ -141,12 +140,9 @@ public class JoinClassroomController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Parent root = loader.load();
 
-            Scene scene = new Scene(root);
             Stage stage = (Stage) rollNumberField.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setResizable(true);
-            stage.show();
-            ViewTransitions.fadeIn(root);
+            NavigationUtil.applyLoginScene(stage, root);
+            ViewTransitions.fadeIn(stage.getScene().getRoot());
 
             LoginController.setCurrentUser(null);
         } catch (IOException e) {
@@ -398,14 +394,10 @@ public class JoinClassroomController {
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(dashboardFxml));
             Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root);
 
             Stage stage = (Stage) rollNumberField.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setResizable(true);
-            stage.sizeToScene();
-            stage.show();
-            ViewTransitions.fadeIn(root);
+            NavigationUtil.applyDashboardScene(stage, root);
+            ViewTransitions.fadeIn(stage.getScene().getRoot());
         } catch (IOException e) {
             e.printStackTrace();
             showError("Error navigating back.");
@@ -421,9 +413,12 @@ public class JoinClassroomController {
             Stage stage = (Stage) rollNumberField.getScene().getWindow();
             stage.setScene(scene);
             stage.setResizable(true);
-            stage.sizeToScene();
+            stage.setMinWidth(1366);
+            stage.setMinHeight(800);
+            stage.setWidth(1366);
+            stage.setHeight(800);
             stage.show();
-            ViewTransitions.fadeIn(root);
+            ViewTransitions.fadeIn(stage.getScene().getRoot());
         } catch (IOException e) {
             showError("Navigation failed.");
         }

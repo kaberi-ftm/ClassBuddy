@@ -55,6 +55,14 @@ public class AddCTQuizController {
     }
 
     @FXML
+    public void initialize() {
+        // Auto-complete for quiz/test name; exclude date picker
+        com.classbuddy.util.AutoCompleteUtil.bind(nameField,
+                p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                        com.classbuddy.service.SuggestionService.FieldType.TEST_NAME, p, 8));
+    }
+
+    @FXML
     public void handleAdd() {
         String name = nameField.getText().trim();
         String syllabus = syllabusArea.getText().trim();
@@ -78,6 +86,9 @@ public class AddCTQuizController {
         boolean success = CTQuizService.addCTQuiz(classroomId, name, syllabus, deadline);
 
         if (success) {
+            // Record values for future suggestions
+            com.classbuddy.service.SuggestionService.recordValue(
+                    com.classbuddy.service.SuggestionService.FieldType.TEST_NAME, name);
             showSuccess("CT/Quiz added successfully.");
             clearFields();
 

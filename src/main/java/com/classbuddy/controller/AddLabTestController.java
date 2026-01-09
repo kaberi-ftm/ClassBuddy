@@ -56,6 +56,17 @@ public class AddLabTestController {
     }
 
     @FXML
+    public void initialize() {
+        // Auto-complete for experiment/test name and teacher name; exclude date picker
+        com.classbuddy.util.AutoCompleteUtil.bind(experimentField,
+                p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                        com.classbuddy.service.SuggestionService.FieldType.LABTEST_NAME, p, 8));
+        com.classbuddy.util.AutoCompleteUtil.bind(teacherField,
+                p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                        com.classbuddy.service.SuggestionService.FieldType.TEACHER_NAME, p, 8));
+    }
+
+    @FXML
     public void handleAdd() {
         LocalDate testDate = testDatePicker.getValue();
         String experimentNumber = experimentField.getText().trim();
@@ -84,6 +95,11 @@ public class AddLabTestController {
         );
 
         if (success) {
+            // Record values
+            com.classbuddy.service.SuggestionService.recordValue(
+                com.classbuddy.service.SuggestionService.FieldType.LABTEST_NAME, experimentNumber);
+            com.classbuddy.service.SuggestionService.recordValue(
+                com.classbuddy.service.SuggestionService.FieldType.TEACHER_NAME, teacherName);
             showSuccess("Lab test added successfully.");
             clearFields();
 

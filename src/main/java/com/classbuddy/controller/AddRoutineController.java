@@ -125,6 +125,17 @@ public class AddRoutineController {
         timeStartComboBox.setEditable(true);
         timeEndComboBox.getItems().setAll(TimeOptions.defaultTimes());
         timeEndComboBox.setEditable(true);
+
+        // Auto-complete for text fields (exclude time pickers)
+        com.classbuddy.util.AutoCompleteUtil.bind(courseNameField,
+            p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                com.classbuddy.service.SuggestionService.FieldType.COURSE_NAME, p, 8));
+        com.classbuddy.util.AutoCompleteUtil.bind(teacherNameField,
+            p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                com.classbuddy.service.SuggestionService.FieldType.TEACHER_NAME, p, 8));
+        com.classbuddy.util.AutoCompleteUtil.bind(roomField,
+            p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                com.classbuddy.service.SuggestionService.FieldType.ROOM, p, 8));
     }
 
     public void loadData() {
@@ -187,6 +198,17 @@ public class AddRoutineController {
             );
 
             if (added) {
+                // Record successful inputs
+                com.classbuddy.service.SuggestionService.recordValue(
+                        com.classbuddy.service.SuggestionService.FieldType.COURSE_NAME, courseName);
+                if (!teacherName.isBlank()) {
+                    com.classbuddy.service.SuggestionService.recordValue(
+                            com.classbuddy.service.SuggestionService.FieldType.TEACHER_NAME, teacherName);
+                }
+                if (!room.isBlank()) {
+                    com.classbuddy.service.SuggestionService.recordValue(
+                            com.classbuddy.service.SuggestionService.FieldType.ROOM, room);
+                }
                 showSuccess("Routine added successfully");
                 clearFields();
 

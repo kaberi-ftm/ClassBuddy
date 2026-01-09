@@ -54,7 +54,19 @@ public class AddNoticeController {
     
     @FXML
     public void initialize() {
-        // Initialize will be called automatically by FXMLLoader
+        // Bind auto-complete for title and category (text only)
+        com.classbuddy.util.AutoCompleteUtil.bind(titleField,
+                p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                        com.classbuddy.service.SuggestionService.FieldType.SUBJECT_CODE, p, 8));
+        // Note: Use NOTICE_CATEGORY for category suggestions
+        if (categoryComboBox != null && categoryComboBox.isEditable()) {
+            javafx.scene.control.TextField editor = categoryComboBox.getEditor();
+            if (editor != null) {
+                com.classbuddy.util.AutoCompleteUtil.bind(editor,
+                        p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                                com.classbuddy.service.SuggestionService.FieldType.NOTICE_CATEGORY, p, 8));
+            }
+        }
     }
     
     @FXML
@@ -107,6 +119,11 @@ public class AddNoticeController {
             );
             
             if (success) {
+                // Record values
+                com.classbuddy.service.SuggestionService.recordValue(
+                    com.classbuddy.service.SuggestionService.FieldType.SUBJECT_CODE, title);
+                com.classbuddy.service.SuggestionService.recordValue(
+                    com.classbuddy.service.SuggestionService.FieldType.NOTICE_CATEGORY, category);
                 // Handle pinning if checkbox is selected
                 if (pinnedCheckBox.isSelected()) {
                     // Note: You may need to get the notice ID to pin it

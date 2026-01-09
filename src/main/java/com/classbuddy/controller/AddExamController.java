@@ -51,6 +51,14 @@ public class AddExamController {
 
         examTimeComboBox.getItems().setAll(TimeOptions.defaultTimes());
         examTimeComboBox.setEditable(true);
+
+        // Bind suggestions to text fields (exclude date/time)
+        com.classbuddy.util.AutoCompleteUtil.bind(courseNameField,
+            prefix -> com.classbuddy.service.SuggestionService.getSuggestions(
+                com.classbuddy.service.SuggestionService.FieldType.COURSE_NAME, prefix, 8));
+        com.classbuddy.util.AutoCompleteUtil.bind(roomField,
+            prefix -> com.classbuddy.service.SuggestionService.getSuggestions(
+                com.classbuddy.service.SuggestionService.FieldType.ROOM, prefix, 8));
     }
 
     public void loadData() {
@@ -104,6 +112,13 @@ public class AddExamController {
             );
 
             if (added) {
+                // Record successful inputs for future suggestions
+                com.classbuddy.service.SuggestionService.recordValue(
+                        com.classbuddy.service.SuggestionService.FieldType.COURSE_NAME, courseName);
+                if (room != null && !room.isBlank()) {
+                    com.classbuddy.service.SuggestionService.recordValue(
+                            com.classbuddy.service.SuggestionService.FieldType.ROOM, room);
+                }
                 showSuccess();
                 clearFields();
 

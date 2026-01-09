@@ -61,6 +61,22 @@ public class CreateClassroomController {
         if (sectionField != null) {
             sectionField.textProperty().addListener((obs, oldV, newV) -> updateClassIdPreview());
         }
+        // Auto-complete bindings
+        if (classNameField != null) {
+            com.classbuddy.util.AutoCompleteUtil.bind(classNameField,
+                    p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                            com.classbuddy.service.SuggestionService.FieldType.CLASS_NAME, p, 8));
+        }
+        if (sectionField != null) {
+            com.classbuddy.util.AutoCompleteUtil.bind(sectionField,
+                    p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                            com.classbuddy.service.SuggestionService.FieldType.SECTION, p, 8));
+        }
+        if (departmentField != null) {
+            com.classbuddy.util.AutoCompleteUtil.bind(departmentField,
+                    p -> com.classbuddy.service.SuggestionService.getSuggestions(
+                            com.classbuddy.service.SuggestionService.FieldType.DEPARTMENT, p, 8));
+        }
         updateClassIdPreview();
     }
 
@@ -173,6 +189,13 @@ public class CreateClassroomController {
         );
 
         if (created) {
+            // Record values
+            com.classbuddy.service.SuggestionService.recordValue(
+                com.classbuddy.service.SuggestionService.FieldType.CLASS_NAME, name);
+            com.classbuddy.service.SuggestionService.recordValue(
+                com.classbuddy.service.SuggestionService.FieldType.SECTION, section);
+            com.classbuddy.service.SuggestionService.recordValue(
+                com.classbuddy.service.SuggestionService.FieldType.DEPARTMENT, department);
             showSuccess("Classroom created successfully.");
             clearFields();
 

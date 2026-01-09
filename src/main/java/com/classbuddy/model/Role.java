@@ -1,4 +1,4 @@
-package com.classbuddy. model;
+package com.classbuddy.model;
 
 public enum Role {
     ADMIN("Admin"),
