@@ -73,6 +73,8 @@ public class ClassroomDetailController {
     private Button btnNotices;
     @FXML
     private Button btnAddNotice;
+    @FXML
+    private Button btnEvents;
     // Attendance features removed
     // Additional quick-add buttons on Schedule tab
     @FXML private Button addExamFromScheduleBtn;
@@ -394,6 +396,30 @@ public class ClassroomDetailController {
     @FXML
     public void goToAddLabTest() {
         navigateToScreen("/fxml/add-labtest.fxml", "AddLabTestController");
+    }
+
+    @FXML
+    public void goToEvents() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/classroom-events.fxml"));
+            Parent root = loader.load();
+            ClassroomEventsController ctrl = loader.getController();
+            ctrl.setClassroom(classroom);
+            ctrl.setUser(user);
+            ctrl.loadData();
+            Scene scene = new Scene(root, 1366, 800);
+            Stage stage = (Stage) classroomNameLabel.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setResizable(true);
+            stage.setMinWidth(1366);
+            stage.setMinHeight(800);
+            stage.setWidth(1366);
+            stage.setHeight(800);
+            stage.show();
+            ViewTransitions.fadeIn(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Attendance marker removed

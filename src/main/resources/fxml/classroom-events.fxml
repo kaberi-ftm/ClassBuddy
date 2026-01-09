@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<HBox minHeight="700.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.classbuddy.controller.ClassroomEventsController">
+    <stylesheets>
+        <String fx:value="/css/app-theme.css" />
+    </stylesheets>
+
+    <!-- Sidebar -->
+    <VBox prefWidth="250.0" minWidth="250.0" maxWidth="250.0" styleClass="sidebar" VBox.vgrow="ALWAYS">
+        <VBox styleClass="sidebar-header" alignment="CENTER">
+            <ImageView fitWidth="180.0" preserveRatio="true">
+                <image>
+                    <Image url="/img/classbuddy_logo.png" />
+                </image>
+            </ImageView>
+        </VBox>
+
+        <VBox styleClass="sidebar-menu" spacing="8" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="15" bottom="15" />
+            </padding>
+
+            <Button onAction="#goToDashboard" styleClass="sidebar-item" text="Back to Dashboard" graphicTextGap="10" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+
+            <Button onAction="#goToSchedule" styleClass="sidebar-item" text="Schedule" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+
+            <Button onAction="#goToCalendar" styleClass="sidebar-item" text="Calendar" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+
+            <Button onAction="#goToExams" styleClass="sidebar-item" text="Exams" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+
+            <Button onAction="#goToNotices" styleClass="sidebar-item" text="Notices" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+
+            <Button fx:id="btnFilter" styleClass="sidebar-item, sidebar-item-active" text="Filter" maxWidth="Infinity" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets left="25" />
+                </padding>
+            </Button>
+        </VBox>
+
+        <VBox styleClass="sidebar-footer">
+            <VBox styleClass="sidebar-user-info" spacing="5">
+                <Label fx:id="classroomNameLabel" styleClass="sidebar-username" text="Classroom" wrapText="true" />
+                <Label fx:id="classroomMetaLabel" styleClass="sidebar-role" text="Section" />
+            </VBox>
+        </VBox>
+    </VBox>
+
+    <!-- Main Content -->
+    <VBox HBox.hgrow="ALWAYS" styleClass="content-area" spacing="10">
+        <VBox fx:id="filtersHeader" spacing="10" styleClass="content-header" minHeight="280">
+            <Label fx:id="pageTitleLabel" text="Filter" styleClass="page-title" />
+            <Label text="Quickly filter classroom exams, quizzes, labs, notices, and routine." styleClass="page-subtitle" />
+            <GridPane fx:id="filterPanel" hgap="10" vgap="10" styleClass="filter-panel" maxWidth="Infinity">
+                <VBox.margin>
+                    <Insets top="0" right="0" bottom="10" left="0" />
+                </VBox.margin>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="220" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="220" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="180" />
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="180" />
+                </columnConstraints>
+
+                <TextField fx:id="courseFilterField" promptText="Course contains" maxWidth="Infinity" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField fx:id="teacherFilterField" promptText="Teacher contains" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <ComboBox fx:id="typeFilterBox" promptText="Type" maxWidth="Infinity" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                <ComboBox fx:id="examTypeFilterBox" promptText="Exam type" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+
+                <DatePicker fx:id="fromDatePicker" promptText="From" maxWidth="Infinity" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <DatePicker fx:id="toDatePicker" promptText="To" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <HBox alignment="CENTER_RIGHT" spacing="8" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                    <Button text="Refresh" onAction="#refreshCards" styleClass="btn-secondary" />
+                    <Button text="Clear" onAction="#clearFilters" styleClass="btn-ghost" />
+                </HBox>
+            </GridPane>
+        </VBox>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="scroll-pane">
+            <VBox.margin>
+                <Insets top="6" right="0" bottom="0" left="0" />
+            </VBox.margin>
+            <padding>
+                <Insets top="6" right="16" bottom="16" left="16" />
+            </padding>
+            <VBox fx:id="cardsContainer" spacing="12" styleClass="content-body cards-flow">
+                <padding>
+                    <Insets top="8" right="4" bottom="8" left="4" />
+                </padding>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>
