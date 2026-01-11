@@ -10,6 +10,7 @@ import com.classbuddy.service.CalendarService;
 import com.classbuddy.service.ExamService;
 import com.classbuddy.service.RoutineService;
 import com.classbuddy.util.ContextMenuFactory;
+import com.classbuddy.util.ViewTransitions;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -19,6 +20,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.io.IOException;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import java.time.*;
 import java.time.format.TextStyle;
@@ -436,6 +444,76 @@ public class IntegratedCalendarController {
         label.getStyleClass().addAll("calendar-event-text", "calendar-event-label");
         indicator.getChildren().add(label);
         
+        // Context menu: admin-only edit/delete on indicators
+        com.classbuddy.model.User current = com.classbuddy.controller.LoginController.getCurrentUser();
+        boolean isAdmin = current != null && com.classbuddy.model.Role.ADMIN == current.getRole();
+        if (isAdmin) {
+            indicator.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem edit = new MenuItem("Edit");
+                edit.setOnAction(ev -> {
+                    try {
+                        if (event instanceof Exam) {
+                            Exam ex = (Exam) event;
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-exam.fxml"));
+                            Parent root = loader.load();
+                            EditExamController ctrl = loader.getController();
+                            ctrl.setClassroom(classroom);
+                            ctrl.setExam(ex);
+                            ctrl.loadData();
+                            Scene scene = new Scene(root, 1366, 800);
+                            Stage stage = (Stage) indicator.getScene().getWindow();
+                            stage.setScene(scene);
+                            stage.show();
+                            ViewTransitions.fadeIn(root);
+                        } else if (event instanceof Routine) {
+                            Routine r = (Routine) event;
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-routine.fxml"));
+                            Parent root = loader.load();
+                            EditRoutineController ctrl = loader.getController();
+                            com.classbuddy.model.Classroom owner = com.classbuddy.service.ClassroomService.getClassroomById(r.getClassroomId());
+                            ctrl.setClassroom(owner);
+                            ctrl.setRoutine(r);
+                            ctrl.loadData();
+                            Scene scene = new Scene(root, 1366, 800);
+                            Stage stage = (Stage) indicator.getScene().getWindow();
+                            stage.setScene(scene);
+                            stage.show();
+                            ViewTransitions.fadeIn(root);
+                        } else if (event instanceof CalendarEvent) {
+                            Alert info = new Alert(Alert.AlertType.INFORMATION);
+                            info.setTitle("Edit not available");
+                            info.setHeaderText("Edit not implemented");
+                            info.setContentText("Editing generic calendar events from this view is not available yet.");
+                            info.showAndWait();
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                MenuItem del = new MenuItem("Delete");
+                del.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Event");
+                    confirm.setHeaderText("Delete this event?");
+                    confirm.setContentText(getEventTitle(event));
+                    if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                        boolean ok = false;
+                        if (event instanceof CalendarEvent) ok = CalendarService.deleteEvent(((CalendarEvent) event).getId());
+                        else if (event instanceof Exam) ok = com.classbuddy.service.ExamService.deleteExam(((Exam) event).getId());
+                        else if (event instanceof Routine) ok = RoutineService.deleteRoutine(((Routine) event).getId());
+                        if (ok) {
+                            loadData();
+                            updateView();
+                        }
+                    }
+                });
+                menu.getItems().addAll(edit, del);
+                menu.show(indicator, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
+        
         return indicator;
     }
 
@@ -678,6 +756,36 @@ public class IntegratedCalendarController {
         detailsLabel.setWrapText(true);
         
         card.getChildren().addAll(titleLabel, typeLabel, detailsLabel);
+
+        // Admin context menu for event detail cards
+        com.classbuddy.model.User current = com.classbuddy.controller.LoginController.getCurrentUser();
+        boolean isAdmin = current != null && com.classbuddy.model.Role.ADMIN == current.getRole();
+        if (isAdmin) {
+            card.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem del = new MenuItem("Delete");
+                del.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Event");
+                    confirm.setHeaderText("Delete this event?");
+                    confirm.setContentText(getEventTitle(event));
+                    if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                        boolean ok = false;
+                        if (event instanceof CalendarEvent) ok = CalendarService.deleteEvent(((CalendarEvent) event).getId());
+                        else if (event instanceof Exam) ok = com.classbuddy.service.ExamService.deleteExam(((Exam) event).getId());
+                        else if (event instanceof Routine) ok = RoutineService.deleteRoutine(((Routine) event).getId());
+                        if (ok) {
+                            loadData();
+                            updateEventDetails();
+                        }
+                    }
+                });
+                menu.getItems().add(del);
+                menu.show(card, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
+
         return card;
     }
 

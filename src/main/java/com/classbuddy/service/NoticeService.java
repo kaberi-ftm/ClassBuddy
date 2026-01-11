@@ -30,12 +30,16 @@ public class NoticeService {
 
             pstmt.executeUpdate();
 
-            // Get the generated notice ID
+            // Get the generated notice ID and notify students (non-blocking)
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     int noticeId = rs.getInt(1);
-                    // Notify all students in the classroom
-                    NotificationService.notifyNewNotice(classroomId, noticeId, title);
+                    try {
+                        // Notify all students in the classroom - do not fail the posting if notify fails
+                        NotificationService.notifyNewNotice(classroomId, noticeId, title);
+                    } catch (Exception e) {
+                        System.err.println("Warning: notifyNewNotice failed: " + e.getMessage());
+                    }
                 }
             }
 

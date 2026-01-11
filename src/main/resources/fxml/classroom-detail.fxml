@@ -84,6 +84,7 @@
             <VBox styleClass="sidebar-user-info" spacing="5">
                 <Label fx:id="classroomNameLabel" styleClass="sidebar-username" text="Classroom" wrapText="true" />
                 <Label fx:id="classroomMetaLabel" styleClass="sidebar-role" text="Section" />
+                <Label fx:id="classIdLabel" styleClass="sidebar-meta" text="ID: " wrapText="true" />
             </VBox>
         </VBox>
     </VBox>

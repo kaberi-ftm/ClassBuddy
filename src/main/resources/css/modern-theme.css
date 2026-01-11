@@ -4,8 +4,8 @@
 .root {
     -fx-font-family: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
     /* Brutalist monochrome + single accent */
-    -primary-orange: #2D5BFF;   /* accent */
-    -primary-purple: #2349CC;   /* accent dark */
+    -primary-orange: #1565C0;   /* accent */
+    -primary-purple: #1565C0;   /* accent dark */
     -accent-orange: #AFC3FF;    /* accent light */
     -accent-purple: #E2E8FF;    /* accent soft */
     

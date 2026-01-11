@@ -146,6 +146,8 @@ public class AddRoutineController {
 
     @FXML
     public void handleAddRoutine() {
+        // clear any previous messages
+        hideMessages();
         try {
             List<String> applicableDays = getApplicableDaysFromUI();
             if (applicableDays.isEmpty()) {
@@ -397,6 +399,14 @@ public class AddRoutineController {
         setMessage(msg, "success-message");
         messageLabel.setVisible(true);
         messageLabel.setManaged(true);
+    }
+
+    private void hideMessages() {
+        if (messageLabel == null) return;
+        messageLabel.setVisible(false);
+        messageLabel.setManaged(false);
+        messageLabel.setText("");
+        messageLabel.getStyleClass().removeAll("error-message", "success-message", "info-message", "warning-message");
     }
 
     private void setMessage(String msg, String messageStyleClass) {

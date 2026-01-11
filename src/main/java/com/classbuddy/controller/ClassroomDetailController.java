@@ -23,6 +23,7 @@ import com.classbuddy.service.NoticeService;
 import com.classbuddy.service.RoutineService;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Classroom Detail Screen - Shows routine, exams, notices
@@ -42,6 +43,9 @@ public class ClassroomDetailController {
     private VBox examsContainer;
     @FXML
     private VBox noticesContainer;
+
+    @FXML
+    private Label classIdLabel;
 
     // CT/Quiz and Lab Tests are now shown under the Exams tab
     @FXML
@@ -115,6 +119,25 @@ public class ClassroomDetailController {
                 classroomMetaLabel.setText("Section " + classroom.getSection() + " · " + classroom.getDepartment());
             }
 
+            if (classIdLabel != null) {
+                String classIdText = classroom.getClassId() == null ? "" : classroom.getClassId();
+                classIdLabel.setText("ID: " + classIdText);
+                classIdLabel.setStyle("-fx-cursor: hand;");
+                classIdLabel.setOnMouseClicked(ev -> {
+                    javafx.scene.input.Clipboard clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+                    javafx.scene.input.ClipboardContent content = new javafx.scene.input.ClipboardContent();
+                    content.putString(classIdText);
+                    clipboard.setContent(content);
+                    if (classroomMetaLabel != null) {
+                        String old = classroomMetaLabel.getText();
+                        classroomMetaLabel.setText("Class ID copied to clipboard");
+                        new Thread(() -> {
+                            try { Thread.sleep(1200); } catch (InterruptedException ignored) {}
+                            javafx.application.Platform.runLater(() -> classroomMetaLabel.setText(old));
+                        }).start();
+                    }
+                });
+            }
             boolean isAdmin = user != null && user.getRole().name().equals("ADMIN");
             
             // Show/hide "Add" buttons on pages based on role
@@ -299,6 +322,51 @@ public class ClassroomDetailController {
         HBox.setHgrow(examLabel, javafx.scene.layout.Priority.ALWAYS);
 
         box.getChildren().add(examLabel);
+
+        // admin-only context menu: edit/delete exam
+        boolean isAdminExam = user != null && user.getRole().name().equals("ADMIN");
+        if (isAdminExam) {
+            box.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem edit = new MenuItem("Edit Exam");
+                edit.setOnAction(ev -> {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-exam.fxml"));
+                        Parent root = loader.load();
+                        EditExamController ctrl = loader.getController();
+                        ctrl.setClassroom(classroom);
+                        ctrl.setExam(exam);
+                        ctrl.loadData();
+
+                        Scene scene = new Scene(root, 1366, 800);
+                        Stage stage = (Stage) box.getScene().getWindow();
+                        stage.setScene(scene);
+                        stage.show();
+                        ViewTransitions.fadeIn(root);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                MenuItem delete = new MenuItem("Delete Exam");
+                delete.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Exam");
+                    confirm.setHeaderText("Delete this exam?");
+                    confirm.setContentText(exam.getCourseName());
+                    Optional<ButtonType> res = confirm.showAndWait();
+                    if (res.isPresent() && res.get() == ButtonType.OK) {
+                        if (ExamService.deleteExam(exam.getId())) {
+                            loadExams();
+                        }
+                    }
+                });
+
+                menu.getItems().addAll(edit, delete);
+                menu.show(box, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
         return box;
     }
 
@@ -313,6 +381,52 @@ public class ClassroomDetailController {
         label.setWrapText(true);
         HBox.setHgrow(label, javafx.scene.layout.Priority.ALWAYS);
         box.getChildren().add(label);
+
+        // admin-only context menu: edit/delete test
+        boolean isAdminTest = user != null && user.getRole().name().equals("ADMIN");
+        if (isAdminTest) {
+            box.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem edit = new MenuItem("Edit Test");
+                edit.setOnAction(ev -> {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-ctquiz.fxml"));
+                        Parent root = loader.load();
+                        EditCTQuizController ctrl = loader.getController();
+                        ctrl.setClassroom(classroom);
+                        ctrl.setCtQuiz(test);
+                        ctrl.loadData();
+
+                        Scene scene = new Scene(root, 1366, 800);
+                        Stage stage = (Stage) box.getScene().getWindow();
+                        stage.setScene(scene);
+                        stage.show();
+                        ViewTransitions.fadeIn(root);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                MenuItem delete = new MenuItem("Delete Test");
+                delete.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Test");
+                    confirm.setHeaderText("Delete this test?");
+                    confirm.setContentText(test.getName());
+                    Optional<ButtonType> res = confirm.showAndWait();
+                    if (res.isPresent() && res.get() == ButtonType.OK) {
+                        if (CTQuizService.deleteCTQuiz(test.getId())) {
+                            loadExams();
+                        }
+                    }
+                });
+
+                menu.getItems().addAll(edit, delete);
+                menu.show(box, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
+
         return box;
     }
 
@@ -327,6 +441,52 @@ public class ClassroomDetailController {
         label.setWrapText(true);
         HBox.setHgrow(label, javafx.scene.layout.Priority.ALWAYS);
         box.getChildren().add(label);
+
+        // admin-only context menu: edit/delete lab test
+        boolean isAdminLab = user != null && user.getRole().name().equals("ADMIN");
+        if (isAdminLab) {
+            box.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem edit = new MenuItem("Edit Lab Test");
+                edit.setOnAction(ev -> {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-labtest.fxml"));
+                        Parent root = loader.load();
+                        EditLabTestController ctrl = loader.getController();
+                        ctrl.setClassroom(classroom);
+                        ctrl.setLabTest(lab);
+                        ctrl.loadData();
+
+                        Scene scene = new Scene(root, 1366, 800);
+                        Stage stage = (Stage) box.getScene().getWindow();
+                        stage.setScene(scene);
+                        stage.show();
+                        ViewTransitions.fadeIn(root);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                MenuItem delete = new MenuItem("Delete Lab Test");
+                delete.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Lab Test");
+                    confirm.setHeaderText("Delete this lab test?");
+                    confirm.setContentText("Experiment " + lab.getExperimentNumber());
+                    Optional<ButtonType> res = confirm.showAndWait();
+                    if (res.isPresent() && res.get() == ButtonType.OK) {
+                        if (LabTestService.deleteLabTest(lab.getId())) {
+                            loadExams();
+                        }
+                    }
+                });
+
+                menu.getItems().addAll(edit, delete);
+                menu.show(box, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
+
         return box;
     }
 
@@ -370,6 +530,55 @@ public class ClassroomDetailController {
         timeLabel.getStyleClass().addAll("text-muted", "body-xs");
 
         box.getChildren().addAll(titleLabel, categoryLabel, contentLabel, timeLabel);
+
+        // Context menu: edit / delete notice (admin-only)
+        boolean isAdmin = user != null && user.getRole().name().equals("ADMIN");
+        if (isAdmin) {
+            box.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+
+                MenuItem edit = new MenuItem("Edit Notice");
+                edit.setOnAction(ev -> {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-notice.fxml"));
+                        Parent root = loader.load();
+                        EditNoticeController ctrl = loader.getController();
+                        ctrl.setClassroom(classroom);
+                        ctrl.setNotice(notice);
+                        ctrl.loadData();
+
+                        Scene scene = new Scene(root, 1366, 800);
+                        Stage stage = (Stage) box.getScene().getWindow();
+                        stage.setScene(scene);
+                        stage.show();
+                        ViewTransitions.fadeIn(root);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                MenuItem delete = new MenuItem("Delete Notice");
+                delete.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Notice");
+                    confirm.setHeaderText("Delete this notice?");
+                    confirm.setContentText(notice.getTitle());
+
+                    Optional<ButtonType> res = confirm.showAndWait();
+                    if (res.isPresent() && res.get() == ButtonType.OK) {
+                        if (NoticeService.deleteNotice(notice.getId())) {
+                            loadNotices();
+                        }
+                    }
+                });
+
+                menu.getItems().addAll(edit, delete);
+                // Show menu at cursor position
+                menu.show(box, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
+
         return box;
     }
 

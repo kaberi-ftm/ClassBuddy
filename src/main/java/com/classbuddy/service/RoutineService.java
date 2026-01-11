@@ -88,12 +88,18 @@ public class RoutineService {
                 if (generatedKeys.next()) {
                     generatedId = generatedKeys.getInt(1);
                 }
+            } catch (Exception e) {
+                System.err.println("Warning: failed to read generated keys: " + e.getMessage());
             }
             
             if (userId > 0 && generatedId > 0) {
                 String newValue = String.format("course=%s, days=%s, time=%s-%s, room=%s", 
                     courseName, applicableDaysJson, timeStart, timeEnd, room);
-                AuditService.log(userId, AuditLog.Action.CREATE, "Routine", generatedId, null, newValue);
+                try {
+                    AuditService.log(userId, AuditLog.Action.CREATE, "Routine", generatedId, null, newValue);
+                } catch (Exception e) {
+                    System.err.println("Warning: audit logging failed: " + e.getMessage());
+                }
             }
             
             System.out.println("Routine added");

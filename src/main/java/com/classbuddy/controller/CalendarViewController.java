@@ -13,11 +13,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -232,6 +242,30 @@ public class CalendarViewController {
         eventLabel.setWrapText(true);
         eventBox.getChildren().add(eventLabel);
         
+        // Context menu: delete calendar event (admin-only)
+        boolean isAdmin = LoginController.getCurrentUser() != null && LoginController.getCurrentUser().getRole().name().equals("ADMIN");
+        if (isAdmin) {
+            eventBox.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem del = new MenuItem("Delete Event");
+                del.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Event");
+                    confirm.setHeaderText("Delete this event?");
+                    confirm.setContentText(event.getTitle());
+                    Optional<ButtonType> res = confirm.showAndWait();
+                    if (res.isPresent() && res.get() == ButtonType.OK) {
+                        if (CalendarService.deleteEvent(event.getId())) {
+                            loadCalendarEvents();
+                        }
+                    }
+                });
+                menu.getItems().add(del);
+                menu.show(eventBox, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
+        
         return eventBox;
     }
     
@@ -253,6 +287,49 @@ public class CalendarViewController {
         eventLabel.setMaxWidth(Double.MAX_VALUE);
         eventLabel.setWrapText(true);
         eventBox.getChildren().add(eventLabel);
+        
+        // Context menu: edit / delete routine occurrence (admin-only)
+        boolean isAdminRoutine = LoginController.getCurrentUser() != null && LoginController.getCurrentUser().getRole().name().equals("ADMIN");
+        if (isAdminRoutine) {
+            eventBox.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem edit = new MenuItem("Edit Routine");
+                edit.setOnAction(ev -> {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-routine.fxml"));
+                        Parent root = loader.load();
+                        EditRoutineController ctrl = loader.getController();
+                        ctrl.setClassroom(classroom);
+                        ctrl.setRoutine(routine);
+                        ctrl.loadData();
+                        Scene scene = new Scene(root, 1366, 800);
+                        Stage stage = (Stage) eventBox.getScene().getWindow();
+                        stage.setScene(scene);
+                        stage.show();
+                        com.classbuddy.util.ViewTransitions.fadeIn(root);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+                MenuItem del = new MenuItem("Delete Routine");
+                del.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Routine");
+                    confirm.setHeaderText("Delete this routine occurrence?");
+                    confirm.setContentText(routine.toString());
+                    Optional<ButtonType> res = confirm.showAndWait();
+                    if (res.isPresent() && res.get() == ButtonType.OK) {
+                        if (RoutineService.deleteRoutine(routine.getId())) {
+                            loadRoutines();
+                            loadCalendarEvents();
+                        }
+                    }
+                });
+                menu.getItems().addAll(edit, del);
+                menu.show(eventBox, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
         
         return eventBox;
     }

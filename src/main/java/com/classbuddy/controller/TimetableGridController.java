@@ -15,6 +15,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
+import com.classbuddy.service.RoutineService;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
@@ -203,31 +207,36 @@ public class TimetableGridController {
         box.getStyleClass().addAll("timetable-cell", "timetable-empty");
         box.setUserData(null);
 
+        // Only allow adding routines via empty cell if user is admin
         box.setOnMouseClicked(e -> {
             if (e.getButton() != MouseButton.PRIMARY) return;
-            openAddRoutine(day, slot);
+            boolean isAdmin = LoginController.getCurrentUser() != null && LoginController.getCurrentUser().getRole().name().equals("ADMIN");
+            if (isAdmin) openAddRoutine(day, slot);
             e.consume();
         });
 
-        box.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
-            ContextMenu menu = new ContextMenu();
-            MenuItem add = new MenuItem("Add Routine");
-            add.setOnAction(ev -> openAddRoutine(day, slot));
-            menu.getItems().add(add);
+        boolean isAdminEmpty = LoginController.getCurrentUser() != null && LoginController.getCurrentUser().getRole().name().equals("ADMIN");
+        if (isAdminEmpty) {
+            box.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem add = new MenuItem("Add Routine");
+                add.setOnAction(ev -> openAddRoutine(day, slot));
+                menu.getItems().add(add);
 
-            if (classroom != null) {
-                boolean isBreak = TimetableSlots.isBreak(classroom.getId(), slot);
-                MenuItem toggleBreak = new MenuItem(isBreak ? "Unset Break" : "Set as Break");
-                toggleBreak.setOnAction(ev -> {
-                    TimetableSlots.setBreak(classroom.getId(), slot, !isBreak);
-                    render(lastRoutines);
-                });
-                menu.getItems().add(toggleBreak);
-            }
+                if (classroom != null) {
+                    boolean isBreak = TimetableSlots.isBreak(classroom.getId(), slot);
+                    MenuItem toggleBreak = new MenuItem(isBreak ? "Unset Break" : "Set as Break");
+                    toggleBreak.setOnAction(ev -> {
+                        TimetableSlots.setBreak(classroom.getId(), slot, !isBreak);
+                        render(lastRoutines);
+                    });
+                    menu.getItems().add(toggleBreak);
+                }
 
-            showOnlyOne(menu, box, e.getScreenX(), e.getScreenY());
-            e.consume();
-        });
+                showOnlyOne(menu, box, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
 
         return box;
     }
@@ -240,25 +249,29 @@ public class TimetableGridController {
         box.getStyleClass().addAll("timetable-cell", "timetable-break");
         box.setUserData(null);
 
-        box.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
-            ContextMenu menu = new ContextMenu();
+        // Break cell menu only available to admins
+        boolean isAdminBreak = LoginController.getCurrentUser() != null && LoginController.getCurrentUser().getRole().name().equals("ADMIN");
+        if (isAdminBreak) {
+            box.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
 
-            if (classroom != null) {
-                MenuItem unset = new MenuItem("Unset Break");
-                unset.setOnAction(ev -> {
-                    TimetableSlots.setBreak(classroom.getId(), slot, false);
-                    render(lastRoutines);
-                });
-                menu.getItems().add(unset);
-            }
+                if (classroom != null) {
+                    MenuItem unset = new MenuItem("Unset Break");
+                    unset.setOnAction(ev -> {
+                        TimetableSlots.setBreak(classroom.getId(), slot, false);
+                        render(lastRoutines);
+                    });
+                    menu.getItems().add(unset);
+                }
 
-            MenuItem add = new MenuItem("Add Routine");
-            add.setOnAction(ev -> openAddRoutine(day, slot));
-            menu.getItems().add(add);
+                MenuItem add = new MenuItem("Add Routine");
+                add.setOnAction(ev -> openAddRoutine(day, slot));
+                menu.getItems().add(add);
 
-            showOnlyOne(menu, box, e.getScreenX(), e.getScreenY());
-            e.consume();
-        });
+                showOnlyOne(menu, box, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
 
         return box;
     }
@@ -299,20 +312,42 @@ public class TimetableGridController {
         box.getChildren().add(titleLabel);
         if (subLabel != null) box.getChildren().add(subLabel);
 
+        boolean isAdmin = LoginController.getCurrentUser() != null && LoginController.getCurrentUser().getRole().name().equals("ADMIN");
         box.setOnMouseClicked(e -> {
             if (e.getButton() != MouseButton.PRIMARY) return;
-            openEditRoutine(r);
+            if (isAdmin) openEditRoutine(r);
             e.consume();
         });
 
-        box.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
-            ContextMenu menu = new ContextMenu();
-            MenuItem edit = new MenuItem("Edit Routine");
-            edit.setOnAction(ev -> openEditRoutine(r));
-            menu.getItems().add(edit);
-            showOnlyOne(menu, box, e.getScreenX(), e.getScreenY());
-            e.consume();
-        });
+        if (isAdmin) {
+            box.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem edit = new MenuItem("Edit Routine");
+                edit.setOnAction(ev -> openEditRoutine(r));
+                menu.getItems().add(edit);
+
+                MenuItem del = new MenuItem("Delete Routine");
+                del.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Routine");
+                    confirm.setHeaderText("Delete this routine?");
+                    confirm.setContentText(r.toString());
+
+                    Optional<ButtonType> result = confirm.showAndWait();
+                    if (result.isPresent() && result.get() == ButtonType.OK) {
+                        if (RoutineService.deleteRoutine(r.getId())) {
+                            // reload fresh routines for this classroom
+                            List<Routine> fresh = RoutineService.getWeeklyRoutine(classroom.getId());
+                            setRoutines(fresh);
+                        }
+                    }
+                });
+                menu.getItems().add(del);
+
+                showOnlyOne(menu, box, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
 
         return box;
     }

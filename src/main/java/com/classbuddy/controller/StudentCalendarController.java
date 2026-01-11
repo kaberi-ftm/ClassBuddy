@@ -407,6 +407,30 @@ public class StudentCalendarController {
             card.getChildren().add(descLabel);
         }
 
+        // Context menu: admin-only edit/delete
+        User current = currentStudent != null ? currentStudent : LoginController.getCurrentUser();
+        boolean isAdmin = current != null && "ADMIN".equals(current.getRole().name());
+        if (isAdmin) {
+            card.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem del = new MenuItem("Delete Event");
+                del.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Event");
+                    confirm.setHeaderText("Delete this event?");
+                    confirm.setContentText(event.getTitle());
+                    if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                        if (CalendarService.deleteEvent(event.getId())) {
+                            showEventsForDate(selectedDate);
+                        }
+                    }
+                });
+                menu.getItems().add(del);
+                menu.show(card, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
+
         return card;
     }
 
@@ -433,6 +457,55 @@ public class StudentCalendarController {
             Label roomLabel = new Label("📍 " + routine.getRoom());
             roomLabel.getStyleClass().add("routine-room-label");
             card.getChildren().add(roomLabel);
+        }
+
+        // Context menu: admin-only edit/delete
+        User current = currentStudent != null ? currentStudent : LoginController.getCurrentUser();
+        boolean isAdmin = current != null && "ADMIN".equals(current.getRole().name());
+        if (isAdmin) {
+            card.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem edit = new MenuItem("Edit Routine");
+                edit.setOnAction(ev -> {
+                    try {
+                        java.util.List<com.classbuddy.model.Routine> all = RoutineService.getWeeklyRoutine(routine.getClassroomId());
+                        com.classbuddy.model.Routine rr = all.stream().filter(x -> x.getId() == routine.getId()).findFirst().orElse(null);
+                        if (rr != null) {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-routine.fxml"));
+                            Parent root = loader.load();
+                            EditRoutineController ctrl = loader.getController();
+                            com.classbuddy.model.Classroom owner = ClassroomService.getClassroomById(rr.getClassroomId());
+                            ctrl.setClassroom(owner);
+                            ctrl.setRoutine(rr);
+                            ctrl.loadData();
+                            Scene scene = new Scene(root, 1366, 800);
+                            Stage stage = (Stage) card.getScene().getWindow();
+                            stage.setScene(scene);
+                            stage.show();
+                            ViewTransitions.fadeIn(root);
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                MenuItem del = new MenuItem("Delete Routine");
+                del.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete Routine");
+                    confirm.setHeaderText("Delete this routine?");
+                    confirm.setContentText(routine.toString());
+                    if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                        if (RoutineService.deleteRoutine(routine.getId())) {
+                            showEventsForDate(selectedDate);
+                        }
+                    }
+                });
+
+                menu.getItems().addAll(edit, del);
+                menu.show(card, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
         }
 
         return card;

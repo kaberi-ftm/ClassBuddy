@@ -26,6 +26,10 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import com.classbuddy.util.ViewTransitions;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -55,7 +59,7 @@ public class ClassroomEventsController {
     private Classroom classroom;
     private User user;
 
-    private record EventCard(String type, String title, String subtitle, LocalDate date, String meta) {}
+    private record EventCard(String type, String title, String subtitle, LocalDate date, String meta, Integer refId) {}
 
     public void setClassroom(Classroom classroom) {
         this.classroom = classroom;
@@ -166,24 +170,24 @@ public class ClassroomEventsController {
         int cid = classroom != null ? classroom.getId() : -1;
         // Exams
         for (Exam ex : ExamService.getClassroomExams(cid)) {
-            list.add(new EventCard("Exam", ex.getCourseName(), ex.getExamType(), ex.getExamDate(), ex.getExamTime() != null ? ex.getExamTime().toString() : null));
+            list.add(new EventCard("Exam", ex.getCourseName(), ex.getExamType(), ex.getExamDate(), ex.getExamTime() != null ? ex.getExamTime().toString() : null, ex.getId()));
         }
         // CT/Quiz
         for (CTQuiz quiz : CTQuizService.getClassroomCTQuizzes(cid)) {
-            list.add(new EventCard("Quiz", quiz.getName(), quiz.getDeadline() != null ? "Due " + quiz.getDeadline() : null, quiz.getDeadline(), null));
+            list.add(new EventCard("Quiz", quiz.getName(), quiz.getDeadline() != null ? "Due " + quiz.getDeadline() : null, quiz.getDeadline(), null, quiz.getId()));
         }
         // Lab Tests
         for (LabTest lab : LabTestService.getClassroomLabTests(cid)) {
-            list.add(new EventCard("Lab", "Experiment " + lab.getExperimentNumber(), lab.getTeacherName(), lab.getTestDate(), null));
+            list.add(new EventCard("Lab", "Experiment " + lab.getExperimentNumber(), lab.getTeacherName(), lab.getTestDate(), null, lab.getId()));
         }
         // Notices
         for (Notice notice : NoticeService.getClassroomNotices(cid)) {
-            list.add(new EventCard("Notice", notice.getTitle(), notice.getCategory(), notice.getCreatedAt() != null ? notice.getCreatedAt().toLocalDate() : null, null));
+            list.add(new EventCard("Notice", notice.getTitle(), notice.getCategory(), notice.getCreatedAt() != null ? notice.getCreatedAt().toLocalDate() : null, null, notice.getId()));
         }
         // Routine (no specific date)
         for (Routine rt : RoutineService.getWeeklyRoutine(cid)) {
             String subtitle = (rt.getTeacherName() != null ? rt.getTeacherName() + " · " : "") + (rt.getDay() != null ? rt.getDay() : "");
-            list.add(new EventCard("Routine", rt.getCourseName(), subtitle, null, null));
+            list.add(new EventCard("Routine", rt.getCourseName(), subtitle, null, null, rt.getId()));
         }
         return list;
     }
@@ -223,6 +227,143 @@ public class ClassroomEventsController {
             meta.getStyleClass().add("body-xs");
             box.getChildren().add(meta);
         }
+
+        // Admin context menu: edit / delete depending on type
+        User current = user != null ? user : LoginController.getCurrentUser();
+        boolean isAdmin = current != null && "ADMIN".equals(current.getRole().name());
+        if (isAdmin) {
+            box.addEventFilter(javafx.scene.input.ContextMenuEvent.CONTEXT_MENU_REQUESTED, e -> {
+                ContextMenu menu = new ContextMenu();
+                MenuItem edit = new MenuItem("Edit " + card.type);
+                edit.setOnAction(ev -> {
+                    try {
+                        switch (card.type) {
+                            case "Exam" -> {
+                                // find exam by id
+                                java.util.List<com.classbuddy.model.Exam> exams = com.classbuddy.service.ExamService.getClassroomExams(classroom.getId());
+                                com.classbuddy.model.Exam ex = exams.stream().filter(x -> x.getId() == card.refId()).findFirst().orElse(null);
+                                if (ex != null) {
+                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-exam.fxml"));
+                                    Parent root = loader.load();
+                                    EditExamController ctrl = loader.getController();
+                                    ctrl.setClassroom(classroom);
+                                    ctrl.setExam(ex);
+                                    ctrl.loadData();
+                                    Scene scene = new Scene(root, 1366, 800);
+                                    Stage stage = (Stage) box.getScene().getWindow();
+                                    stage.setScene(scene);
+                                    stage.show();
+                                    ViewTransitions.fadeIn(root);
+                                }
+                            }
+                            case "Notice" -> {
+                                java.util.List<com.classbuddy.model.Notice> notices = NoticeService.getClassroomNotices(classroom.getId());
+                                com.classbuddy.model.Notice n = notices.stream().filter(x -> x.getId() == card.refId()).findFirst().orElse(null);
+                                if (n != null) {
+                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-notice.fxml"));
+                                    Parent root = loader.load();
+                                    EditNoticeController ctrl = loader.getController();
+                                    ctrl.setClassroom(classroom);
+                                    ctrl.setNotice(n);
+                                    ctrl.loadData();
+                                    Scene scene = new Scene(root, 1366, 800);
+                                    Stage stage = (Stage) box.getScene().getWindow();
+                                    stage.setScene(scene);
+                                    stage.show();
+                                    ViewTransitions.fadeIn(root);
+                                }
+                            }
+                            case "Routine" -> {
+                                java.util.List<com.classbuddy.model.Routine> rts = RoutineService.getWeeklyRoutine(classroom.getId());
+                                com.classbuddy.model.Routine rr = rts.stream().filter(x -> x.getId() == card.refId()).findFirst().orElse(null);
+                                if (rr != null) {
+                                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-routine.fxml"));
+                                    Parent root = loader.load();
+                                    EditRoutineController ctrl = loader.getController();
+                                    ctrl.setClassroom(classroom);
+                                    ctrl.setRoutine(rr);
+                                    ctrl.loadData();
+                                    Scene scene = new Scene(root, 1366, 800);
+                                    Stage stage = (Stage) box.getScene().getWindow();
+                                    stage.setScene(scene);
+                                    stage.show();
+                                    ViewTransitions.fadeIn(root);
+                                }
+                            }
+                            case "Quiz" -> {
+                                java.util.List<com.classbuddy.model.CTQuiz> qs = CTQuizService.getClassroomCTQuizzes(classroom.getId());
+                                com.classbuddy.model.CTQuiz qq = qs.stream().filter(x -> x.getId() == card.refId()).findFirst().orElse(null);
+                                if (qq != null) {
+                                    try {
+                                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-ctquiz.fxml"));
+                                        Parent root = loader.load();
+                                        EditCTQuizController ctrl = loader.getController();
+                                        ctrl.setClassroom(classroom);
+                                        ctrl.setCtQuiz(qq);
+                                        ctrl.loadData();
+                                        Scene scene = new Scene(root, 1366, 800);
+                                        Stage stage = (Stage) box.getScene().getWindow();
+                                        stage.setScene(scene);
+                                        stage.show();
+                                        ViewTransitions.fadeIn(root);
+                                    } catch (IOException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            }
+                            case "Lab" -> {
+                                java.util.List<com.classbuddy.model.LabTest> labs = LabTestService.getClassroomLabTests(classroom.getId());
+                                com.classbuddy.model.LabTest ll = labs.stream().filter(x -> x.getId() == card.refId()).findFirst().orElse(null);
+                                if (ll != null) {
+                                    try {
+                                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit-labtest.fxml"));
+                                        Parent root = loader.load();
+                                        EditLabTestController ctrl = loader.getController();
+                                        ctrl.setClassroom(classroom);
+                                        ctrl.setLabTest(ll);
+                                        ctrl.loadData();
+                                        Scene scene = new Scene(root, 1366, 800);
+                                        Stage stage = (Stage) box.getScene().getWindow();
+                                        stage.setScene(scene);
+                                        stage.show();
+                                        ViewTransitions.fadeIn(root);
+                                    } catch (IOException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            }
+                            default -> {}
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                MenuItem del = new MenuItem("Delete " + card.type);
+                del.setOnAction(ev -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirm.setTitle("Delete " + card.type);
+                    confirm.setHeaderText("Delete this " + card.type + "?");
+                    confirm.setContentText(card.title);
+                    if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                        boolean ok = false;
+                        switch (card.type) {
+                            case "Exam" -> ok = com.classbuddy.service.ExamService.deleteExam(card.refId());
+                            case "Notice" -> ok = NoticeService.deleteNotice(card.refId());
+                            case "Routine" -> ok = RoutineService.deleteRoutine(card.refId());
+                            case "Quiz" -> ok = CTQuizService.deleteCTQuiz(card.refId());
+                            case "Lab" -> ok = LabTestService.deleteLabTest(card.refId());
+                        }
+                        if (ok) refreshCards();
+                    }
+                });
+
+                menu.getItems().addAll(edit, del);
+                menu.show(box, e.getScreenX(), e.getScreenY());
+                e.consume();
+            });
+        }
+        
         return box;
     }
 

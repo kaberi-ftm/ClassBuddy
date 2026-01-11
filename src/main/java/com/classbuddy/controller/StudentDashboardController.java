@@ -188,6 +188,7 @@ public class StudentDashboardController {
                     fxmlLoader.getController();
             controller.setClassroom(classroom);
             controller.setUser(currentStudent);
+            controller.loadData();
             Stage stage = (Stage) studentNameLabel.getScene().getWindow();
                 NavigationUtil.applyDashboardScene(stage, root);
             ViewTransitions.fadeIn(root);
